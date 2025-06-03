@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { uploadData } from "../services/data";
 
 const SelectFile = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -10,7 +11,15 @@ const SelectFile = () => {
   };
 
   const handleUpload = async () => {
-    return;
+    console.log(file);
+
+    const formData = new FormData();
+    if (file) {
+      formData.append("csv_data", file);
+    }
+    console.log(formData);
+    const data = await uploadData(formData);
+    console.log(data);
   };
 
   return (

@@ -1,17 +1,24 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
-
-class Data(BaseModel):
-    smile: str
-    value: float
-
+from typing import Annotated
+from fastapi import FastAPI, File, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    )
 
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
 
 @app.post("/api/data")
-async def process_data(data: Data):
-    return data
+async def process_data(csv_data: Annotated[UploadFile, File()]):
+    return {
+        "filename": "from backend: " + csv_data.filename
+    }
