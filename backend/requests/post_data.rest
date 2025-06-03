@@ -1,0 +1,7 @@
+POST http://localhost:8000/api/data
+Content-type: application/json
+
+{
+    "smile": "test",
+    "value": 1.23
+}
