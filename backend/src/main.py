@@ -1,5 +1,6 @@
 from typing import Annotated
-from fastapi import FastAPI, File, UploadFile
+import pandas as pd
+from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
@@ -18,7 +19,9 @@ async def root():
     return {"message": "Hello World"}
 
 @app.post("/api/data")
-async def process_data(csv_data: Annotated[UploadFile, File()]):
+async def process_data(csv_data: UploadFile):
+    df = pd.read_csv(csv_data.file)
+    print(df.columns)
     return {
         "filename": "from backend: " + csv_data.filename
     }

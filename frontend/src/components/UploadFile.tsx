@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { uploadData } from "../services/data";
 
-const SelectFile = () => {
+const UploadFile = () => {
   const [file, setFile] = useState<File | null>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,7 +25,12 @@ const SelectFile = () => {
   return (
     <div>
       <div>
-        <input id="file" type="file" onChange={handleFileChange} />
+        <input
+          id="file"
+          type="file"
+          accept=".csv"
+          onChange={handleFileChange}
+        />
       </div>
       {file && <div>Name: {file.name}</div>}
       {file && (
@@ -37,4 +42,4 @@ const SelectFile = () => {
   );
 };
 
-export default SelectFile;
+export default UploadFile;

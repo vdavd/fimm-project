@@ -1,10 +1,10 @@
-import SelectFile from "./components/SelectFile";
+import UploadFile from "./components/UploadFile";
 
 const App = () => {
   return (
     <div>
       <p>frontend</p>
-      <SelectFile />
+      <UploadFile />
     </div>
   );
 };
