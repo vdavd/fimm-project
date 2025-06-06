@@ -1,7 +1,8 @@
-from typing import Annotated
 import pandas as pd
 from fastapi import FastAPI, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from util.validation import validate_dataframe
+from util.analyze_data import analyze_data
 app = FastAPI()
 
 origins = ["*"]
@@ -20,8 +21,15 @@ async def root():
 
 @app.post("/api/data")
 async def process_data(csv_data: UploadFile):
-    df = pd.read_csv(csv_data.file)
-    print(df.columns)
+    df = pd.read_csv(csv_data.file, index_col=0)
+
+    if not validate_dataframe(df):
+        return {"error": "SMILES or label column not found"}
+    
+    result_df = analyze_data(df)
+
+    print(result_df.head(5))
+
     return {
-        "filename": "from backend: " + csv_data.filename
+        "success"
     }
