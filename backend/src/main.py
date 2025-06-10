@@ -16,11 +16,11 @@ app.add_middleware(
     )
 
 @app.get("/")
-async def root():
+def root():
     return {"message": "Hello World"}
 
 @app.post("/api/data")
-async def process_data(csv_data: UploadFile):
+def process_data(csv_data: UploadFile):
     df = pd.read_csv(csv_data.file, index_col=0)
 
     if not validate_dataframe(df):
@@ -30,6 +30,4 @@ async def process_data(csv_data: UploadFile):
 
     print(result_df.head(5))
 
-    return {
-        "success"
-    }
+    return result_df.to_json()
