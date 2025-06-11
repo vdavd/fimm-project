@@ -2,13 +2,19 @@ import { uploadData } from "../services/data";
 
 interface UploadFileProps {
   file: File | null;
-  setAnalyzedData: (AnalyzedData: string | null) => void;
+  smilesColumn: string;
+  setAnalyzedData: (analyzedData: string) => void;
 }
-const UploadFile = ({ file, setAnalyzedData }: UploadFileProps) => {
+const UploadFile = ({
+  file,
+  smilesColumn,
+  setAnalyzedData,
+}: UploadFileProps) => {
   const handleUpload = async () => {
     const formData = new FormData();
     if (file) {
       formData.append("csv_data", file);
+      formData.append("smiles_column", smilesColumn);
     }
     const data = await uploadData(formData);
     setAnalyzedData(data);

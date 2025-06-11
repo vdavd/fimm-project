@@ -4,8 +4,8 @@ from rdkit.Chem import AllChem, PandasTools
 from rdkit import DataStructs
 from sklearn.decomposition import PCA
 
-def generate_mols(df: pd.DataFrame):
-    PandasTools.AddMoleculeColumnToFrame(df,'SMILES','mol')
+def generate_mols(df: pd.DataFrame, smiles_column: str):
+    PandasTools.AddMoleculeColumnToFrame(df, smiles_column, 'mol')
     return df
 
 def generate_fingerprints(df: pd.DataFrame):
@@ -34,9 +34,9 @@ def perform_pca(fingerprint_df: pd.DataFrame):
 
     return principal_df
 
-def analyze_data(df: pd.DataFrame):
+def analyze_data(df: pd.DataFrame, smiles_column: str):
     # Generate mols from SMILES
-    df_with_mols = generate_mols(df)
+    df_with_mols = generate_mols(df, smiles_column)
 
     # Generate Morgan fingerprints
     fingerprint_df = generate_fingerprints(df_with_mols)

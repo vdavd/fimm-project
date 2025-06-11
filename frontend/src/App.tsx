@@ -6,15 +6,29 @@ import SelectFile from "./components/SelectFile";
 
 const App = () => {
   const [file, setFile] = useState<File | null>(null);
-  const [analyzedData, setAnalyzedData] = useState<string | null>(null);
+  const [analyzedData, setAnalyzedData] = useState("");
+  const [smilesColumn, setSmilesColumn] = useState("");
+  const [labelColumn, setLabelColumn] = useState("");
 
   return (
     <div>
       <p>frontend</p>
       <SelectFile setFile={setFile} />
-      {file && <ColumnSelect file={file} />}
-      <UploadFile file={file} setAnalyzedData={setAnalyzedData} />
-      <DrawPlot analyzedData={analyzedData} />
+      {file && (
+        <ColumnSelect
+          file={file}
+          smilesColumn={smilesColumn}
+          labelColumn={labelColumn}
+          setSmilesColumn={setSmilesColumn}
+          setLabelColumn={setLabelColumn}
+        />
+      )}
+      <UploadFile
+        file={file}
+        smilesColumn={smilesColumn}
+        setAnalyzedData={setAnalyzedData}
+      />
+      <DrawPlot analyzedData={analyzedData} labelColumn={labelColumn} />
     </div>
   );
 };

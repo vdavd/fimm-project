@@ -2,16 +2,18 @@ import { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 
 interface DrawPlotProps {
-  analyzedData: string | null;
+  analyzedData: string;
+  labelColumn: string;
 }
 
-interface DataValues {
+interface PlotDataValues {
   pc1: number[];
   pc2: number[];
   label: number[];
 }
-const DrawPlot = ({ analyzedData }: DrawPlotProps) => {
-  const [plotData, setPlotData] = useState<DataValues | null>(null);
+const DrawPlot = ({ analyzedData, labelColumn }: DrawPlotProps) => {
+  const [plotData, setPlotData] = useState<PlotDataValues | null>(null);
+  console.log(labelColumn);
 
   useEffect(() => {
     const isNumber = (value: unknown) => {
@@ -19,11 +21,10 @@ const DrawPlot = ({ analyzedData }: DrawPlotProps) => {
     };
 
     const parseData = (data: string) => {
-      console.log(data);
       const objectData = JSON.parse(data);
       const pc1 = Object.values(objectData.PC1);
       const pc2 = Object.values(objectData.PC2);
-      const label = Object.values(objectData.label);
+      const label = Object.values(objectData[labelColumn]);
 
       if (
         pc1.every((value) => isNumber(value)) &&
@@ -32,6 +33,7 @@ const DrawPlot = ({ analyzedData }: DrawPlotProps) => {
       ) {
         return { pc1: pc1, pc2: pc2, label: label };
       }
+      console.log("waduheeel");
       return null;
     };
     if (analyzedData) {
@@ -40,7 +42,7 @@ const DrawPlot = ({ analyzedData }: DrawPlotProps) => {
         setPlotData(parsedData);
       }
     }
-  }, [analyzedData]);
+  }, [analyzedData, labelColumn]);
 
   return (
     <div>
