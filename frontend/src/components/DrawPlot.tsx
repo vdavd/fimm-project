@@ -19,6 +19,7 @@ const DrawPlot = ({ analyzedData }: DrawPlotProps) => {
     };
 
     const parseData = (data: string) => {
+      console.log(data);
       const objectData = JSON.parse(data);
       const pc1 = Object.values(objectData.PC1);
       const pc2 = Object.values(objectData.PC2);

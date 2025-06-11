@@ -1,6 +1,8 @@
 import { useState } from "react";
 import UploadFile from "./components/UploadFile";
 import DrawPlot from "./components/DrawPlot";
+import ColumnSelect from "./components/ColumnSelect";
+import SelectFile from "./components/SelectFile";
 
 const App = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -9,11 +11,9 @@ const App = () => {
   return (
     <div>
       <p>frontend</p>
-      <UploadFile
-        file={file}
-        setFile={setFile}
-        setAnalyzedData={setAnalyzedData}
-      />
+      <SelectFile setFile={setFile} />
+      {file && <ColumnSelect file={file} />}
+      <UploadFile file={file} setAnalyzedData={setAnalyzedData} />
       <DrawPlot analyzedData={analyzedData} />
     </div>
   );
