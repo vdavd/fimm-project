@@ -1,13 +1,29 @@
 import pandas as pd
 import numpy as np
-from rdkit.Chem import AllChem, PandasTools
+from rdkit.Chem import AllChem, MolFromSmiles
 from rdkit import DataStructs
 from sklearn.decomposition import PCA
 
+def remove_missing_smiles(df: pd.DataFrame, smiles_column: str):
+    df_without_na = df.dropna(subset=[smiles_column])
+    return df_without_na
+
 def generate_mols(df: pd.DataFrame, smiles_column: str):
     print('generating mols....')
-    PandasTools.AddMoleculeColumnToFrame(df, smiles_column, 'mol')
-    return df
+    molecules = []
+
+    # Generate mols objects for each smiles
+    for smiles in df[smiles_column]:       
+        mol = MolFromSmiles(smiles, sanitize=True)
+        molecules.append(mol)
+    
+    df['mol'] = molecules
+
+    # Remove rows where mols couldn't be generated from smiles
+    valid_mols_df = df.dropna(subset=['mol'])
+    valid_mols_df = valid_mols_df.reset_index(drop=True)
+
+    return valid_mols_df
 
 def generate_fingerprints(df: pd.DataFrame):
     fingerprints = []
@@ -38,8 +54,11 @@ def perform_pca(fingerprint_df: pd.DataFrame):
     return principal_df
 
 def analyze_data(df: pd.DataFrame, smiles_column: str):
+    # Remove missing values from SMILES column
+
+    df_without_na = remove_missing_smiles(df, smiles_column)
     # Generate mols from SMILES
-    df_with_mols = generate_mols(df, smiles_column)
+    df_with_mols = generate_mols(df_without_na, smiles_column)
 
     # Generate Morgan fingerprints
     fingerprint_df = generate_fingerprints(df_with_mols)
