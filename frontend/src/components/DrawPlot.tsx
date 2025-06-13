@@ -9,15 +9,18 @@ interface DrawPlotProps {
 interface PlotDataValues {
   pc1: number[];
   pc2: number[];
-  label: number[];
+  label: (number | string)[];
 }
 const DrawPlot = ({ analyzedData, labelColumn }: DrawPlotProps) => {
   const [plotData, setPlotData] = useState<PlotDataValues | null>(null);
-  console.log(labelColumn);
 
   useEffect(() => {
     const isNumber = (value: unknown) => {
       return typeof value === "number";
+    };
+
+    const isNumberOrString = (value: unknown) => {
+      return typeof value === "number" || typeof value === "string";
     };
 
     const parseData = (data: string) => {
@@ -29,11 +32,11 @@ const DrawPlot = ({ analyzedData, labelColumn }: DrawPlotProps) => {
       if (
         pc1.every((value) => isNumber(value)) &&
         pc2.every((value) => isNumber(value)) &&
-        label.every((value) => isNumber(value))
+        label.every((value) => isNumberOrString(value))
       ) {
         return { pc1: pc1, pc2: pc2, label: label };
       }
-      console.log("waduheeel");
+      console.log("Type checking didn't go through in parse data");
       return null;
     };
     if (analyzedData) {
@@ -58,6 +61,7 @@ const DrawPlot = ({ analyzedData, labelColumn }: DrawPlotProps) => {
                 color: plotData.label,
                 colorbar: {},
               },
+              text: plotData.label.map((label) => label.toString()),
             },
           ]}
           layout={{ width: 640, height: 480, title: { text: "A Fancy Plot" } }}

@@ -76,9 +76,11 @@ const ColumnSelect = ({
             label="SMILES"
             onChange={handleSmilesColumnChange}
           >
-            {columns.map((column) => (
-              <MenuItem value={column}>{column}</MenuItem>
-            ))}
+            {columns
+              .filter((column) => column !== "id")
+              .map((column) => (
+                <MenuItem value={column}>{column}</MenuItem>
+              ))}
           </Select>
         </FormControl>
       </Box>
@@ -92,9 +94,11 @@ const ColumnSelect = ({
             label="Label"
             onChange={handleLabelColumnChange}
           >
-            {columns.map((column) => (
-              <MenuItem value={column}>{column}</MenuItem>
-            ))}
+            {columns
+              .filter((column) => column !== "id")
+              .map((column) => (
+                <MenuItem value={column}>{column}</MenuItem>
+              ))}
           </Select>
         </FormControl>
       </Box>

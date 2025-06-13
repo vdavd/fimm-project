@@ -13,7 +13,12 @@ const App = () => {
   return (
     <div>
       <p>frontend</p>
-      <SelectFile setFile={setFile} />
+      <SelectFile
+        setFile={setFile}
+        setSmilesColumn={setSmilesColumn}
+        setLabelColumn={setLabelColumn}
+        setAnalyzedData={setAnalyzedData}
+      />
       {file && (
         <ColumnSelect
           file={file}
@@ -28,7 +33,9 @@ const App = () => {
         smilesColumn={smilesColumn}
         setAnalyzedData={setAnalyzedData}
       />
-      <DrawPlot analyzedData={analyzedData} labelColumn={labelColumn} />
+      {analyzedData && labelColumn && (
+        <DrawPlot analyzedData={analyzedData} labelColumn={labelColumn} />
+      )}
     </div>
   );
 };

@@ -1,12 +1,23 @@
 interface SelectFileProps {
   setFile: (file: File | null) => void;
+  setSmilesColumn: (smilesColumn: string) => void;
+  setLabelColumn: (labelColumn: string) => void;
+  setAnalyzedData: (analyzedData: string) => void;
 }
 
-const SelectFile = ({ setFile }: SelectFileProps) => {
+const SelectFile = ({
+  setFile,
+  setSmilesColumn,
+  setLabelColumn,
+  setAnalyzedData,
+}: SelectFileProps) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       setFile(e.target.files[0]);
     }
+    setAnalyzedData("");
+    setSmilesColumn("");
+    setLabelColumn("");
   };
 
   return (

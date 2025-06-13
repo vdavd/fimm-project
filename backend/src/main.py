@@ -22,7 +22,7 @@ def root():
 
 @app.post("/api/data")
 def process_data(csv_data: Annotated[UploadFile, File()], smiles_column: Annotated[str, Form()]):
-    df = pd.read_csv(csv_data.file, index_col=0)
+    df = pd.read_csv(csv_data.file)
 
     df = df.reset_index()
     df = df.drop('index', axis=1)
