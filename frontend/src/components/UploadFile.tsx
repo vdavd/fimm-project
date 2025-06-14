@@ -1,4 +1,5 @@
 import { uploadData } from "../services/data";
+import { Button } from "@mui/material";
 
 interface UploadFileProps {
   file: File | null;
@@ -23,9 +24,9 @@ const UploadFile = ({
   return (
     <div>
       {file && (
-        <button onClick={handleUpload} className="submit">
+        <Button onClick={handleUpload} className="submit" variant="contained">
           Upload
-        </button>
+        </Button>
       )}
     </div>
   );

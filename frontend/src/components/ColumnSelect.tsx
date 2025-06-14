@@ -66,10 +66,19 @@ const ColumnSelect = ({
 
   return (
     <>
+      <DataGrid
+        sx={{ my: 3 }}
+        rows={rows}
+        columns={gridColumns}
+        initialState={{ pagination: { paginationModel: { pageSize: 5 } } }}
+      />
       <Box sx={{ minWidth: 120 }}>
         <FormControl fullWidth>
-          <InputLabel id="smiles-select">SMILES</InputLabel>
+          <InputLabel id="smiles-select" sx={{ my: 2 }}>
+            SMILES
+          </InputLabel>
           <Select
+            sx={{ my: 2 }}
             labelId="smiles-select"
             id="smiles-select"
             value={smilesColumn}
@@ -86,8 +95,11 @@ const ColumnSelect = ({
       </Box>
       <Box sx={{ minWidth: 120 }}>
         <FormControl fullWidth>
-          <InputLabel id="label-select">Label</InputLabel>
+          <InputLabel id="label-select" sx={{ my: 2 }}>
+            Label
+          </InputLabel>
           <Select
+            sx={{ my: 2 }}
             labelId="label-select"
             id="label-select"
             value={labelColumn}
@@ -102,11 +114,6 @@ const ColumnSelect = ({
           </Select>
         </FormControl>
       </Box>
-      <DataGrid
-        rows={rows}
-        columns={gridColumns}
-        initialState={{ pagination: { paginationModel: { pageSize: 5 } } }}
-      />
     </>
   );
 };
