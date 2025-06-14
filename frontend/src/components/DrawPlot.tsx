@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
+import type { Figure } from "react-plotly.js";
 
 interface DrawPlotProps {
   analyzedData: string;
   labelColumn: string;
+  labelType: string;
 }
 
-interface PlotDataValues {
-  pc1: number[];
-  pc2: number[];
-  label: (number | string)[];
+interface PlotDataObject {
+  pc1: number;
+  pc2: number;
+  label: number | string;
 }
-const DrawPlot = ({ analyzedData, labelColumn }: DrawPlotProps) => {
-  const [plotData, setPlotData] = useState<PlotDataValues | null>(null);
+
+const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
+  const [plotData, setPlotData] = useState<PlotDataObject[] | null>(null);
+  const [traces, setTraces] = useState<Figure["data"] | null>(null);
 
   useEffect(() => {
     const isNumber = (value: unknown) => {
@@ -25,6 +29,8 @@ const DrawPlot = ({ analyzedData, labelColumn }: DrawPlotProps) => {
 
     const parseData = (data: string) => {
       const objectData = JSON.parse(data);
+      console.log(objectData);
+
       const pc1 = Object.values(objectData.PC1);
       const pc2 = Object.values(objectData.PC2);
       const label = Object.values(objectData[labelColumn]);
@@ -34,10 +40,14 @@ const DrawPlot = ({ analyzedData, labelColumn }: DrawPlotProps) => {
         pc2.every((value) => isNumber(value)) &&
         label.every((value) => isNumberOrString(value))
       ) {
-        return { pc1: pc1, pc2: pc2, label: label };
+        const plotDataObjectList = pc1.map((_value, index) => {
+          return { pc1: pc1[index], pc2: pc2[index], label: label[index] };
+        });
+        setPlotData(plotDataObjectList);
+      } else {
+        console.log("Type checking didn't go through in parseData");
+        return null;
       }
-      console.log("Type checking didn't go through in parse data");
-      return null;
     };
     if (analyzedData) {
       const parsedData = parseData(analyzedData);
@@ -47,24 +57,58 @@ const DrawPlot = ({ analyzedData, labelColumn }: DrawPlotProps) => {
     }
   }, [analyzedData, labelColumn]);
 
+  useEffect(() => {
+    const generateTraces = () => {
+      if (plotData && labelType === "categorical") {
+        const labels = Array.from(new Set(plotData.map((d) => d.label)));
+        const categorical_traces: Figure["data"] = labels.map((label) => {
+          const group = plotData.filter((d) => d.label === label);
+          return {
+            x: group.map((d) => d.pc1),
+            y: group.map((d) => d.pc2),
+            mode: "markers",
+            type: "scatter",
+            name: label.toString(),
+            marker: {
+              color: label,
+              size: 10,
+            },
+          };
+        });
+        setTraces(categorical_traces);
+      } else if (plotData && labelType === "continuous") {
+        const continuous_traces: Figure["data"] = [
+          {
+            x: plotData.map((d) => d.pc1),
+            y: plotData.map((d) => d.pc2),
+            type: "scatter",
+            mode: "markers",
+            marker: {
+              color: plotData.map((d) => d.label),
+              colorbar: {},
+            },
+            text: plotData.map((d) => d.label.toString()),
+          },
+        ];
+
+        setTraces(continuous_traces);
+      }
+    };
+
+    generateTraces();
+  }, [labelType, plotData, setTraces]);
+
   return (
     <div>
-      {plotData && (
+      {plotData && traces && (
         <Plot
-          data={[
-            {
-              x: plotData.pc1,
-              y: plotData.pc2,
-              type: "scatter",
-              mode: "markers",
-              marker: {
-                color: plotData.label,
-                colorbar: {},
-              },
-              text: plotData.label.map((label) => label.toString()),
-            },
-          ]}
-          layout={{ width: 640, height: 480, title: { text: "A Fancy Plot" } }}
+          data={traces}
+          layout={{
+            width: 960,
+            height: 720,
+            xaxis: { title: { text: "PC1", font: { size: 20 } } },
+            yaxis: { title: { text: "PC2", font: { size: 20 } } },
+          }}
         />
       )}
     </div>
