@@ -66,10 +66,17 @@ const ColumnSelect = ({
     console.log(labelColumn);
   };
 
-  const gridColumns: GridColDef[] = columns.map((column) => ({
-    field: column,
-    headerName: column,
-  }));
+  const gridColumns: GridColDef[] = columns.map((column) => {
+    if (column === "id" || column === "") {
+      return { field: column, headerName: column, width: 75 };
+    }
+    return {
+      field: column,
+      headerName: column,
+      flex: 1,
+      minWidth: 150,
+    };
+  });
 
   return (
     <>
@@ -102,14 +109,14 @@ const ColumnSelect = ({
         </FormControl>
         <FormControl fullWidth>
           <InputLabel id="label-select" sx={{ my: 2 }}>
-            Label
+            Labels
           </InputLabel>
           <Select
             sx={{ my: 2 }}
             labelId="label-select"
             id="label-select"
             value={labelColumn}
-            label="Label"
+            label="Labels"
             onChange={handleLabelColumnChange}
           >
             {columns
