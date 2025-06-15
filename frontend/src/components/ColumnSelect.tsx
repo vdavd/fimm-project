@@ -1,6 +1,13 @@
 import { DataGrid } from "@mui/x-data-grid";
 import type { GridColDef } from "@mui/x-data-grid";
-import { Box, FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import {
+  Box,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Typography,
+} from "@mui/material";
 import type { SelectChangeEvent } from "@mui/material";
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
@@ -66,13 +73,14 @@ const ColumnSelect = ({
 
   return (
     <>
+      <Typography variant="h6">{file?.name}</Typography>
       <DataGrid
-        sx={{ my: 3 }}
+        sx={{ my: 2 }}
         rows={rows}
         columns={gridColumns}
         initialState={{ pagination: { paginationModel: { pageSize: 5 } } }}
       />
-      <Box sx={{ minWidth: 120 }}>
+      <Box sx={{ minWidth: 120, display: "flex", gap: 2 }}>
         <FormControl fullWidth>
           <InputLabel id="smiles-select" sx={{ my: 2 }}>
             SMILES
@@ -92,8 +100,6 @@ const ColumnSelect = ({
               ))}
           </Select>
         </FormControl>
-      </Box>
-      <Box sx={{ minWidth: 120 }}>
         <FormControl fullWidth>
           <InputLabel id="label-select" sx={{ my: 2 }}>
             Label

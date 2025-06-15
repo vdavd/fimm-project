@@ -31,6 +31,4 @@ def process_data(csv_data: Annotated[UploadFile, File()], smiles_column: Annotat
     
     result_df = analyze_data(df, smiles_column)
 
-    print(result_df.head(5))
-
     return result_df.to_json()

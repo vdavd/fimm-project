@@ -71,7 +71,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
             name: label.toString(),
             marker: {
               color: label,
-              size: 10,
+              size: 8,
             },
           };
         });
@@ -86,6 +86,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
             marker: {
               color: plotData.map((d) => d.label),
               colorbar: {},
+              size: 8,
             },
             text: plotData.map((d) => d.label.toString()),
           },

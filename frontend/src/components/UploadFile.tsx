@@ -24,7 +24,12 @@ const UploadFile = ({
   return (
     <div>
       {file && (
-        <Button onClick={handleUpload} className="submit" variant="contained">
+        <Button
+          onClick={handleUpload}
+          className="submit"
+          variant="contained"
+          sx={{ my: 2 }}
+        >
           Upload
         </Button>
       )}

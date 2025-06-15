@@ -34,7 +34,7 @@ const App = () => {
             px: 4,
             py: 3,
             borderRadius: 5,
-            backgroundColor: "rgba(255, 255, 255, 0.6)",
+            backgroundColor: "rgba(255, 255, 255, 0.7)",
           }}
         >
           <SelectFile
@@ -43,17 +43,18 @@ const App = () => {
             setLabelColumn={setLabelColumn}
             setAnalyzedData={setAnalyzedData}
           />
-          <Paper
-            elevation={3}
-            sx={{
-              px: 4,
-              py: 3,
-              my: 4,
-              backgroundColor: "#f8f8f8",
-              borderRadius: 3,
-            }}
-          >
-            {file && (
+
+          {file && (
+            <Paper
+              elevation={3}
+              sx={{
+                px: 4,
+                py: 3,
+                my: 4,
+                backgroundColor: "#f8f8f8",
+                borderRadius: 3,
+              }}
+            >
               <ColumnSelect
                 file={file}
                 smilesColumn={smilesColumn}
@@ -61,38 +62,36 @@ const App = () => {
                 setSmilesColumn={setSmilesColumn}
                 setLabelColumn={setLabelColumn}
               />
-            )}
-
-            {file && (
               <LabelTypeSelect
                 labelType={labelType}
                 setLabelType={setLabelType}
               />
-            )}
-          </Paper>
-          <UploadFile
-            file={file}
-            smilesColumn={smilesColumn}
-            setAnalyzedData={setAnalyzedData}
-          />
-          <Paper
-            elevation={3}
-            sx={{
-              px: 4,
-              py: 3,
-              my: 2,
-              backgroundColor: "#f8f8f8",
-              borderRadius: 3,
-            }}
-          >
-            {analyzedData && labelColumn && (
+              <UploadFile
+                file={file}
+                smilesColumn={smilesColumn}
+                setAnalyzedData={setAnalyzedData}
+              />
+            </Paper>
+          )}
+
+          {analyzedData && labelColumn && (
+            <Paper
+              elevation={3}
+              sx={{
+                px: 4,
+                py: 3,
+                my: 2,
+                backgroundColor: "#f8f8f8",
+                borderRadius: 3,
+              }}
+            >
               <DrawPlot
                 analyzedData={analyzedData}
                 labelColumn={labelColumn}
                 labelType={labelType}
               />
-            )}
-          </Paper>
+            </Paper>
+          )}
         </Paper>
       </Box>
     </div>

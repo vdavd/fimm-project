@@ -1,3 +1,5 @@
+import { Button } from "@mui/material";
+
 interface SelectFileProps {
   setFile: (file: File | null) => void;
   setSmilesColumn: (smilesColumn: string) => void;
@@ -22,7 +24,16 @@ const SelectFile = ({
 
   return (
     <div>
-      <input id="file" type="file" accept=".csv" onChange={handleFileChange} />
+      <Button variant="contained" component="label">
+        Select File
+        <input
+          id="file"
+          type="file"
+          accept=".csv"
+          onChange={handleFileChange}
+          hidden
+        />
+      </Button>
     </div>
   );
 };

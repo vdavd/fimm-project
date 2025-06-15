@@ -17,7 +17,7 @@ const LabelTypeSelect = ({ labelType, setLabelType }: LabelTypeSelectProps) => {
   };
 
   return (
-    <FormControl>
+    <FormControl sx={{ my: 1 }}>
       <FormLabel id="label-type-select-label">Label Type</FormLabel>
       <RadioGroup
         row

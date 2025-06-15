@@ -1,9 +1,9 @@
 body {
-  background: #020024;
+  background: #250045;
   background: linear-gradient(
     90deg,
-    rgba(2, 0, 36, 1) 0%,
-    rgba(9, 9, 121, 1) 35%,
-    rgba(0, 212, 255, 1) 100%
+    rgba(37, 0, 69, 1) 0%,
+    rgba(50, 9, 121, 1) 31%,
+    rgba(0, 105, 217, 1) 100%
   );
 }
