@@ -109,6 +109,18 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
             height: 720,
             xaxis: { title: { text: "PC1", font: { size: 20 } } },
             yaxis: { title: { text: "PC2", font: { size: 20 } } },
+            images: plotData.map((pd) => ({
+              source:
+                "https://upload.wikimedia.org/wikipedia/commons/4/4f/Benzene_200.svg",
+              x: pd.pc1,
+              y: pd.pc2,
+              xref: "x",
+              yref: "y",
+              sizex: 0.3,
+              sizey: 0.4,
+              xanchor: "center",
+              yanchor: "middle",
+            })),
           }}
         />
       )}
