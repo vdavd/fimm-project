@@ -59,6 +59,8 @@ def mol_to_svg_uri(mol, width=200, height=200):
         if mol is None:
             return ""
         drawer = Draw.MolDraw2DSVG(width, height)
+        options = drawer.drawOptions()
+        options.setBackgroundColour((1, 1, 1, 0))
         drawer.DrawMolecule(mol)
         drawer.FinishDrawing()
         svg = drawer.GetDrawingText().strip()
