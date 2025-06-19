@@ -60,6 +60,7 @@ def mol_to_svg_uri(mol, width=200, height=200):
             return ""
         drawer = Draw.MolDraw2DSVG(width, height)
         options = drawer.drawOptions()
+        options.useBWAtomPalette()
         options.setBackgroundColour((1, 1, 1, 0))
         drawer.DrawMolecule(mol)
         drawer.FinishDrawing()

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 import type { Figure } from "react-plotly.js";
+import { hexPalette30 } from "../constants";
 
 interface DrawPlotProps {
   analyzedData: string;
@@ -25,7 +26,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
     yaxis: { title: { text: "PC2", font: { size: 20 } } },
     images: [],
   });
-  const [zoomed, setZoomed] = useState(false);
+  //const [zoomed, setZoomed] = useState(false);
 
   useEffect(() => {
     const isNumber = (value: unknown) => {
@@ -71,22 +72,43 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
         setPlotData(parsedData);
       }
     }
+    console.log("1st useEffect");
   }, [analyzedData, labelColumn]);
 
   useEffect(() => {
     const generateTraces = () => {
       if (plotData && labelType === "categorical") {
-        const labels = Array.from(new Set(plotData.map((d) => d.label)));
+        const labels = [...new Set(plotData.map((pd) => pd.label))];
+
+        const labelsWithColor = Object.fromEntries(
+          labels.map((key, i) => [key, hexPalette30[i]])
+        );
+
+        const colorSvgs = (plotData: PlotDataObject[]) => {
+          const coloredPlotData = plotData.map((pd) => {
+            const color = hexPalette30[labels.indexOf(pd.label)];
+            const coloredSvg = pd.svg.replace(/000000/g, color.slice(-6));
+            return {
+              ...pd,
+              svg: coloredSvg,
+            };
+          });
+
+          return coloredPlotData;
+        };
+
+        const coloredPlotData = colorSvgs(plotData);
+
         const categorical_traces: Figure["data"] = labels.map((label) => {
-          const group = plotData.filter((d) => d.label === label);
+          const group = coloredPlotData.filter((d) => d.label === label);
           return {
             x: group.map((d) => d.pc1),
             y: group.map((d) => d.pc2),
-            mode: zoomed ? "none" : "markers",
+            mode: "markers",
             type: "scatter",
             name: label.toString(),
             marker: {
-              color: label,
+              color: labelsWithColor[label],
               size: 8,
             },
           };
@@ -98,7 +120,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
             x: plotData.map((d) => d.pc1),
             y: plotData.map((d) => d.pc2),
             type: "scatter",
-            mode: zoomed ? "none" : "markers",
+            mode: "markers",
             marker: {
               color: plotData.map((d) => d.label),
               colorbar: {},
@@ -113,7 +135,8 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
     };
 
     generateTraces();
-  }, [labelType, plotData, setTraces, zoomed]);
+    console.log("2nd useEffect");
+  }, [labelType, plotData, setTraces, labelColumn]);
 
   const handleRelayout = (event: Readonly<Plotly.PlotRelayoutEvent>) => {
     if (plotData) {
@@ -161,7 +184,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
           },
           images: newImages,
         });
-        setZoomed(true);
+        //setZoomed(true);
       }
     }
   };
@@ -171,7 +194,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
       ...prev,
       images: [],
     }));
-    setZoomed(false);
+    //setZoomed(false);
   };
 
   return (
