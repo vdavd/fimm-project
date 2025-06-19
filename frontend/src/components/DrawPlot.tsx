@@ -17,6 +17,7 @@ interface PlotDataObject {
 }
 
 const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
+  const [parsedData, setParsedData] = useState<PlotDataObject[] | null>(null);
   const [plotData, setPlotData] = useState<PlotDataObject[] | null>(null);
   const [traces, setTraces] = useState<Figure["data"] | null>(null);
   const [layout, setLayout] = useState<Figure["layout"]>({
@@ -26,7 +27,6 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
     yaxis: { title: { text: "PC2", font: { size: 20 } } },
     images: [],
   });
-  //const [zoomed, setZoomed] = useState(false);
 
   useEffect(() => {
     const isNumber = (value: unknown) => {
@@ -38,6 +38,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
     };
 
     const parseData = (data: string) => {
+      console.log("before jsonparse");
       const objectData = JSON.parse(data);
       console.log(objectData);
 
@@ -52,7 +53,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
         label.every((value) => isNumber(value) || isString(value)) &&
         svg.every((value) => isString(value))
       ) {
-        const plotDataObjectList = pc1.map((_value, index) => {
+        const parsedDataObjectList = pc1.map((_value, index) => {
           return {
             pc1: pc1[index],
             pc2: pc2[index],
@@ -60,16 +61,16 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
             svg: svg[index],
           };
         });
-        setPlotData(plotDataObjectList);
+        setParsedData(parsedDataObjectList);
       } else {
         console.log("Type checking didn't go through in parseData");
         return null;
       }
     };
     if (analyzedData) {
-      const parsedData = parseData(analyzedData);
-      if (parsedData != null) {
-        setPlotData(parsedData);
+      const parsedPlotData = parseData(analyzedData);
+      if (parsedPlotData != null) {
+        setParsedData(parsedPlotData);
       }
     }
     console.log("1st useEffect");
@@ -77,15 +78,15 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
 
   useEffect(() => {
     const generateTraces = () => {
-      if (plotData && labelType === "categorical") {
-        const labels = [...new Set(plotData.map((pd) => pd.label))];
+      if (parsedData && labelType === "categorical") {
+        const labels = [...new Set(parsedData.map((pd) => pd.label))];
 
         const labelsWithColor = Object.fromEntries(
           labels.map((key, i) => [key, hexPalette30[i]])
         );
 
-        const colorSvgs = (plotData: PlotDataObject[]) => {
-          const coloredPlotData = plotData.map((pd) => {
+        const colorSvgs = () => {
+          const coloredPlotData = parsedData.map((pd) => {
             const color = hexPalette30[labels.indexOf(pd.label)];
             const coloredSvg = pd.svg.replace(/000000/g, color.slice(-6));
             return {
@@ -97,7 +98,8 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
           return coloredPlotData;
         };
 
-        const coloredPlotData = colorSvgs(plotData);
+        const coloredPlotData = colorSvgs();
+        setPlotData(coloredPlotData);
 
         const categorical_traces: Figure["data"] = labels.map((label) => {
           const group = coloredPlotData.filter((d) => d.label === label);
@@ -114,19 +116,19 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
           };
         });
         setTraces(categorical_traces);
-      } else if (plotData && labelType === "continuous") {
+      } else if (parsedData && labelType === "continuous") {
         const continuous_traces: Figure["data"] = [
           {
-            x: plotData.map((d) => d.pc1),
-            y: plotData.map((d) => d.pc2),
+            x: parsedData.map((d) => d.pc1),
+            y: parsedData.map((d) => d.pc2),
             type: "scatter",
             mode: "markers",
             marker: {
-              color: plotData.map((d) => d.label),
+              color: parsedData.map((d) => d.label),
               colorbar: {},
               size: 8,
             },
-            text: plotData.map((d) => d.label.toString()),
+            text: parsedData.map((d) => d.label.toString()),
           },
         ];
 
@@ -136,7 +138,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
 
     generateTraces();
     console.log("2nd useEffect");
-  }, [labelType, plotData, setTraces, labelColumn]);
+  }, [labelType, parsedData, setTraces]);
 
   const handleRelayout = (event: Readonly<Plotly.PlotRelayoutEvent>) => {
     if (plotData) {
@@ -184,7 +186,6 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
           },
           images: newImages,
         });
-        //setZoomed(true);
       }
     }
   };
@@ -194,7 +195,6 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
       ...prev,
       images: [],
     }));
-    //setZoomed(false);
   };
 
   return (
