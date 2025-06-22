@@ -1,5 +1,15 @@
 export const apiBaseUrl = "http://localhost:8000/api";
 
+export const colorScale: [number, string][] = [
+  [0.0, "#67001f"], // dark red
+  [0.2, "#b2182b"], // red
+  [0.4, "#d6604d"], // light red
+  [0.5, "#d7d7d7"], // white (neutral center)
+  [0.6, "#4393c3"], // light blue
+  [0.8, "#2166ac"], // blue
+  [1.0, "#053061"], // dark blue
+];
+
 export const colorPalette50: string[] = [
   // 🌈 Common, distinct colors
   "#1f77b4", // blue

@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 import type { Figure } from "react-plotly.js";
-import { colorPalette50 } from "../constants";
+import { colorPalette50, colorScale } from "../constants";
+import { getColorFromScale } from "../util/colorUtil";
 
 interface DrawPlotProps {
   analyzedData: string;
@@ -27,6 +28,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
     yaxis: { title: { text: "PC2", font: { size: 20 } } },
     images: [],
   });
+  const [zoomedView, setZoomedView] = useState(false);
 
   useEffect(() => {
     const isNumber = (value: unknown) => {
@@ -38,9 +40,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
     };
 
     const parseData = (data: string) => {
-      console.log("before jsonparse");
       const objectData = JSON.parse(data);
-      console.log(objectData);
 
       const pc1 = Object.values(objectData.PC1);
       const pc2 = Object.values(objectData.PC2);
@@ -79,19 +79,25 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
   useEffect(() => {
     const generateTraces = () => {
       if (parsedData && labelType === "categorical") {
+        // Find and sort categorical labels
         const labels = [...new Set(parsedData.map((pd) => pd.label))];
+        labels.sort();
 
+        // Check that number of labels isn't over 30
         if (labels.length > 30) {
           console.log(
             `Maximum of 30 categories supported. Your number of categories: ${labels.length}`
           );
           return;
         }
+
+        // Create color palette for labels
         const labelsWithColor = Object.fromEntries(
           labels.map((key, i) => [key, colorPalette50[i]])
         );
 
-        const colorSvgs = () => {
+        // Recolor the SVG images with respect to their label
+        const colorSvgsCategorical = () => {
           const coloredPlotData = parsedData.map((pd) => {
             const color = colorPalette50[labels.indexOf(pd.label)];
             const coloredSvg = pd.svg.replace(/000000/g, color.slice(-6));
@@ -104,9 +110,10 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
           return coloredPlotData;
         };
 
-        const coloredPlotData = colorSvgs();
+        const coloredPlotData = colorSvgsCategorical();
         setPlotData(coloredPlotData);
 
+        // Define and set the traces
         const categorical_traces: Figure["data"] = labels.map((label) => {
           const group = coloredPlotData.filter((d) => d.label === label);
           return {
@@ -117,12 +124,45 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
             name: label.toString(),
             marker: {
               color: labelsWithColor[label],
-              size: 8,
+              size: zoomedView ? 0.00001 : 8,
             },
           };
         });
         setTraces(categorical_traces);
       } else if (parsedData && labelType === "continuous") {
+        // Get label values as numbers
+        const labelsAsNumber = parsedData.map((d) => Number(d.label));
+
+        // Get min and max of label values
+        const minValue = Math.min(
+          ...labelsAsNumber.filter((label) => !isNaN(label))
+        );
+        const maxValue = Math.max(
+          ...labelsAsNumber.filter((label) => !isNaN(label))
+        );
+
+        console.log(minValue, maxValue);
+
+        // Color the SVGs with respect to their label
+        const colorSvgsContinuous = () => {
+          const colorValues = labelsAsNumber.map((label) =>
+            getColorFromScale(label, minValue, maxValue, colorScale)
+          );
+
+          const coloredPlotData = parsedData.map((pd, index) => {
+            const color = colorValues[index];
+            const coloredSvg = pd.svg.replace(/000000/g, color.slice(-6));
+            return {
+              ...pd,
+              svg: coloredSvg,
+            };
+          });
+          return coloredPlotData;
+        };
+
+        const coloredPlotData = colorSvgsContinuous();
+        setPlotData(coloredPlotData);
+
         const continuous_traces: Figure["data"] = [
           {
             x: parsedData.map((d) => d.pc1),
@@ -130,9 +170,12 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
             type: "scatter",
             mode: "markers",
             marker: {
-              color: parsedData.map((d) => d.label),
+              color: labelsAsNumber,
+              colorscale: colorScale,
+              cmin: Math.min(...labelsAsNumber),
+              cmax: Math.max(...labelsAsNumber),
               colorbar: {},
-              size: 8,
+              size: zoomedView ? 0.00001 : 8,
             },
             text: parsedData.map((d) => d.label.toString()),
           },
@@ -144,7 +187,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
 
     generateTraces();
     console.log("2nd useEffect");
-  }, [labelType, parsedData, setTraces]);
+  }, [labelType, parsedData, setTraces, zoomedView]);
 
   const handleRelayout = (event: Readonly<Plotly.PlotRelayoutEvent>) => {
     if (plotData) {
@@ -163,35 +206,38 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
           (pd) => pd.pc1 >= x0 && pd.pc1 <= x1 && pd.pc2 >= y0 && pd.pc2 <= y1
         );
 
-        const newImages = zoomedData.map(
-          (pd) =>
-            ({
-              source: pd.svg,
-              x: pd.pc1,
-              y: pd.pc2,
-              sizex: 0.3,
-              sizey: 0.4,
-              xref: "x",
-              yref: "y",
-              xanchor: "center",
-              yanchor: "middle",
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            } as any) // plotly's types wouldn't accept properties that were necessary to plot the svg images...
-        );
+        if (zoomedData.length < 500) {
+          const newImages = zoomedData.map(
+            (pd) =>
+              ({
+                source: pd.svg,
+                x: pd.pc1,
+                y: pd.pc2,
+                sizex: 0.375,
+                sizey: 0.5,
+                xref: "x",
+                yref: "y",
+                xanchor: "center",
+                yanchor: "middle",
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              } as any) // plotly's types wouldn't accept properties that were necessary to plot the svg images...
+          );
 
-        setLayout({
-          width: 960,
-          height: 720,
-          xaxis: {
-            range: [x0, x1],
-            title: { text: "PC1", font: { size: 20 } },
-          },
-          yaxis: {
-            range: [y0, y1],
-            title: { text: "PC2", font: { size: 20 } },
-          },
-          images: newImages,
-        });
+          setLayout({
+            width: 960,
+            height: 720,
+            xaxis: {
+              range: [x0, x1],
+              title: { text: "PC1", font: { size: 20 } },
+            },
+            yaxis: {
+              range: [y0, y1],
+              title: { text: "PC2", font: { size: 20 } },
+            },
+            images: newImages,
+          });
+          setZoomedView(true);
+        }
       }
     }
   };
@@ -201,6 +247,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
       ...prev,
       images: [],
     }));
+    setZoomedView(false);
   };
 
   return (
