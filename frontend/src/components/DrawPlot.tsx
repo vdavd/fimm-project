@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 import type { Figure } from "react-plotly.js";
-import { hexPalette30 } from "../constants";
+import { colorPalette50 } from "../constants";
 
 interface DrawPlotProps {
   analyzedData: string;
@@ -81,13 +81,19 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
       if (parsedData && labelType === "categorical") {
         const labels = [...new Set(parsedData.map((pd) => pd.label))];
 
+        if (labels.length > 30) {
+          console.log(
+            `Maximum of 30 categories supported. Your number of categories: ${labels.length}`
+          );
+          return;
+        }
         const labelsWithColor = Object.fromEntries(
-          labels.map((key, i) => [key, hexPalette30[i]])
+          labels.map((key, i) => [key, colorPalette50[i]])
         );
 
         const colorSvgs = () => {
           const coloredPlotData = parsedData.map((pd) => {
-            const color = hexPalette30[labels.indexOf(pd.label)];
+            const color = colorPalette50[labels.indexOf(pd.label)];
             const coloredSvg = pd.svg.replace(/000000/g, color.slice(-6));
             return {
               ...pd,
