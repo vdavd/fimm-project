@@ -27,6 +27,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
     xaxis: { title: { text: "PC1", font: { size: 20 } } },
     yaxis: { title: { text: "PC2", font: { size: 20 } } },
     images: [],
+    hoverdistance: 20,
   });
   const [zoomedView, setZoomedView] = useState(false);
 
@@ -44,7 +45,9 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
 
       const pc1 = Object.values(objectData.PC1);
       const pc2 = Object.values(objectData.PC2);
-      const label = Object.values(objectData[labelColumn]);
+      const label = Object.values(objectData[labelColumn]).map((value) =>
+        value === null ? "NA" : value
+      );
       const svg = Object.values(objectData.SVG);
 
       if (
@@ -190,6 +193,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
   }, [labelType, parsedData, setTraces, zoomedView]);
 
   const handleRelayout = (event: Readonly<Plotly.PlotRelayoutEvent>) => {
+    console.log(event);
     if (plotData) {
       const x0 = event["xaxis.range[0]"];
       const x1 = event["xaxis.range[1]"];
@@ -235,6 +239,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
               title: { text: "PC2", font: { size: 20 } },
             },
             images: newImages,
+            hoverdistance: 40,
           });
           setZoomedView(true);
         }
@@ -243,11 +248,49 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
   };
 
   const handleDoubleClick = () => {
-    setLayout((prev) => ({
-      ...prev,
+    console.log("handleDoubleclick fired");
+    setLayout({
+      width: 960,
+      height: 720,
+      xaxis: { title: { text: "PC1", font: { size: 20 } } },
+      yaxis: { title: { text: "PC2", font: { size: 20 } } },
       images: [],
-    }));
+      hoverdistance: 20,
+    });
     setZoomedView(false);
+  };
+
+  const handleHover = (event: Readonly<Plotly.PlotHoverEvent>) => {
+    const x = event.points[0].x;
+    const y = event.points[0].y;
+
+    if (layout.images && zoomedView) {
+      console.log("handlehover fired");
+      const newImages = layout.images.map((image) => ({
+        ...image,
+        opacity: image.x === x && image.y === y ? 1.0 : 0.15,
+      }));
+
+      setLayout((prev) => ({
+        ...prev,
+        images: newImages,
+      }));
+    }
+  };
+
+  const handleUnhover = () => {
+    if (layout.images && zoomedView) {
+      console.log("handleUnhover fired");
+      const newImages = layout.images.map((image) => ({
+        ...image,
+        opacity: 1.0,
+      }));
+
+      setLayout((prev) => ({
+        ...prev,
+        images: newImages,
+      }));
+    }
   };
 
   return (
@@ -258,6 +301,8 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
           layout={layout}
           onRelayout={handleRelayout}
           onDoubleClick={handleDoubleClick}
+          onHover={handleHover}
+          onUnhover={handleUnhover}
           useResizeHandler
         />
       )}
