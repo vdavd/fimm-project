@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
-import type { Figure } from "react-plotly.js";
+import type { PlotParams } from "react-plotly.js";
 import { colorPalette50, colorScale } from "../constants";
 import { getColorFromScale } from "../util/colorUtil";
 
@@ -8,20 +8,27 @@ interface DrawPlotProps {
   analyzedData: string;
   labelColumn: string;
   labelType: string;
+  highlightedSmiles: string[];
 }
 
 interface PlotDataObject {
+  id: string;
   pc1: number;
   pc2: number;
   label: number | string;
   svg: string;
 }
 
-const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
+const DrawPlot = ({
+  analyzedData,
+  labelColumn,
+  labelType,
+  highlightedSmiles,
+}: DrawPlotProps) => {
   const [parsedData, setParsedData] = useState<PlotDataObject[] | null>(null);
   const [plotData, setPlotData] = useState<PlotDataObject[] | null>(null);
-  const [traces, setTraces] = useState<Figure["data"] | null>(null);
-  const [layout, setLayout] = useState<Figure["layout"]>({
+  const [traces, setTraces] = useState<PlotParams["data"] | null>(null);
+  const [layout, setLayout] = useState<PlotParams["layout"]>({
     width: 960,
     height: 720,
     xaxis: { title: { text: "PC1", font: { size: 20 } } },
@@ -43,6 +50,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
     const parseData = (data: string) => {
       const objectData = JSON.parse(data);
 
+      const id = Object.values(objectData.id).map((id) => String(id));
       const pc1 = Object.values(objectData.PC1);
       const pc2 = Object.values(objectData.PC2);
       const label = Object.values(objectData[labelColumn]).map((value) =>
@@ -51,6 +59,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
       const svg = Object.values(objectData.SVG);
 
       if (
+        id.every((value) => isString(value)) &&
         pc1.every((value) => isNumber(value)) &&
         pc2.every((value) => isNumber(value)) &&
         label.every((value) => isNumber(value) || isString(value)) &&
@@ -58,6 +67,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
       ) {
         const parsedDataObjectList = pc1.map((_value, index) => {
           return {
+            id: id[index],
             pc1: pc1[index],
             pc2: pc2[index],
             label: label[index],
@@ -80,6 +90,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
   }, [analyzedData, labelColumn]);
 
   useEffect(() => {
+    console.log(highlightedSmiles);
     const generateTraces = () => {
       if (parsedData && labelType === "categorical") {
         // Find and sort categorical labels
@@ -117,7 +128,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
         setPlotData(coloredPlotData);
 
         // Define and set the traces
-        const categorical_traces: Figure["data"] = labels.map((label) => {
+        const categorical_traces: PlotParams["data"] = labels.map((label) => {
           const group = coloredPlotData.filter((d) => d.label === label);
           return {
             x: group.map((d) => d.pc1),
@@ -127,8 +138,10 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
             name: label.toString(),
             marker: {
               color: labelsWithColor[label],
-              size: zoomedView ? 0.00001 : 8,
+              size: 8,
+              opacity: zoomedView ? 0 : 1,
             },
+            showlegend: true,
           };
         });
         setTraces(categorical_traces);
@@ -166,7 +179,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
         const coloredPlotData = colorSvgsContinuous();
         setPlotData(coloredPlotData);
 
-        const continuous_traces: Figure["data"] = [
+        const continuous_traces: PlotParams["data"] = [
           {
             x: parsedData.map((d) => d.pc1),
             y: parsedData.map((d) => d.pc2),
@@ -177,7 +190,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
               colorscale: colorScale,
               cmin: Math.min(...labelsAsNumber),
               cmax: Math.max(...labelsAsNumber),
-              colorbar: {},
+              colorbar: { title: { text: labelColumn, font: { size: 16 } } },
               size: zoomedView ? 0.00001 : 8,
             },
             text: parsedData.map((d) => d.label.toString()),
@@ -190,7 +203,14 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
 
     generateTraces();
     console.log("2nd useEffect");
-  }, [labelType, parsedData, setTraces, zoomedView]);
+  }, [
+    labelType,
+    parsedData,
+    setTraces,
+    zoomedView,
+    labelColumn,
+    highlightedSmiles,
+  ]);
 
   const handleRelayout = (event: Readonly<Plotly.PlotRelayoutEvent>) => {
     console.log(event);
@@ -217,8 +237,8 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
                 source: pd.svg,
                 x: pd.pc1,
                 y: pd.pc2,
-                sizex: 0.375,
-                sizey: 0.5,
+                sizex: highlightedSmiles.includes(pd.id) ? 1.8 : 0.375,
+                sizey: highlightedSmiles.includes(pd.id) ? 2.4 : 0.5,
                 xref: "x",
                 yref: "y",
                 xanchor: "center",
@@ -274,6 +294,7 @@ const DrawPlot = ({ analyzedData, labelColumn, labelType }: DrawPlotProps) => {
       setLayout((prev) => ({
         ...prev,
         images: newImages,
+        layer: "above",
       }));
     }
   };

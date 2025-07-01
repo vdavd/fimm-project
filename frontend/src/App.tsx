@@ -8,10 +8,12 @@ import LabelTypeSelect from "./components/LabelTypeSelect";
 
 const App = () => {
   const [file, setFile] = useState<File | null>(null);
+  const [parsedFile, setParsedFile] = useState("");
   const [analyzedData, setAnalyzedData] = useState("");
   const [smilesColumn, setSmilesColumn] = useState("");
   const [labelColumn, setLabelColumn] = useState("");
   const [labelType, setLabelType] = useState("");
+  const [highlightedSmiles, setHighlightedSmiles] = useState<string[]>([]);
 
   return (
     <div>
@@ -59,18 +61,22 @@ const App = () => {
                 file={file}
                 smilesColumn={smilesColumn}
                 labelColumn={labelColumn}
+                setParsedFile={setParsedFile}
                 setSmilesColumn={setSmilesColumn}
                 setLabelColumn={setLabelColumn}
+                setHighlightedSmiles={setHighlightedSmiles}
               />
               <LabelTypeSelect
                 labelType={labelType}
                 setLabelType={setLabelType}
               />
-              <UploadFile
-                file={file}
-                smilesColumn={smilesColumn}
-                setAnalyzedData={setAnalyzedData}
-              />
+              {parsedFile && smilesColumn && (
+                <UploadFile
+                  parsedFile={parsedFile}
+                  smilesColumn={smilesColumn}
+                  setAnalyzedData={setAnalyzedData}
+                />
+              )}
             </Paper>
           )}
 
@@ -89,6 +95,7 @@ const App = () => {
                 analyzedData={analyzedData}
                 labelColumn={labelColumn}
                 labelType={labelType}
+                highlightedSmiles={highlightedSmiles}
               />
             </Paper>
           )}

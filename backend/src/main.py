@@ -1,4 +1,5 @@
 import pandas as pd
+from io import StringIO
 from typing import Annotated
 from fastapi import FastAPI, UploadFile, Form, File
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,8 +22,8 @@ def root():
     return {"message": "Hello World"}
 
 @app.post("/api/data")
-def process_data(csv_data: Annotated[UploadFile, File()], smiles_column: Annotated[str, Form()]):
-    df = pd.read_csv(csv_data.file)
+def process_data(csv_data: Annotated[str, Form()], smiles_column: Annotated[str, Form()]):
+    df = pd.read_csv(StringIO(csv_data))
 
     df = df.reset_index(drop=True)
     
