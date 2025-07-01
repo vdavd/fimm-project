@@ -90,7 +90,6 @@ const DrawPlot = ({
   }, [analyzedData, labelColumn]);
 
   useEffect(() => {
-    console.log(highlightedSmiles);
     const generateTraces = () => {
       if (parsedData && labelType === "categorical") {
         // Find and sort categorical labels
@@ -127,6 +126,27 @@ const DrawPlot = ({
         const coloredPlotData = colorSvgsCategorical();
         setPlotData(coloredPlotData);
 
+        const highlightedData = parsedData.filter((d) =>
+          highlightedSmiles.includes(d.id)
+        );
+        const highlightedTraces: PlotParams["data"] = [
+          {
+            x: highlightedData.map((d) => d.pc1),
+            y: highlightedData.map((d) => d.pc2),
+            type: "scatter",
+            mode: "markers",
+            marker: {
+              size: 18,
+              color: "rgba(0,0,0,0)", // transparent fill
+              line: {
+                width: 2,
+                color: "red", // outline color
+              },
+            },
+            showlegend: false,
+          },
+        ];
+
         // Define and set the traces
         const categorical_traces: PlotParams["data"] = labels.map((label) => {
           const group = coloredPlotData.filter((d) => d.label === label);
@@ -144,7 +164,7 @@ const DrawPlot = ({
             showlegend: true,
           };
         });
-        setTraces(categorical_traces);
+        setTraces(categorical_traces.concat(highlightedTraces));
       } else if (parsedData && labelType === "continuous") {
         // Get label values as numbers
         const labelsAsNumber = parsedData.map((d) => Number(d.label));
@@ -193,11 +213,33 @@ const DrawPlot = ({
               colorbar: { title: { text: labelColumn, font: { size: 16 } } },
               size: zoomedView ? 0.00001 : 8,
             },
+            showlegend: false,
             text: parsedData.map((d) => d.label.toString()),
           },
         ];
 
-        setTraces(continuous_traces);
+        const highlightedData = parsedData.filter((d) =>
+          highlightedSmiles.includes(d.id)
+        );
+        const highlightedTraces: PlotParams["data"] = [
+          {
+            x: highlightedData.map((d) => d.pc1),
+            y: highlightedData.map((d) => d.pc2),
+            type: "scatter",
+            mode: "markers",
+            marker: {
+              size: 18,
+              color: "rgba(0,0,0,0)", // transparent fill
+              line: {
+                width: 2,
+                color: "red", // outline color
+              },
+            },
+            showlegend: false,
+          },
+        ];
+
+        setTraces(continuous_traces.concat(highlightedTraces));
       }
     };
 
@@ -237,8 +279,8 @@ const DrawPlot = ({
                 source: pd.svg,
                 x: pd.pc1,
                 y: pd.pc2,
-                sizex: highlightedSmiles.includes(pd.id) ? 1.8 : 0.375,
-                sizey: highlightedSmiles.includes(pd.id) ? 2.4 : 0.5,
+                sizex: 0.375,
+                sizey: 0.5,
                 xref: "x",
                 yref: "y",
                 xanchor: "center",
