@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
 import type { PlotParams } from "react-plotly.js";
+import type { Image } from "plotly.js";
 import { colorPalette50, colorScale } from "../constants";
-import { getColorFromScale } from "../util/colorUtil";
+import { generateOutlineCircleSVG, getColorFromScale } from "../util/svgUtil";
 
 interface DrawPlotProps {
   analyzedData: string;
@@ -136,14 +137,15 @@ const DrawPlot = ({
             type: "scatter",
             mode: "markers",
             marker: {
-              size: 18,
-              color: "rgba(0,0,0,0)", // transparent fill
+              size: zoomedView ? 0.00001 : 18,
+              color: "rgba(0,0,0,0)",
               line: {
                 width: 2,
-                color: "red", // outline color
+                color: "black",
               },
             },
             showlegend: false,
+            hoverinfo: "skip",
           },
         ];
 
@@ -228,14 +230,15 @@ const DrawPlot = ({
             type: "scatter",
             mode: "markers",
             marker: {
-              size: 18,
+              size: zoomedView ? 0.00001 : 18,
               color: "rgba(0,0,0,0)", // transparent fill
               line: {
                 width: 2,
-                color: "red", // outline color
+                color: "black", // outline color
               },
             },
             showlegend: false,
+            hoverinfo: "skip",
           },
         ];
 
@@ -255,7 +258,6 @@ const DrawPlot = ({
   ]);
 
   const handleRelayout = (event: Readonly<Plotly.PlotRelayoutEvent>) => {
-    console.log(event);
     if (plotData) {
       const x0 = event["xaxis.range[0]"];
       const x1 = event["xaxis.range[1]"];
@@ -273,21 +275,34 @@ const DrawPlot = ({
         );
 
         if (zoomedData.length < 500) {
-          const newImages = zoomedData.map(
-            (pd) =>
-              ({
-                source: pd.svg,
-                x: pd.pc1,
-                y: pd.pc2,
-                sizex: 0.375,
-                sizey: 0.5,
-                xref: "x",
-                yref: "y",
-                xanchor: "center",
-                yanchor: "middle",
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              } as any) // plotly's types wouldn't accept properties that were necessary to plot the svg images...
-          );
+          const molecularImages: Partial<Image>[] = zoomedData.map((pd) => ({
+            source: pd.svg,
+            x: pd.pc1,
+            y: pd.pc2,
+            sizex: 0.375,
+            sizey: 0.5,
+            xref: "x",
+            yref: "y",
+            xanchor: "center",
+            yanchor: "middle",
+          }));
+
+          const svgCircles: Partial<Image>[] = zoomedData
+            .filter((d) => highlightedSmiles.includes(d.id))
+            .map((pd) => ({
+              source: generateOutlineCircleSVG("black", 1.5),
+              x: pd.pc1,
+              y: pd.pc2,
+              sizex: 0.375,
+              sizey: 0.5,
+              xref: "x",
+              yref: "y",
+              xanchor: "center",
+              yanchor: "middle",
+              layer: "below",
+            }));
+
+          const newImages = molecularImages.concat(svgCircles);
 
           setLayout({
             width: 960,

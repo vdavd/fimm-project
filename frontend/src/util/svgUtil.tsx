@@ -35,3 +35,15 @@ export const getColorFromScale = (
   }
   return "#000000"; // fallback
 };
+
+export const generateOutlineCircleSVG = (color: string, scale = 1) => {
+  const radius = 10 * scale;
+  return `data:image/svg+xml;base64,${btoa(`
+    <svg xmlns="http://www.w3.org/2000/svg" width="${2 * radius}" height="${
+    2 * radius
+  }" viewBox='0 0 ${2 * radius} ${2 * radius}'>
+      <circle cx="${radius}" cy="${radius}" r="${
+    radius - 1
+  }" fill="none" stroke="${color}" stroke-width="1" />
+    </svg>`)}`;
+};
