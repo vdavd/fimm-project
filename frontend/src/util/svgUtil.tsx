@@ -36,14 +36,25 @@ export const getColorFromScale = (
   return "#000000"; // fallback
 };
 
-export const generateOutlineCircleSVG = (color: string, scale = 1) => {
-  const radius = 10 * scale;
+export const generateOutlineCircleSVG = (color: string) => {
   return `data:image/svg+xml;base64,${btoa(`
-    <svg xmlns="http://www.w3.org/2000/svg" width="${2 * radius}" height="${
-    2 * radius
-  }" viewBox='0 0 ${2 * radius} ${2 * radius}'>
-      <circle cx="${radius}" cy="${radius}" r="${
-    radius - 1
-  }" fill="none" stroke="${color}" stroke-width="1" />
-    </svg>`)}`;
+  <svg width="250" height="250" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="12" result="blurred"/>
+    </filter>
+  </defs>
+
+  <circle cx="125" cy="125" r="100" fill="${color}" filter="url(#softGlow)" fill-opacity="0.3"/>
+</svg>`)}`;
+
+  //const radius = 10 * scale;
+  //return `data:image/svg+xml;base64,${btoa(`
+  //  <svg xmlns="http://www.w3.org/2000/svg" width="${2 * radius}" height="${
+  //  2 * radius
+  //}" viewBox='0 0 ${2 * radius} ${2 * radius}'>
+  //    <circle cx="${radius}" cy="${radius}" r="${
+  //  radius - 1
+  //}" fill="none" stroke="${color}" stroke-width="1" />
+  //  </svg>`)}`;
 };

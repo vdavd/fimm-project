@@ -290,7 +290,7 @@ const DrawPlot = ({
           const svgCircles: Partial<Image>[] = zoomedData
             .filter((d) => highlightedSmiles.includes(d.id))
             .map((pd) => ({
-              source: generateOutlineCircleSVG("black", 1.5),
+              source: generateOutlineCircleSVG("blue"),
               x: pd.pc1,
               y: pd.pc2,
               sizex: 0.375,
