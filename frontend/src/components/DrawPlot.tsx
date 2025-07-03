@@ -18,6 +18,7 @@ interface PlotDataObject {
   pc2: number;
   label: number | string;
   svg: string;
+  color: string;
 }
 
 const DrawPlot = ({
@@ -73,6 +74,7 @@ const DrawPlot = ({
             pc2: pc2[index],
             label: label[index],
             svg: svg[index],
+            color: "#000000",
           };
         });
         setParsedData(parsedDataObjectList);
@@ -118,6 +120,7 @@ const DrawPlot = ({
             return {
               ...pd,
               svg: coloredSvg,
+              color: color,
             };
           });
 
@@ -193,6 +196,7 @@ const DrawPlot = ({
             return {
               ...pd,
               svg: coloredSvg,
+              color: color,
             };
           });
           return coloredPlotData;
@@ -290,7 +294,7 @@ const DrawPlot = ({
           const svgCircles: Partial<Image>[] = zoomedData
             .filter((d) => highlightedSmiles.includes(d.id))
             .map((pd) => ({
-              source: generateOutlineCircleSVG("blue"),
+              source: generateOutlineCircleSVG(pd.color),
               x: pd.pc1,
               y: pd.pc2,
               sizex: 0.375,
