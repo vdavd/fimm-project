@@ -5,6 +5,7 @@ import DrawPlot from "./components/DrawPlot";
 import ColumnSelect from "./components/ColumnSelect";
 import SelectFile from "./components/SelectFile";
 import LabelTypeSelect from "./components/LabelTypeSelect";
+import type { LabelType } from "./types";
 
 const App = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -12,7 +13,7 @@ const App = () => {
   const [analyzedData, setAnalyzedData] = useState("");
   const [smilesColumn, setSmilesColumn] = useState("");
   const [labelColumn, setLabelColumn] = useState("");
-  const [labelType, setLabelType] = useState("");
+  const [labelType, setLabelType] = useState<LabelType>("");
   const [highlightedSmiles, setHighlightedSmiles] = useState<string[]>([]);
 
   return (
@@ -64,6 +65,7 @@ const App = () => {
                 setParsedFile={setParsedFile}
                 setSmilesColumn={setSmilesColumn}
                 setLabelColumn={setLabelColumn}
+                setLabelType={setLabelType}
                 setHighlightedSmiles={setHighlightedSmiles}
               />
               <LabelTypeSelect

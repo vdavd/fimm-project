@@ -11,6 +11,7 @@ import {
 import type { SelectChangeEvent } from "@mui/material";
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
+import type { LabelType } from "../types";
 
 interface ColumnSelectProps {
   file: File | null;
@@ -19,6 +20,7 @@ interface ColumnSelectProps {
   setParsedFile: (parsedFile: string) => void;
   setSmilesColumn: (smilesColumn: string) => void;
   setLabelColumn: (labelcolumn: string) => void;
+  setLabelType: (labelType: LabelType) => void;
   setHighlightedSmiles: (highLightedSmiles: string[]) => void;
 }
 
@@ -29,6 +31,7 @@ const ColumnSelect = ({
   setParsedFile,
   setSmilesColumn,
   setLabelColumn,
+  setLabelType,
   setHighlightedSmiles,
 }: ColumnSelectProps) => {
   const [rows, setRows] = useState<object[]>([]);
@@ -56,20 +59,42 @@ const ColumnSelect = ({
             setColumns(colsWithID);
             setParsedFile(Papa.unparse(dataWithIds));
           }
+          // look for a smiles column in the data and automaticlly set it if found
+          const smilesColumnCandidates = columns.filter((column) =>
+            column.toLowerCase().includes("smiles")
+          );
+          if (smilesColumnCandidates.length !== 0) {
+            setSmilesColumn(smilesColumnCandidates[0]);
+          }
         },
         header: true,
         skipEmptyLines: true,
       });
     }
-  }, [file, setParsedFile]);
+  }, [file, setParsedFile, setSmilesColumn]);
 
   const handleSmilesColumnChange = (event: SelectChangeEvent) => {
-    setSmilesColumn(event.target.value);
+    const selectedColumn = event.target.value;
+    setSmilesColumn(selectedColumn);
   };
 
   const handleLabelColumnChange = (event: SelectChangeEvent) => {
+    const selectedColumn = event.target.value;
     setLabelColumn(event.target.value);
-    console.log(labelColumn);
+
+    // use number of unique values to guess whether the label is continuous or categorical
+    const columnValues = rows.map(
+      (row) => row[selectedColumn as keyof typeof row]
+    );
+    const uniqueValues = [...new Set(columnValues)];
+    if (
+      uniqueValues.length / columnValues.length < 0.1 &&
+      uniqueValues.length <= 20
+    ) {
+      setLabelType("categorical");
+    } else {
+      setLabelType("continuous");
+    }
   };
 
   const handleHighlightSelectionChange = (selection: GridRowSelectionModel) => {

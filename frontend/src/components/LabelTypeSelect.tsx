@@ -5,15 +5,24 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
+import type { LabelType } from "../types";
 
 interface LabelTypeSelectProps {
-  labelType: string;
-  setLabelType: (labelType: string) => void;
+  labelType: LabelType;
+  setLabelType: (labelType: LabelType) => void;
 }
 
 const LabelTypeSelect = ({ labelType, setLabelType }: LabelTypeSelectProps) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setLabelType((event.target as HTMLInputElement).value);
+    const labelTypeValue = (event.target as HTMLInputElement).value;
+
+    const isLabelType = (value: string): value is LabelType => {
+      return value === "categorical" || value === "continuous" || value === "";
+    };
+
+    if (isLabelType(labelTypeValue)) {
+      setLabelType(labelTypeValue);
+    }
   };
 
   return (
