@@ -167,6 +167,7 @@ const DrawPlot = ({
               opacity: zoomedView ? 0 : 1,
             },
             showlegend: true,
+            hoverinfo: "none",
           };
         });
         setTraces(categorical_traces.concat(highlightedTraces));
@@ -220,7 +221,7 @@ const DrawPlot = ({
               size: zoomedView ? 0.00001 : 8,
             },
             showlegend: false,
-            text: parsedData.map((d) => d.label.toString()),
+            hoverinfo: "none",
           },
         ];
 
@@ -235,10 +236,10 @@ const DrawPlot = ({
             mode: "markers",
             marker: {
               size: zoomedView ? 0.00001 : 18,
-              color: "rgba(0,0,0,0)", // transparent fill
+              color: "rgba(0,0,0,0)",
               line: {
                 width: 2,
-                color: "black", // outline color
+                color: "black",
               },
             },
             showlegend: false,
