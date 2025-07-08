@@ -37,6 +37,11 @@ const DrawPlot = ({
     yaxis: { title: { text: "PC2", font: { size: 20 } } },
     images: [],
     hoverdistance: 20,
+    legend: {
+      title: {
+        text: labelColumn,
+      },
+    },
   });
   const [zoomedView, setZoomedView] = useState(false);
 

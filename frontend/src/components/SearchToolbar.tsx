@@ -51,18 +51,4 @@ const SearchToolbar = () => {
   );
 };
 
-//return (
-//  <Toolbar>
-//    <TextField
-//      variant="outlined"
-//      size="small"
-//      placeholder="Search…"
-//      value={searchText}
-//      onChange={handleSearch}
-//      sx={{ mb: 2 }}
-//      //fullWidth
-//    />
-//  </Toolbar>
-//);
-
 export default SearchToolbar;
