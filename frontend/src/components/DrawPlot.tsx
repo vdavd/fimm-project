@@ -4,6 +4,7 @@ import type { PlotParams } from "react-plotly.js";
 import type { Image } from "plotly.js";
 import { colorPalette50, colorScale } from "../constants";
 import { generateOutlineCircleSVG, getColorFromScale } from "../util/svgUtil";
+import { Box, Slider, Typography } from "@mui/material";
 
 interface DrawPlotProps {
   analyzedData: string;
@@ -44,6 +45,7 @@ const DrawPlot = ({
     },
   });
   const [zoomedView, setZoomedView] = useState(false);
+  const [moleculeSize, setMoleculeSize] = useState(0.5);
 
   useEffect(() => {
     const isNumber = (value: unknown) => {
@@ -285,8 +287,8 @@ const DrawPlot = ({
             source: pd.svg,
             x: pd.pc1,
             y: pd.pc2,
-            sizex: 0.375,
-            sizey: 0.5,
+            sizex: moleculeSize * 0.75,
+            sizey: moleculeSize,
             xref: "x",
             yref: "y",
             xanchor: "center",
@@ -299,8 +301,8 @@ const DrawPlot = ({
               source: generateOutlineCircleSVG(pd.color),
               x: pd.pc1,
               y: pd.pc2,
-              sizex: 0.375,
-              sizey: 0.5,
+              sizex: moleculeSize * 0.75,
+              sizey: moleculeSize,
               xref: "x",
               yref: "y",
               xanchor: "center",
@@ -310,20 +312,11 @@ const DrawPlot = ({
 
           const newImages = molecularImages.concat(svgCircles);
 
-          setLayout({
-            width: 960,
-            height: 720,
-            xaxis: {
-              range: [x0, x1],
-              title: { text: "PC1", font: { size: 20 } },
-            },
-            yaxis: {
-              range: [y0, y1],
-              title: { text: "PC2", font: { size: 20 } },
-            },
+          setLayout((prev) => ({
+            ...prev,
             images: newImages,
             hoverdistance: 40,
-          });
+          }));
           setZoomedView(true);
         }
       }
@@ -331,15 +324,13 @@ const DrawPlot = ({
   };
 
   const handleDoubleClick = () => {
-    setLayout({
-      width: 960,
-      height: 720,
-      xaxis: { title: { text: "PC1", font: { size: 20 } } },
-      yaxis: { title: { text: "PC2", font: { size: 20 } } },
+    setLayout((prev) => ({
+      ...prev,
       images: [],
       hoverdistance: 20,
-    });
+    }));
     setZoomedView(false);
+    setMoleculeSize(0.5);
   };
 
   const handleHover = (event: Readonly<Plotly.PlotHoverEvent>) => {
@@ -374,18 +365,48 @@ const DrawPlot = ({
     }
   };
 
+  const handleMoleculeSizeChange = (_event: Event, newValue: number) => {
+    setMoleculeSize(newValue);
+    if (layout.images) {
+      const newImages = layout.images.map((image) => ({
+        ...image,
+        sizex: newValue * 0.75,
+        sizey: newValue,
+      }));
+
+      setLayout((prev) => ({
+        ...prev,
+        images: newImages,
+      }));
+    }
+  };
+
   return (
     <div>
       {plotData && traces && (
-        <Plot
-          data={traces}
-          layout={layout}
-          onRelayout={handleRelayout}
-          onDoubleClick={handleDoubleClick}
-          onHover={handleHover}
-          onUnhover={handleUnhover}
-          useResizeHandler
-        />
+        <>
+          <Box sx={{ width: 250 }}>
+            <Typography>Molecule size</Typography>
+            <Slider
+              value={moleculeSize}
+              defaultValue={0.5}
+              min={0.05}
+              max={1.0}
+              step={0.005}
+              onChange={handleMoleculeSizeChange}
+              disabled={!zoomedView}
+            />
+          </Box>
+          <Plot
+            data={traces}
+            layout={layout}
+            onRelayout={handleRelayout}
+            onDoubleClick={handleDoubleClick}
+            onHover={handleHover}
+            onUnhover={handleUnhover}
+            useResizeHandler
+          />
+        </>
       )}
     </div>
   );
