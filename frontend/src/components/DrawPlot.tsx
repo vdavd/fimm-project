@@ -89,7 +89,6 @@ const DrawPlot = ({
         setParsedData(parsedPlotData);
       }
     }
-    console.log("1st useEffect");
   }, [analyzedData, labelColumn]);
 
   useEffect(() => {
@@ -183,8 +182,6 @@ const DrawPlot = ({
           ...labelsAsNumber.filter((label) => !isNaN(label))
         );
 
-        console.log(minValue, maxValue);
-
         // Color the SVGs with respect to their label
         const colorSvgsContinuous = () => {
           const colorValues = labelsAsNumber.map((label) =>
@@ -252,7 +249,6 @@ const DrawPlot = ({
     };
 
     generateTraces();
-    console.log("2nd useEffect");
   }, [
     labelType,
     parsedData,
@@ -330,7 +326,6 @@ const DrawPlot = ({
   };
 
   const handleDoubleClick = () => {
-    console.log("handleDoubleclick fired");
     setLayout({
       width: 960,
       height: 720,
@@ -347,7 +342,6 @@ const DrawPlot = ({
     const y = event.points[0].y;
 
     if (layout.images && zoomedView) {
-      console.log("handlehover fired");
       const newImages = layout.images.map((image) => ({
         ...image,
         opacity: image.x === x && image.y === y ? 1.0 : 0.15,
@@ -363,7 +357,6 @@ const DrawPlot = ({
 
   const handleUnhover = () => {
     if (layout.images && zoomedView) {
-      console.log("handleUnhover fired");
       const newImages = layout.images.map((image) => ({
         ...image,
         opacity: 1.0,

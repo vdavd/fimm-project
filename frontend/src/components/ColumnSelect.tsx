@@ -1,4 +1,8 @@
-import { DataGrid } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GRID_CHECKBOX_SELECTION_COL_DEF,
+  useGridApiRef,
+} from "@mui/x-data-grid";
 import type { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
 import {
   Box,
@@ -12,6 +16,7 @@ import type { SelectChangeEvent } from "@mui/material";
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
 import type { LabelType } from "../types";
+import SearchToolbar from "./SearchToolbar";
 
 interface ColumnSelectProps {
   file: File | null;
@@ -37,6 +42,8 @@ const ColumnSelect = ({
   const [rows, setRows] = useState<object[]>([]);
   const [columns, setColumns] = useState<string[]>([]);
 
+  const gridApiRef = useGridApiRef();
+
   useEffect(() => {
     if (file != null) {
       Papa.parse(file, {
@@ -55,7 +62,6 @@ const ColumnSelect = ({
             }));
             setRows(dataWithIds);
             const colsWithID = ["id", ...columns];
-            console.log(colsWithID);
             setColumns(colsWithID);
             setParsedFile(Papa.unparse(dataWithIds));
           }
@@ -72,6 +78,15 @@ const ColumnSelect = ({
       });
     }
   }, [file, setParsedFile, setSmilesColumn]);
+
+  useEffect(() => {
+    if (gridApiRef.current) {
+      gridApiRef.current.setRowSelectionModel({
+        type: "include",
+        ids: new Set(),
+      });
+    }
+  }, [rows, gridApiRef]);
 
   const handleSmilesColumnChange = (event: SelectChangeEvent) => {
     const selectedColumn = event.target.value;
@@ -114,16 +129,31 @@ const ColumnSelect = ({
     };
   });
 
+  const gridColumnsCheckboxSelection: GridColDef[] = [
+    {
+      ...GRID_CHECKBOX_SELECTION_COL_DEF,
+      headerName: "Highlight",
+      description: "Select molecules to highlight",
+    },
+    ...gridColumns,
+  ];
+
   return (
     <>
       <Typography variant="h6">{file?.name}</Typography>
       <DataGrid
+        apiRef={gridApiRef}
         sx={{ my: 2 }}
         rows={rows}
-        columns={gridColumns}
+        columns={gridColumnsCheckboxSelection}
         initialState={{ pagination: { paginationModel: { pageSize: 5 } } }}
+        slots={{
+          toolbar: SearchToolbar,
+        }}
         showToolbar
         checkboxSelection
+        keepNonExistentRowsSelected
+        disableRowSelectionOnClick
         onRowSelectionModelChange={handleHighlightSelectionChange}
         localeText={{ checkboxSelectionHeaderName: "Highlight" }}
       />

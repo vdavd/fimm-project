@@ -72,7 +72,7 @@ const App = () => {
                 labelType={labelType}
                 setLabelType={setLabelType}
               />
-              {parsedFile && smilesColumn && (
+              {parsedFile && smilesColumn && labelColumn && labelType && (
                 <UploadFile
                   parsedFile={parsedFile}
                   smilesColumn={smilesColumn}
