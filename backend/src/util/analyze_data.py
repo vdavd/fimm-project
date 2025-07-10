@@ -4,6 +4,7 @@ from rdkit.Chem import AllChem, MolFromSmiles, Draw
 from rdkit import DataStructs
 from sklearn.decomposition import PCA
 import urllib.parse
+import umap
 
 def remove_missing_smiles(df: pd.DataFrame, smiles_column: str):
     df_without_na = df.dropna(subset=[smiles_column])
@@ -54,6 +55,18 @@ def perform_pca(fingerprint_df: pd.DataFrame):
 
     return principal_df
 
+def perform_umap(fingerprint_df: pd.DataFrame):
+    print("performing umap...")
+    reducer = umap.UMAP(n_neighbors=100)
+
+    # Perform UMAP
+    embedding = reducer.fit_transform(fingerprint_df)
+
+    # Convert the results to a DataFrame
+    principal_df = pd.DataFrame(data=embedding, columns=['PC1', 'PC2'])
+
+    return principal_df
+
 def mol_to_svg_uri(mol, width=200, height=200):
     try:
         if mol is None:
@@ -78,7 +91,7 @@ def generate_svgs(df: pd.DataFrame):
 
     return pd.DataFrame({'SVG': svg_images })
 
-def analyze_data(df: pd.DataFrame, smiles_column: str):
+def analyze_data(df: pd.DataFrame, smiles_column: str, dim_red_method: str):
     # Remove missing values from SMILES column
 
     df_without_na = remove_missing_smiles(df, smiles_column)
@@ -91,8 +104,12 @@ def analyze_data(df: pd.DataFrame, smiles_column: str):
     # Generate Morgan fingerprints
     fingerprint_df = generate_fingerprints(df_with_mols)
 
-    # Perform PCA on fingerprints
-    principal_df = perform_pca(fingerprint_df)
+    if dim_red_method == "PCA":
+        # Perform PCA on fingerprints
+        principal_df = perform_pca(fingerprint_df)
+
+    elif dim_red_method == "UMAP":
+        principal_df = perform_umap(fingerprint_df)
 
     # Concatenate PCA results with df containing other data
     final_df = pd.concat([df_with_svg, principal_df], axis=1)

@@ -5,7 +5,8 @@ import DrawPlot from "./components/DrawPlot";
 import ColumnSelect from "./components/ColumnSelect";
 import SelectFile from "./components/SelectFile";
 import LabelTypeSelect from "./components/LabelTypeSelect";
-import type { LabelType } from "./types";
+import type { DimRedMethodType, LabelType } from "./types";
+import DimRedMethodSelect from "./components/DimRedMethodSelect";
 
 const App = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -15,6 +16,7 @@ const App = () => {
   const [labelColumn, setLabelColumn] = useState("");
   const [labelType, setLabelType] = useState<LabelType>("");
   const [highlightedSmiles, setHighlightedSmiles] = useState<string[]>([]);
+  const [dimRedMethod, setDimRedMethod] = useState<DimRedMethodType>("PCA");
 
   return (
     <div>
@@ -72,11 +74,16 @@ const App = () => {
                 labelType={labelType}
                 setLabelType={setLabelType}
               />
+              <DimRedMethodSelect
+                dimRedMethod={dimRedMethod}
+                setDimRedMethod={setDimRedMethod}
+              />
               {parsedFile && smilesColumn && labelColumn && labelType && (
                 <UploadFile
                   parsedFile={parsedFile}
                   smilesColumn={smilesColumn}
                   setAnalyzedData={setAnalyzedData}
+                  dimRedMethod={dimRedMethod}
                 />
               )}
             </Paper>
