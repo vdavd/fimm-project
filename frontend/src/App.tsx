@@ -105,6 +105,7 @@ const App = () => {
                 labelColumn={labelColumn}
                 labelType={labelType}
                 highlightedSmiles={highlightedSmiles}
+                dimRedMethod={dimRedMethod}
               />
             </Paper>
           )}

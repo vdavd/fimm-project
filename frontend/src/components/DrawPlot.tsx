@@ -5,12 +5,14 @@ import type { Image } from "plotly.js";
 import { colorPalette50, colorScale } from "../constants";
 import { generateOutlineCircleSVG, getColorFromScale } from "../util/svgUtil";
 import { Box, Slider, Typography } from "@mui/material";
+import type { DimRedMethodType } from "../types";
 
 interface DrawPlotProps {
   analyzedData: string;
   labelColumn: string;
   labelType: string;
   highlightedSmiles: string[];
+  dimRedMethod: DimRedMethodType;
 }
 
 interface PlotDataObject {
@@ -27,6 +29,7 @@ const DrawPlot = ({
   labelColumn,
   labelType,
   highlightedSmiles,
+  dimRedMethod,
 }: DrawPlotProps) => {
   const [parsedData, setParsedData] = useState<PlotDataObject[] | null>(null);
   const [plotData, setPlotData] = useState<PlotDataObject[] | null>(null);
@@ -34,8 +37,18 @@ const DrawPlot = ({
   const [layout, setLayout] = useState<PlotParams["layout"]>({
     width: 960,
     height: 720,
-    xaxis: { title: { text: "PC1", font: { size: 20 } } },
-    yaxis: { title: { text: "PC2", font: { size: 20 } } },
+    xaxis: {
+      title: {
+        text: dimRedMethod === "PCA" ? "PC1" : "UMAP1",
+        font: { size: 20 },
+      },
+    },
+    yaxis: {
+      title: {
+        text: dimRedMethod === "PCA" ? "PC2" : "UMAP2",
+        font: { size: 20 },
+      },
+    },
     images: [],
     hoverdistance: 20,
     legend: {
@@ -97,6 +110,25 @@ const DrawPlot = ({
       }
     }
   }, [analyzedData, labelColumn]);
+
+  // Set x and y axis titles when analyzed data changes
+  useEffect(() => {
+    setLayout((prev) => ({
+      ...prev,
+      xaxis: {
+        title: {
+          text: dimRedMethod === "PCA" ? "PC1" : "UMAP1",
+          font: { size: 20 },
+        },
+      },
+      yaxis: {
+        title: {
+          text: dimRedMethod === "PCA" ? "PC2" : "UMAP2",
+          font: { size: 20 },
+        },
+      },
+    }));
+  }, [analyzedData]);
 
   useEffect(() => {
     const generateTraces = () => {
