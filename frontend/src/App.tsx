@@ -5,8 +5,9 @@ import DrawPlot from "./components/DrawPlot";
 import ColumnSelect from "./components/ColumnSelect";
 import SelectFile from "./components/SelectFile";
 import LabelTypeSelect from "./components/LabelTypeSelect";
-import type { DimRedMethodType, LabelType } from "./types";
+import type { FingerPrintTypeType, DimRedMethodType, LabelType } from "./types";
 import DimRedMethodSelect from "./components/DimRedMethodSelect";
+import FingerPrintTypeSelect from "./components/FingerPrinttypeSelect";
 
 const App = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -17,6 +18,8 @@ const App = () => {
   const [labelType, setLabelType] = useState<LabelType>("");
   const [highlightedSmiles, setHighlightedSmiles] = useState<string[]>([]);
   const [dimRedMethod, setDimRedMethod] = useState<DimRedMethodType>("PCA");
+  const [fingerPrintType, setFingerPrintType] =
+    useState<FingerPrintTypeType>("Morgan");
 
   return (
     <div>
@@ -78,12 +81,17 @@ const App = () => {
                 dimRedMethod={dimRedMethod}
                 setDimRedMethod={setDimRedMethod}
               />
+              <FingerPrintTypeSelect
+                fingerPrintType={fingerPrintType}
+                setFingerPrintType={setFingerPrintType}
+              />
               {parsedFile && smilesColumn && labelColumn && labelType && (
                 <UploadFile
                   parsedFile={parsedFile}
                   smilesColumn={smilesColumn}
                   setAnalyzedData={setAnalyzedData}
                   dimRedMethod={dimRedMethod}
+                  fingerPrintType={fingerPrintType}
                 />
               )}
             </Paper>

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from rdkit.Chem import AllChem, MolFromSmiles, Draw
+from rdkit.Chem import AllChem, MolFromSmiles, Draw, MACCSkeys
 from rdkit import DataStructs
 from sklearn.decomposition import PCA
 import urllib.parse
@@ -27,19 +27,39 @@ def generate_mols(df: pd.DataFrame, smiles_column: str):
 
     return valid_mols_df
 
-def generate_fingerprints(df: pd.DataFrame):
+def generate_fingerprints(df: pd.DataFrame, fingerprint_type: str):
     fingerprints = []
 
-    fingerprint_generator = AllChem.GetMorganGenerator(radius=2) 
-    print('generating fingerprints...')
-    for mol in df['mol']:
-        fingerprint = fingerprint_generator.GetFingerprint(mol)
-        fingerprint_arr = np.zeros((0,), dtype=int)
-        # convert the RDKit explicit vectors into numpy arrays
-        DataStructs.ConvertToNumpyArray(fingerprint, fingerprint_arr)
-        fingerprints.append(fingerprint_arr)
+    if fingerprint_type == "Morgan":
+        fingerprint_generator = AllChem.GetMorganGenerator(radius=2) 
+        print('generating fingerprints...')
+        for mol in df['mol']:
+            fingerprint = fingerprint_generator.GetFingerprint(mol)
+            fingerprint_arr = np.zeros((0,), dtype=int)
+            # convert the RDKit explicit vectors into numpy arrays
+            DataStructs.ConvertToNumpyArray(fingerprint, fingerprint_arr)
+            fingerprints.append(fingerprint_arr)
 
-    # convert ecfp fingerprints into dataframe
+    elif fingerprint_type == "Topological":
+        fingerprint_generator = AllChem.GetRDKitFPGenerator()
+        print('generating fingerprints...')
+        for mol in df['mol']:
+            fingerprint = fingerprint_generator.GetFingerprint(mol)
+            fingerprint_arr = np.zeros((0,), dtype=int)
+            # convert the RDKit explicit vectors into numpy arrays
+            DataStructs.ConvertToNumpyArray(fingerprint, fingerprint_arr)
+            fingerprints.append(fingerprint_arr)
+    
+    elif fingerprint_type == "MACCS":
+        print('generating fingerprints...')
+        for mol in df['mol']:
+            fingerprint = MACCSkeys.GenMACCSKeys(mol)
+            fingerprint_arr = np.zeros((0,), dtype=int)
+            # convert the RDKit explicit vectors into numpy arrays
+            DataStructs.ConvertToNumpyArray(fingerprint, fingerprint_arr)
+            fingerprints.append(fingerprint_arr)
+        
+    # Convert fingerprint array into a pandas DataFrame    
     fingerprint_df = pd.DataFrame(fingerprints)
 
     return fingerprint_df
@@ -91,7 +111,7 @@ def generate_svgs(df: pd.DataFrame):
 
     return pd.DataFrame({'SVG': svg_images })
 
-def analyze_data(df: pd.DataFrame, smiles_column: str, dim_red_method: str):
+def analyze_data(df: pd.DataFrame, smiles_column: str, dim_red_method: str, fingerprint_type: str):
     # Remove missing values from SMILES column
 
     df_without_na = remove_missing_smiles(df, smiles_column)
@@ -102,7 +122,7 @@ def analyze_data(df: pd.DataFrame, smiles_column: str, dim_red_method: str):
     df_with_svg = pd.concat([df_with_mols, generate_svgs(df_with_mols)], axis=1)
 
     # Generate Morgan fingerprints
-    fingerprint_df = generate_fingerprints(df_with_mols)
+    fingerprint_df = generate_fingerprints(df_with_mols, fingerprint_type)
 
     if dim_red_method == "PCA":
         # Perform PCA on fingerprints

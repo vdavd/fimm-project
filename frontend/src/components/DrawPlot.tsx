@@ -314,7 +314,8 @@ const DrawPlot = ({
           (pd) => pd.pc1 >= x0 && pd.pc1 <= x1 && pd.pc2 >= y0 && pd.pc2 <= y1
         );
 
-        if (zoomedData.length < 500) {
+        if (zoomedData.length < 250) {
+          // only display molecules if less than 250 are in view
           const molecularImages: Partial<Image>[] = zoomedData.map((pd) => ({
             source: pd.svg,
             x: pd.pc1,
