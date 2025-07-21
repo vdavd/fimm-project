@@ -3,6 +3,7 @@ import numpy as np
 from rdkit.Chem import AllChem, MolFromSmiles, Draw, MACCSkeys
 from rdkit import DataStructs
 from sklearn.decomposition import PCA
+from sklearn.ensemble import IsolationForest
 import urllib.parse
 import umap
 
@@ -111,7 +112,12 @@ def generate_svgs(df: pd.DataFrame):
 
     return pd.DataFrame({'SVG': svg_images })
 
-def analyze_data(df: pd.DataFrame, smiles_column: str, dim_red_method: str, fingerprint_type: str):
+def outlier_detection(features_df: pd.DataFrame):
+    iforest = IsolationForest(random_state=42)
+    prediction = iforest.fit_predict(features_df)
+    return prediction
+
+def analyze_data(df: pd.DataFrame, smiles_column: str, dim_red_method: str, fingerprint_type: str, remove_outliers: bool):
     # Remove missing values from SMILES column
 
     df_without_na = remove_missing_smiles(df, smiles_column)
@@ -133,5 +139,13 @@ def analyze_data(df: pd.DataFrame, smiles_column: str, dim_red_method: str, fing
 
     # Concatenate PCA results with df containing other data
     final_df = pd.concat([df_with_svg, principal_df], axis=1)
+
+    if remove_outliers:
+        # Outlier detection
+        print("Removing outliers....")
+        outlier_list = outlier_detection(fingerprint_df)
+        print(f"{np.sum(outlier_list < 0, axis=0)} outliers removed")
+        boolean_outlier_series = pd.Series([True if value == 1 else False for value in outlier_list])
+        final_df = final_df[boolean_outlier_series.values]
 
     return final_df

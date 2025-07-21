@@ -8,6 +8,7 @@ import LabelTypeSelect from "./components/LabelTypeSelect";
 import type { FingerPrintTypeType, DimRedMethodType, LabelType } from "./types";
 import DimRedMethodSelect from "./components/DimRedMethodSelect";
 import FingerPrintTypeSelect from "./components/FingerPrinttypeSelect";
+import RemoveOutliersSelect from "./components/RemoveOutliersSelect";
 
 const App = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -20,6 +21,7 @@ const App = () => {
   const [dimRedMethod, setDimRedMethod] = useState<DimRedMethodType>("PCA");
   const [fingerPrintType, setFingerPrintType] =
     useState<FingerPrintTypeType>("Morgan");
+  const [removeOutliers, setremoveOutliers] = useState(false);
 
   return (
     <div>
@@ -85,6 +87,10 @@ const App = () => {
                 fingerPrintType={fingerPrintType}
                 setFingerPrintType={setFingerPrintType}
               />
+              <RemoveOutliersSelect
+                removeOutliers={removeOutliers}
+                setremoveOutliers={setremoveOutliers}
+              />
               {parsedFile && smilesColumn && labelColumn && labelType && (
                 <UploadFile
                   parsedFile={parsedFile}
@@ -92,6 +98,7 @@ const App = () => {
                   setAnalyzedData={setAnalyzedData}
                   dimRedMethod={dimRedMethod}
                   fingerPrintType={fingerPrintType}
+                  removeOutliers={removeOutliers}
                 />
               )}
             </Paper>
