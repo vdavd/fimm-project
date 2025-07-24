@@ -8,7 +8,6 @@ interface UploadFileProps {
   setAnalyzedData: (analyzedData: string) => void;
   dimRedMethod: DimRedMethodType;
   fingerPrintType: FingerPrintTypeType;
-  removeOutliers: boolean;
 }
 const UploadFile = ({
   parsedFile,
@@ -16,7 +15,6 @@ const UploadFile = ({
   setAnalyzedData,
   dimRedMethod,
   fingerPrintType,
-  removeOutliers,
 }: UploadFileProps) => {
   const handleUpload = async () => {
     const formData = new FormData();
@@ -25,7 +23,6 @@ const UploadFile = ({
       formData.append("smiles_column", smilesColumn);
       formData.append("dim_red_method", dimRedMethod);
       formData.append("fingerprint_type", fingerPrintType);
-      formData.append("remove_outliers", JSON.stringify(removeOutliers));
     }
     const data = await uploadData(formData);
     setAnalyzedData(data);

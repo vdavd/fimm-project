@@ -13,6 +13,7 @@ interface DrawPlotProps {
   labelType: string;
   highlightedSmiles: string[];
   dimRedMethod: DimRedMethodType;
+  removeOutliers: boolean;
 }
 
 interface PlotDataObject {
@@ -22,6 +23,7 @@ interface PlotDataObject {
   label: number | string;
   svg: string;
   color: string;
+  outlier: boolean;
 }
 
 const DrawPlot = ({
@@ -30,6 +32,7 @@ const DrawPlot = ({
   labelType,
   highlightedSmiles,
   dimRedMethod,
+  removeOutliers,
 }: DrawPlotProps) => {
   const [parsedData, setParsedData] = useState<PlotDataObject[] | null>(null);
   const [plotData, setPlotData] = useState<PlotDataObject[] | null>(null);
@@ -79,13 +82,15 @@ const DrawPlot = ({
         value === null ? "NA" : value
       );
       const svg = Object.values(objectData.SVG);
+      const outlier = Object.values(objectData.isoforest_outlier);
 
       if (
         id.every((value) => isString(value)) &&
         pc1.every((value) => isNumber(value)) &&
         pc2.every((value) => isNumber(value)) &&
         label.every((value) => isNumber(value) || isString(value)) &&
-        svg.every((value) => isString(value))
+        svg.every((value) => isString(value)) &&
+        outlier.every((value) => isNumber(value))
       ) {
         const parsedDataObjectList = pc1.map((_value, index) => {
           return {
@@ -95,6 +100,7 @@ const DrawPlot = ({
             label: label[index],
             svg: svg[index],
             color: "#000000",
+            outlier: outlier[index] < 0,
           };
         });
         setParsedData(parsedDataObjectList);
@@ -166,9 +172,14 @@ const DrawPlot = ({
         };
 
         const coloredPlotData = colorSvgsCategorical();
-        setPlotData(coloredPlotData);
 
-        const highlightedData = parsedData.filter((d) =>
+        const traceData = removeOutliers
+          ? coloredPlotData.filter((pd) => !pd.outlier)
+          : coloredPlotData;
+
+        setPlotData(traceData);
+
+        const highlightedData = traceData.filter((d) =>
           highlightedSmiles.includes(d.id)
         );
         const highlightedTraces: PlotParams["data"] = [
@@ -192,7 +203,7 @@ const DrawPlot = ({
 
         // Define and set the traces
         const categorical_traces: PlotParams["data"] = labels.map((label) => {
-          const group = coloredPlotData.filter((d) => d.label === label);
+          const group = traceData.filter((d) => d.label === label);
           return {
             x: group.map((d) => d.pc1),
             y: group.map((d) => d.pc2),
@@ -240,12 +251,17 @@ const DrawPlot = ({
         };
 
         const coloredPlotData = colorSvgsContinuous();
-        setPlotData(coloredPlotData);
+
+        const traceData = removeOutliers
+          ? coloredPlotData.filter((pd) => !pd.outlier)
+          : coloredPlotData;
+
+        setPlotData(traceData);
 
         const continuous_traces: PlotParams["data"] = [
           {
-            x: parsedData.map((d) => d.pc1),
-            y: parsedData.map((d) => d.pc2),
+            x: traceData.map((d) => d.pc1),
+            y: traceData.map((d) => d.pc2),
             type: "scatter",
             mode: "markers",
             marker: {
@@ -261,7 +277,7 @@ const DrawPlot = ({
           },
         ];
 
-        const highlightedData = parsedData.filter((d) =>
+        const highlightedData = traceData.filter((d) =>
           highlightedSmiles.includes(d.id)
         );
         const highlightedTraces: PlotParams["data"] = [
@@ -295,6 +311,7 @@ const DrawPlot = ({
     zoomedView,
     labelColumn,
     highlightedSmiles,
+    removeOutliers,
   ]);
 
   const handleRelayout = (event: Readonly<Plotly.PlotRelayoutEvent>) => {

@@ -98,7 +98,6 @@ const App = () => {
                   setAnalyzedData={setAnalyzedData}
                   dimRedMethod={dimRedMethod}
                   fingerPrintType={fingerPrintType}
-                  removeOutliers={removeOutliers}
                 />
               )}
             </Paper>
@@ -121,6 +120,7 @@ const App = () => {
                 labelType={labelType}
                 highlightedSmiles={highlightedSmiles}
                 dimRedMethod={dimRedMethod}
+                removeOutliers={removeOutliers}
               />
             </Paper>
           )}
