@@ -4,8 +4,10 @@ import type { PlotParams } from "react-plotly.js";
 import type { Image } from "plotly.js";
 import { colorPalette50, colorScale } from "../constants";
 import { generateOutlineCircleSVG, getColorFromScale } from "../util/svgUtil";
-import { Box, Slider, Typography } from "@mui/material";
+import { Box, Paper, Slider, Typography } from "@mui/material";
 import type { DimRedMethodType } from "../types";
+import type { PlotDataObject } from "../types";
+import MoleculeInfo from "./MoleculeInfo";
 
 interface DrawPlotProps {
   analyzedData: string;
@@ -14,16 +16,6 @@ interface DrawPlotProps {
   highlightedSmiles: string[];
   dimRedMethod: DimRedMethodType;
   removeOutliers: boolean;
-}
-
-interface PlotDataObject {
-  id: string;
-  pc1: number;
-  pc2: number;
-  label: number | string;
-  svg: string;
-  color: string;
-  outlier: boolean;
 }
 
 const DrawPlot = ({
@@ -62,6 +54,8 @@ const DrawPlot = ({
   });
   const [zoomedView, setZoomedView] = useState(false);
   const [moleculeSize, setMoleculeSize] = useState(0.5);
+  const [selectedMolecule, setSelectedMolecule] =
+    useState<PlotDataObject | null>(null);
 
   useEffect(() => {
     const isNumber = (value: unknown) => {
@@ -431,31 +425,77 @@ const DrawPlot = ({
     }
   };
 
+  const handleClick = (event: Readonly<Plotly.PlotMouseEvent>) => {
+    const x = event.points[0].x;
+    const y = event.points[0].y;
+
+    if (plotData) {
+      const clickedMolecule = plotData.filter(
+        (pd) => pd.pc1 === x && pd.pc2 === y
+      );
+      if (clickedMolecule.length > 0) {
+        setSelectedMolecule(clickedMolecule[0]);
+      }
+    }
+  };
+
   return (
     <div>
       {plotData && traces && (
         <>
-          <Box sx={{ width: 250 }}>
-            <Typography>Molecule size</Typography>
-            <Slider
-              value={moleculeSize}
-              defaultValue={0.5}
-              min={0.05}
-              max={1.0}
-              step={0.005}
-              onChange={handleMoleculeSizeChange}
-              disabled={!zoomedView}
-            />
+          <Box sx={{ display: "flex" }}>
+            <Paper
+              elevation={3}
+              sx={{
+                px: 4,
+                py: 3,
+                my: 2,
+                mr: 1.5,
+                backgroundColor: "#f8f8f8",
+                borderRadius: 3,
+              }}
+            >
+              <Box sx={{ width: 250 }}>
+                <Typography>Molecule size</Typography>
+                <Slider
+                  value={moleculeSize}
+                  defaultValue={0.5}
+                  min={0.05}
+                  max={1.0}
+                  step={0.005}
+                  onChange={handleMoleculeSizeChange}
+                  disabled={!zoomedView}
+                />
+              </Box>
+              <Plot
+                data={traces}
+                layout={layout}
+                onRelayout={handleRelayout}
+                onDoubleClick={handleDoubleClick}
+                onHover={handleHover}
+                onUnhover={handleUnhover}
+                onClick={handleClick}
+                useResizeHandler
+              />
+            </Paper>
+            <Paper
+              elevation={3}
+              sx={{
+                width: "100%",
+                px: 4,
+                py: 3,
+                my: 2,
+                ml: 1.5,
+                backgroundColor: "#f8f8f8",
+                borderRadius: 3,
+              }}
+            >
+              <MoleculeInfo
+                selectedMolecule={selectedMolecule}
+                labelColumn={labelColumn}
+              />
+            </Paper>
           </Box>
-          <Plot
-            data={traces}
-            layout={layout}
-            onRelayout={handleRelayout}
-            onDoubleClick={handleDoubleClick}
-            onHover={handleHover}
-            onUnhover={handleUnhover}
-            useResizeHandler
-          />
         </>
       )}
     </div>

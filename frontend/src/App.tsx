@@ -7,7 +7,7 @@ import SelectFile from "./components/SelectFile";
 import LabelTypeSelect from "./components/LabelTypeSelect";
 import type { FingerPrintTypeType, DimRedMethodType, LabelType } from "./types";
 import DimRedMethodSelect from "./components/DimRedMethodSelect";
-import FingerPrintTypeSelect from "./components/FingerPrinttypeSelect";
+import FingerPrintTypeSelect from "./components/FingerPrintTypeSelect";
 import RemoveOutliersSelect from "./components/RemoveOutliersSelect";
 
 const App = () => {
@@ -39,7 +39,7 @@ const App = () => {
           elevation={3}
           sx={{
             width: "100%",
-            maxWidth: "55%",
+            maxWidth: "75%",
             minHeight: "85vh",
             px: 4,
             py: 3,
@@ -104,25 +104,14 @@ const App = () => {
           )}
 
           {analyzedData && labelColumn && (
-            <Paper
-              elevation={3}
-              sx={{
-                px: 4,
-                py: 3,
-                my: 2,
-                backgroundColor: "#f8f8f8",
-                borderRadius: 3,
-              }}
-            >
-              <DrawPlot
-                analyzedData={analyzedData}
-                labelColumn={labelColumn}
-                labelType={labelType}
-                highlightedSmiles={highlightedSmiles}
-                dimRedMethod={dimRedMethod}
-                removeOutliers={removeOutliers}
-              />
-            </Paper>
+            <DrawPlot
+              analyzedData={analyzedData}
+              labelColumn={labelColumn}
+              labelType={labelType}
+              highlightedSmiles={highlightedSmiles}
+              dimRedMethod={dimRedMethod}
+              removeOutliers={removeOutliers}
+            />
           )}
         </Paper>
       </Box>
