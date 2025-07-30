@@ -1,5 +1,11 @@
 export const apiBaseUrl = "http://localhost:8000/api";
 
+export const chemblApiBaseUrl =
+  "https://www.ebi.ac.uk/chembl/api/data/substructure/";
+
+export const pubChemApiBaseUrl =
+  "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/smiles/property/Title,MolecularFormula,MolecularWeight,XLogp,HBondDonorCount,HBondAcceptorCount,RotatableBondCount,TPSA/JSON?smiles=";
+
 export const colorScale: [number, string][] = [
   [0.0, "#053061"], // dark blue
   [0.2, "#2166ac"], // blue

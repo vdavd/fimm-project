@@ -12,6 +12,7 @@ import MoleculeInfo from "./MoleculeInfo";
 interface DrawPlotProps {
   analyzedData: string;
   labelColumn: string;
+  smilesColumn: string;
   labelType: string;
   highlightedSmiles: string[];
   dimRedMethod: DimRedMethodType;
@@ -21,6 +22,7 @@ interface DrawPlotProps {
 const DrawPlot = ({
   analyzedData,
   labelColumn,
+  smilesColumn,
   labelType,
   highlightedSmiles,
   dimRedMethod,
@@ -70,6 +72,7 @@ const DrawPlot = ({
       const objectData = JSON.parse(data);
 
       const id = Object.values(objectData.id).map((id) => String(id));
+      const smiles = Object.values(objectData[smilesColumn]);
       const pc1 = Object.values(objectData.PC1);
       const pc2 = Object.values(objectData.PC2);
       const label = Object.values(objectData[labelColumn]).map((value) =>
@@ -80,6 +83,7 @@ const DrawPlot = ({
 
       if (
         id.every((value) => isString(value)) &&
+        smiles.every((value) => isString(value)) &&
         pc1.every((value) => isNumber(value)) &&
         pc2.every((value) => isNumber(value)) &&
         label.every((value) => isNumber(value) || isString(value)) &&
@@ -89,6 +93,7 @@ const DrawPlot = ({
         const parsedDataObjectList = pc1.map((_value, index) => {
           return {
             id: id[index],
+            smiles: smiles[index],
             pc1: pc1[index],
             pc2: pc2[index],
             label: label[index],

@@ -107,6 +107,7 @@ const App = () => {
             <DrawPlot
               analyzedData={analyzedData}
               labelColumn={labelColumn}
+              smilesColumn={smilesColumn}
               labelType={labelType}
               highlightedSmiles={highlightedSmiles}
               dimRedMethod={dimRedMethod}
