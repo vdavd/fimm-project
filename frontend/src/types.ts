@@ -13,12 +13,17 @@ export interface PlotDataObject {
   outlier: boolean;
 }
 
+type LabeledValue<T> = {
+  value: T;
+  label: string;
+};
+
 export interface MoleculeProperties {
-  formula: string;
-  molWeight: number;
-  LogP: number;
-  hba: number;
-  hbd: number;
-  rtb: number;
-  psa: number;
+  formula: LabeledValue<string>;
+  molWeight: LabeledValue<number>;
+  LogP: LabeledValue<number>;
+  hba: LabeledValue<number>;
+  hbd: LabeledValue<number>;
+  rtb: LabeledValue<number>;
+  psa: LabeledValue<number>;
 }

@@ -434,8 +434,8 @@ const DrawPlot = ({
     const x = event.points[0].x;
     const y = event.points[0].y;
 
-    if (plotData) {
-      const clickedMolecule = plotData.filter(
+    if (parsedData) {
+      const clickedMolecule = parsedData.filter(
         (pd) => pd.pc1 === x && pd.pc2 === y
       );
       if (clickedMolecule.length > 0) {
@@ -483,23 +483,10 @@ const DrawPlot = ({
                 useResizeHandler
               />
             </Paper>
-            <Paper
-              elevation={3}
-              sx={{
-                width: "100%",
-                px: 4,
-                py: 3,
-                my: 2,
-                ml: 1.5,
-                backgroundColor: "#f8f8f8",
-                borderRadius: 3,
-              }}
-            >
-              <MoleculeInfo
-                selectedMolecule={selectedMolecule}
-                labelColumn={labelColumn}
-              />
-            </Paper>
+            <MoleculeInfo
+              selectedMolecule={selectedMolecule}
+              labelColumn={labelColumn}
+            />
           </Box>
         </>
       )}
