@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box, Paper } from "@mui/material";
+import { Box, Container, Paper } from "@mui/material";
 import UploadFile from "./components/UploadFile";
 import DrawPlot from "./components/DrawPlot";
 import ColumnSelect from "./components/ColumnSelect";
@@ -24,57 +24,64 @@ const App = () => {
   const [removeOutliers, setremoveOutliers] = useState(false);
 
   return (
-    <div>
-      <Box
+    <Container
+      maxWidth="xl"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Paper
+        elevation={3}
         sx={{
-          minHeight: "100vh",
-          width: "100vw",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          py: 4,
+          width: "100%",
+          maxWidth: "90%",
+          minHeight: "90vh",
+          px: 4,
+          py: 3,
+          borderRadius: 5,
+          backgroundColor: "rgba(255, 255, 255, 0.7)",
         }}
       >
-        <Paper
-          elevation={3}
-          sx={{
-            width: "100%",
-            maxWidth: "75%",
-            minHeight: "85vh",
-            px: 4,
-            py: 3,
-            borderRadius: 5,
-            backgroundColor: "rgba(255, 255, 255, 0.7)",
-          }}
-        >
-          <SelectFile
-            setFile={setFile}
-            setSmilesColumn={setSmilesColumn}
-            setLabelColumn={setLabelColumn}
-            setAnalyzedData={setAnalyzedData}
-          />
+        <SelectFile
+          setFile={setFile}
+          setSmilesColumn={setSmilesColumn}
+          setLabelColumn={setLabelColumn}
+          setAnalyzedData={setAnalyzedData}
+        />
 
-          {file && (
-            <Paper
-              elevation={3}
+        {file && (
+          <Paper
+            elevation={3}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              px: 4,
+              py: 3,
+              my: 4,
+              backgroundColor: "#f8f8f8",
+              borderRadius: 3,
+            }}
+          >
+            <ColumnSelect
+              file={file}
+              smilesColumn={smilesColumn}
+              labelColumn={labelColumn}
+              setParsedFile={setParsedFile}
+              setSmilesColumn={setSmilesColumn}
+              setLabelColumn={setLabelColumn}
+              setLabelType={setLabelType}
+              setHighlightedSmiles={setHighlightedSmiles}
+            />
+            <Box
               sx={{
-                px: 4,
-                py: 3,
-                my: 4,
-                backgroundColor: "#f8f8f8",
-                borderRadius: 3,
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
               }}
             >
-              <ColumnSelect
-                file={file}
-                smilesColumn={smilesColumn}
-                labelColumn={labelColumn}
-                setParsedFile={setParsedFile}
-                setSmilesColumn={setSmilesColumn}
-                setLabelColumn={setLabelColumn}
-                setLabelType={setLabelType}
-                setHighlightedSmiles={setHighlightedSmiles}
-              />
               <LabelTypeSelect
                 labelType={labelType}
                 setLabelType={setLabelType}
@@ -83,6 +90,15 @@ const App = () => {
                 dimRedMethod={dimRedMethod}
                 setDimRedMethod={setDimRedMethod}
               />
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+              }}
+            >
               <FingerPrintTypeSelect
                 fingerPrintType={fingerPrintType}
                 setFingerPrintType={setFingerPrintType}
@@ -91,32 +107,33 @@ const App = () => {
                 removeOutliers={removeOutliers}
                 setremoveOutliers={setremoveOutliers}
               />
-              {parsedFile && smilesColumn && labelColumn && labelType && (
-                <UploadFile
-                  parsedFile={parsedFile}
-                  smilesColumn={smilesColumn}
-                  setAnalyzedData={setAnalyzedData}
-                  dimRedMethod={dimRedMethod}
-                  fingerPrintType={fingerPrintType}
-                />
-              )}
-            </Paper>
-          )}
+            </Box>
 
-          {analyzedData && labelColumn && (
-            <DrawPlot
-              analyzedData={analyzedData}
-              labelColumn={labelColumn}
-              smilesColumn={smilesColumn}
-              labelType={labelType}
-              highlightedSmiles={highlightedSmiles}
-              dimRedMethod={dimRedMethod}
-              removeOutliers={removeOutliers}
-            />
-          )}
-        </Paper>
-      </Box>
-    </div>
+            {parsedFile && smilesColumn && labelColumn && labelType && (
+              <UploadFile
+                parsedFile={parsedFile}
+                smilesColumn={smilesColumn}
+                setAnalyzedData={setAnalyzedData}
+                dimRedMethod={dimRedMethod}
+                fingerPrintType={fingerPrintType}
+              />
+            )}
+          </Paper>
+        )}
+
+        {analyzedData && labelColumn && (
+          <DrawPlot
+            analyzedData={analyzedData}
+            labelColumn={labelColumn}
+            smilesColumn={smilesColumn}
+            labelType={labelType}
+            highlightedSmiles={highlightedSmiles}
+            dimRedMethod={dimRedMethod}
+            removeOutliers={removeOutliers}
+          />
+        )}
+      </Paper>
+    </Container>
   );
 };
 

@@ -32,8 +32,9 @@ const DrawPlot = ({
   const [plotData, setPlotData] = useState<PlotDataObject[] | null>(null);
   const [traces, setTraces] = useState<PlotParams["data"] | null>(null);
   const [layout, setLayout] = useState<PlotParams["layout"]>({
-    width: 960,
-    height: 720,
+    height: undefined,
+    width: undefined,
+    margin: { l: 50, r: 50, t: 50, b: 50 },
     xaxis: {
       title: {
         text: dimRedMethod === "PCA" ? "PC1" : "UMAP1",
@@ -445,13 +446,21 @@ const DrawPlot = ({
   };
 
   return (
-    <div>
+    <>
       {plotData && traces && (
         <>
-          <Box sx={{ display: "flex" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+            }}
+          >
             <Paper
               elevation={3}
               sx={{
+                width: "75%",
+                height: 850,
                 px: 4,
                 py: 3,
                 my: 2,
@@ -481,6 +490,8 @@ const DrawPlot = ({
                 onUnhover={handleUnhover}
                 onClick={handleClick}
                 useResizeHandler
+                style={{ width: "100%", height: "90%" }}
+                config={{ responsive: true }}
               />
             </Paper>
             <MoleculeInfo
@@ -490,7 +501,7 @@ const DrawPlot = ({
           </Box>
         </>
       )}
-    </div>
+    </>
   );
 };
 

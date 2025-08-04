@@ -65,89 +65,90 @@ const MoleculeInfo = ({ selectedMolecule, labelColumn }: MoleculeInfoProps) => {
   if (selectedMolecule) {
     return (
       <>
-        <Paper
-          elevation={3}
+        <Box
           sx={{
-            width: "100%",
-            px: 4,
-            py: 3,
-            my: 2,
-            ml: 1.5,
-            backgroundColor: "#f8f8f8",
-            borderRadius: 3,
+            display: "flex",
+            flexDirection: "column",
+            minHeight: 850,
           }}
         >
+          <Paper
+            elevation={3}
+            sx={{
+              px: 4,
+              py: 3,
+              mt: 2,
+              mb: 1,
+              ml: 1.5,
+              backgroundColor: "#f8f8f8",
+              borderRadius: 3,
+            }}
+          >
+            <img src={selectedMolecule.svg} />
+            <Typography variant="body2" fontWeight="bold">
+              {labelColumn}
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {selectedMolecule.label}
+            </Typography>
+          </Paper>
           <Box
             sx={{
               display: "flex",
               flexDirection: "column",
-              alignItems: "stretch",
+              //alignItems: "stretch",
             }}
           >
-            <img src={selectedMolecule.svg} />
-            {moleculeProperties && (
-              <List dense>
-                <ListItem key={labelColumn} disableGutters>
-                  <Paper
-                    elevation={2}
-                    sx={{
-                      width: "100%",
-                      p: 0.5,
-                      marginBottom: 2,
-                      backgroundColor: "#ececec",
-                      borderRadius: 3,
-                      border: 1,
-                      borderColor: "lightgrey",
-                    }}
-                  >
-                    <ListItemText
-                      primary={
-                        <Typography variant="body2" fontWeight="bold">
-                          {labelColumn}
-                        </Typography>
-                      }
-                      secondary={
-                        <Typography variant="body2" color="text.secondary">
-                          {selectedMolecule.label}
-                        </Typography>
-                      }
-                    />
-                  </Paper>
-                </ListItem>
-                {Object.entries(moleculeProperties).map(
-                  ([key, { value, label }]) => (
-                    <ListItem key={key} disableGutters>
-                      <Paper
-                        elevation={0}
-                        sx={{
-                          width: "100%",
-                          p: 0.5,
-                          backgroundColor: "#ececec",
-                          borderRadius: 3,
-                          border: 1,
-                          borderColor: "lightgrey",
-                        }}
-                      >
-                        <ListItemText
-                          primary={
-                            <Typography variant="body2" fontWeight="bold">
-                              {label}
-                            </Typography>
-                          }
-                          secondary={
-                            <Typography variant="body2" color="text.secondary">
-                              {value}
-                            </Typography>
-                          }
-                        />
-                      </Paper>
-                    </ListItem>
-                  )
-                )}
-              </List>
-            )}
+            <Paper
+              elevation={3}
+              sx={{
+                px: 4,
+                py: 3,
+                my: 2,
+                ml: 1.5,
+                backgroundColor: "#f8f8f8",
+                borderRadius: 3,
+              }}
+            >
+              {moleculeProperties && (
+                <List dense>
+                  {Object.entries(moleculeProperties).map(
+                    ([key, { value, label }]) => (
+                      <ListItem key={key} disableGutters>
+                        <Paper
+                          elevation={0}
+                          sx={{
+                            width: "100%",
+                            p: 0.5,
+                            my: 0.36,
+                            backgroundColor: "#ececec",
+                            borderRadius: 3,
+                          }}
+                        >
+                          <ListItemText
+                            primary={
+                              <Typography variant="body2" fontWeight="bold">
+                                {label}
+                              </Typography>
+                            }
+                            secondary={
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                {value}
+                              </Typography>
+                            }
+                          />
+                        </Paper>
+                      </ListItem>
+                    )
+                  )}
+                </List>
+              )}
+            </Paper>
           </Box>
-        </Paper>
+        </Box>
       </>
     );
   } else {
@@ -155,7 +156,7 @@ const MoleculeInfo = ({ selectedMolecule, labelColumn }: MoleculeInfoProps) => {
       <>
         <Box
           sx={{
-            width: "100%",
+            width: "20%",
             display: "flex",
             flexDirection: "column",
             alignItems: "stretch",
