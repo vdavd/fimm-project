@@ -8,6 +8,8 @@ interface UploadFileProps {
   setAnalyzedData: (analyzedData: string) => void;
   dimRedMethod: DimRedMethodType;
   fingerPrintType: FingerPrintTypeType;
+  setAnalysisInProcess: (analysisInProcess: boolean) => void;
+  handleScroll: () => void;
 }
 const UploadFile = ({
   parsedFile,
@@ -15,6 +17,8 @@ const UploadFile = ({
   setAnalyzedData,
   dimRedMethod,
   fingerPrintType,
+  setAnalysisInProcess,
+  handleScroll,
 }: UploadFileProps) => {
   const handleUpload = async () => {
     const formData = new FormData();
@@ -24,8 +28,10 @@ const UploadFile = ({
       formData.append("dim_red_method", dimRedMethod);
       formData.append("fingerprint_type", fingerPrintType);
     }
+    setAnalysisInProcess(true);
     const data = await uploadData(formData);
     setAnalyzedData(data);
+    setAnalysisInProcess(false);
   };
 
   return (

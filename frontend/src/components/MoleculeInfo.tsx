@@ -75,6 +75,8 @@ const MoleculeInfo = ({ selectedMolecule, labelColumn }: MoleculeInfoProps) => {
             display: "flex",
             flexDirection: "column",
             height: "100%",
+            alignItems: "stretch",
+            width: "20%",
           }}
         >
           <Paper
@@ -83,7 +85,6 @@ const MoleculeInfo = ({ selectedMolecule, labelColumn }: MoleculeInfoProps) => {
               px: 4,
               py: 3,
               mt: 2,
-              mb: 1,
               ml: 1.5,
               backgroundColor: "#f8f8f8",
               borderRadius: 3,
@@ -114,7 +115,7 @@ const MoleculeInfo = ({ selectedMolecule, labelColumn }: MoleculeInfoProps) => {
                 ml: 1.5,
                 backgroundColor: "#f8f8f8",
                 borderRadius: 3,
-                height: "100%",
+                height: "95%",
                 overflow: "auto",
               }}
             >
@@ -164,10 +165,11 @@ const MoleculeInfo = ({ selectedMolecule, labelColumn }: MoleculeInfoProps) => {
                   </ListItem>
                 </List>
               ) : (
-                <Stack spacing={1.5} sx={{ py: 1 }}>
+                <Stack spacing={1.5} sx={{ pt: 2 }}>
                   {Array.from({ length: 7 }).map((_, i) => (
                     <Skeleton
-                      variant="rounded"
+                      sx={{ borderRadius: 3 }}
+                      variant="rectangular"
                       width="100%"
                       height={55}
                       animation="wave"
@@ -175,8 +177,9 @@ const MoleculeInfo = ({ selectedMolecule, labelColumn }: MoleculeInfoProps) => {
                     />
                   ))}
                   <Skeleton
+                    sx={{ ml: 10 }}
                     variant="text"
-                    width="100%"
+                    width="75%"
                     height={60}
                     animation="wave"
                   />

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Box, Container, Paper } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import { Box, Container, Paper, Typography } from "@mui/material";
 import UploadFile from "./components/UploadFile";
 import DrawPlot from "./components/DrawPlot";
 import ColumnSelect from "./components/ColumnSelect";
@@ -9,6 +9,7 @@ import type { FingerPrintTypeType, DimRedMethodType, LabelType } from "./types";
 import DimRedMethodSelect from "./components/DimRedMethodSelect";
 import FingerPrintTypeSelect from "./components/FingerPrintTypeSelect";
 import RemoveOutliersSelect from "./components/RemoveOutliersSelect";
+import PlotSkeleton from "./components/PlotSkeleton";
 
 const App = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -22,6 +23,23 @@ const App = () => {
   const [fingerPrintType, setFingerPrintType] =
     useState<FingerPrintTypeType>("Morgan");
   const [removeOutliers, setremoveOutliers] = useState(false);
+  const [analysisInProcess, setAnalysisInProcess] = useState(false);
+
+  const scrollTargetRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = () => {
+    setTimeout(() => {
+      scrollTargetRef.current?.scrollIntoView({ behavior: "smooth" });
+      console.log("i scrolled");
+      console.log("Ref:", scrollTargetRef.current);
+    }, 100);
+  };
+
+  useEffect(() => {
+    if (analysisInProcess && scrollTargetRef.current) {
+      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [analysisInProcess]);
 
   return (
     <Container
@@ -45,93 +63,130 @@ const App = () => {
           backgroundColor: "rgba(255, 255, 255, 0.7)",
         }}
       >
-        <SelectFile
-          setFile={setFile}
-          setSmilesColumn={setSmilesColumn}
-          setLabelColumn={setLabelColumn}
-          setAnalyzedData={setAnalyzedData}
-        />
+        {file ? (
+          <>
+            <Typography variant="h4" textAlign="center">
+              Molecular Similarity Tool
+            </Typography>
+            <SelectFile
+              size="small"
+              setFile={setFile}
+              setSmilesColumn={setSmilesColumn}
+              setLabelColumn={setLabelColumn}
+              setAnalyzedData={setAnalyzedData}
+            />
 
-        {file && (
-          <Paper
-            elevation={3}
+            <Paper
+              elevation={3}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                px: 4,
+                py: 3,
+                my: 4,
+                backgroundColor: "#f8f8f8",
+                borderRadius: 3,
+              }}
+            >
+              <ColumnSelect
+                file={file}
+                smilesColumn={smilesColumn}
+                labelColumn={labelColumn}
+                setParsedFile={setParsedFile}
+                setSmilesColumn={setSmilesColumn}
+                setLabelColumn={setLabelColumn}
+                setLabelType={setLabelType}
+                setHighlightedSmiles={setHighlightedSmiles}
+              />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <LabelTypeSelect
+                  labelType={labelType}
+                  setLabelType={setLabelType}
+                />
+                <DimRedMethodSelect
+                  dimRedMethod={dimRedMethod}
+                  setDimRedMethod={setDimRedMethod}
+                />
+              </Box>
+
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                }}
+              >
+                <FingerPrintTypeSelect
+                  fingerPrintType={fingerPrintType}
+                  setFingerPrintType={setFingerPrintType}
+                />
+                <RemoveOutliersSelect
+                  removeOutliers={removeOutliers}
+                  setremoveOutliers={setremoveOutliers}
+                />
+              </Box>
+
+              {parsedFile && smilesColumn && labelColumn && labelType && (
+                <UploadFile
+                  parsedFile={parsedFile}
+                  smilesColumn={smilesColumn}
+                  setAnalyzedData={setAnalyzedData}
+                  dimRedMethod={dimRedMethod}
+                  fingerPrintType={fingerPrintType}
+                  setAnalysisInProcess={setAnalysisInProcess}
+                  handleScroll={handleScroll}
+                />
+              )}
+            </Paper>
+          </>
+        ) : (
+          <Box
             sx={{
               display: "flex",
               flexDirection: "column",
-              px: 4,
-              py: 3,
-              my: 4,
-              backgroundColor: "#f8f8f8",
-              borderRadius: 3,
+              justifyContent: "center",
+              alignItems: "center",
+              mt: 4,
+              gap: 4,
             }}
           >
-            <ColumnSelect
-              file={file}
-              smilesColumn={smilesColumn}
-              labelColumn={labelColumn}
-              setParsedFile={setParsedFile}
+            <Typography variant="h2" textAlign="center">
+              Molecular Similarity Tool
+            </Typography>
+            <SelectFile
+              size="large"
+              setFile={setFile}
               setSmilesColumn={setSmilesColumn}
               setLabelColumn={setLabelColumn}
-              setLabelType={setLabelType}
-              setHighlightedSmiles={setHighlightedSmiles}
+              setAnalyzedData={setAnalyzedData}
             />
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <LabelTypeSelect
-                labelType={labelType}
-                setLabelType={setLabelType}
-              />
-              <DimRedMethodSelect
-                dimRedMethod={dimRedMethod}
-                setDimRedMethod={setDimRedMethod}
-              />
-            </Box>
+          </Box>
+        )}
 
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <FingerPrintTypeSelect
-                fingerPrintType={fingerPrintType}
-                setFingerPrintType={setFingerPrintType}
-              />
-              <RemoveOutliersSelect
-                removeOutliers={removeOutliers}
-                setremoveOutliers={setremoveOutliers}
-              />
-            </Box>
-
-            {parsedFile && smilesColumn && labelColumn && labelType && (
-              <UploadFile
-                parsedFile={parsedFile}
+        <div ref={scrollTargetRef}>
+          {analysisInProcess ? (
+            <PlotSkeleton />
+          ) : (
+            analyzedData &&
+            labelColumn && (
+              <DrawPlot
+                analyzedData={analyzedData}
+                labelColumn={labelColumn}
                 smilesColumn={smilesColumn}
-                setAnalyzedData={setAnalyzedData}
+                labelType={labelType}
+                highlightedSmiles={highlightedSmiles}
                 dimRedMethod={dimRedMethod}
-                fingerPrintType={fingerPrintType}
+                removeOutliers={removeOutliers}
               />
-            )}
-          </Paper>
-        )}
-
-        {analyzedData && labelColumn && (
-          <DrawPlot
-            analyzedData={analyzedData}
-            labelColumn={labelColumn}
-            smilesColumn={smilesColumn}
-            labelType={labelType}
-            highlightedSmiles={highlightedSmiles}
-            dimRedMethod={dimRedMethod}
-            removeOutliers={removeOutliers}
-          />
-        )}
+            )
+          )}
+        </div>
       </Paper>
     </Container>
   );
