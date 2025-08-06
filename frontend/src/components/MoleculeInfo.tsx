@@ -1,9 +1,12 @@
 import {
   Box,
+  Link,
   List,
   ListItem,
   ListItemText,
   Paper,
+  Skeleton,
+  Stack,
   Typography,
 } from "@mui/material";
 import type { PlotDataObject, MoleculeProperties } from "../types";
@@ -21,11 +24,13 @@ const MoleculeInfo = ({ selectedMolecule, labelColumn }: MoleculeInfoProps) => {
 
   useEffect(() => {
     const getMoleculeProperties = async (selectedMolecule: PlotDataObject) => {
+      setMoleculeProperties(null);
       const responseData = await getMoleculeData(selectedMolecule.smiles);
       if (responseData) {
         const properties = responseData.PropertyTable.Properties[0];
         if (properties.CID != 0) {
           const moleculeData: MoleculeProperties = {
+            cid: properties.CID,
             formula: {
               value: properties.MolecularFormula,
               label: "Molecular Formula",
@@ -69,7 +74,7 @@ const MoleculeInfo = ({ selectedMolecule, labelColumn }: MoleculeInfoProps) => {
           sx={{
             display: "flex",
             flexDirection: "column",
-            minHeight: 850,
+            height: "100%",
           }}
         >
           <Paper
@@ -96,7 +101,8 @@ const MoleculeInfo = ({ selectedMolecule, labelColumn }: MoleculeInfoProps) => {
             sx={{
               display: "flex",
               flexDirection: "column",
-              //alignItems: "stretch",
+              flexGrow: 1,
+              overflow: "hidden",
             }}
           >
             <Paper
@@ -108,19 +114,21 @@ const MoleculeInfo = ({ selectedMolecule, labelColumn }: MoleculeInfoProps) => {
                 ml: 1.5,
                 backgroundColor: "#f8f8f8",
                 borderRadius: 3,
+                height: "100%",
+                overflow: "auto",
               }}
             >
-              {moleculeProperties && (
+              {moleculeProperties ? (
                 <List dense>
-                  {Object.entries(moleculeProperties).map(
-                    ([key, { value, label }]) => (
+                  {Object.entries(moleculeProperties)
+                    .filter(([key, _value]) => key !== "cid")
+                    .map(([key, { value, label }]) => (
                       <ListItem key={key} disableGutters>
                         <Paper
                           elevation={0}
                           sx={{
                             width: "100%",
                             p: 0.5,
-                            my: 0.36,
                             backgroundColor: "#ececec",
                             borderRadius: 3,
                           }}
@@ -142,9 +150,37 @@ const MoleculeInfo = ({ selectedMolecule, labelColumn }: MoleculeInfoProps) => {
                           />
                         </Paper>
                       </ListItem>
-                    )
-                  )}
+                    ))}
+                  <ListItem>
+                    <Link
+                      sx={{ py: 1, fontSize: 16 }}
+                      href={`https://pubchem.ncbi.nlm.nih.gov/compound/${moleculeProperties.cid}`}
+                      variant="button"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      PubChem Link
+                    </Link>
+                  </ListItem>
                 </List>
+              ) : (
+                <Stack spacing={1.5} sx={{ py: 1 }}>
+                  {Array.from({ length: 7 }).map((_, i) => (
+                    <Skeleton
+                      variant="rounded"
+                      width="100%"
+                      height={55}
+                      animation="wave"
+                      key={i}
+                    />
+                  ))}
+                  <Skeleton
+                    variant="text"
+                    width="100%"
+                    height={60}
+                    animation="wave"
+                  />
+                </Stack>
               )}
             </Paper>
           </Box>

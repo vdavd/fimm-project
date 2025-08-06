@@ -454,13 +454,14 @@ const DrawPlot = ({
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
+              minHeight: "90vh",
             }}
           >
             <Paper
               elevation={3}
               sx={{
                 width: "75%",
-                height: 850,
+                height: "90vh",
                 px: 4,
                 py: 3,
                 my: 2,
