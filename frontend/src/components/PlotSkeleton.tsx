@@ -1,10 +1,6 @@
-import {
-  Box,
-  CircularProgress,
-  Paper,
-  Skeleton,
-  Typography,
-} from "@mui/material";
+import { Box, Paper, Skeleton, Typography } from "@mui/material";
+import { Helix } from "ldrs/react";
+import "ldrs/react/Helix.css";
 
 const PlotSkeleton = () => {
   return (
@@ -48,8 +44,8 @@ const PlotSkeleton = () => {
               alignItems: "center",
             }}
           >
-            <CircularProgress size={46} />
-            <Typography variant="body1" sx={{ mt: 1 }}>
+            <Helix size="80" color="#1f77b4" />
+            <Typography variant="body1" color="gray" sx={{ mt: 3 }}>
               Analyzing data...
             </Typography>
           </Box>

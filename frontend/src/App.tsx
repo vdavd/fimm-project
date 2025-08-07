@@ -27,14 +27,6 @@ const App = () => {
 
   const scrollTargetRef = useRef<HTMLDivElement>(null);
 
-  const handleScroll = () => {
-    setTimeout(() => {
-      scrollTargetRef.current?.scrollIntoView({ behavior: "smooth" });
-      console.log("i scrolled");
-      console.log("Ref:", scrollTargetRef.current);
-    }, 100);
-  };
-
   useEffect(() => {
     if (analysisInProcess && scrollTargetRef.current) {
       scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
@@ -60,7 +52,7 @@ const App = () => {
           px: 4,
           py: 3,
           borderRadius: 5,
-          backgroundColor: "rgba(255, 255, 255, 0.7)",
+          backgroundColor: "rgba(255, 255, 255, 0.3)",
         }}
       >
         {file ? (
@@ -102,36 +94,45 @@ const App = () => {
                 sx={{
                   display: "flex",
                   flexDirection: "row",
-                  justifyContent: "space-between",
+                  width: "100%",
                 }}
               >
-                <LabelTypeSelect
-                  labelType={labelType}
-                  setLabelType={setLabelType}
-                />
-                <DimRedMethodSelect
-                  dimRedMethod={dimRedMethod}
-                  setDimRedMethod={setDimRedMethod}
-                />
-              </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "50%",
+                    ml: 2,
+                  }}
+                >
+                  <FingerPrintTypeSelect
+                    fingerPrintType={fingerPrintType}
+                    setFingerPrintType={setFingerPrintType}
+                  />
+                  <DimRedMethodSelect
+                    dimRedMethod={dimRedMethod}
+                    setDimRedMethod={setDimRedMethod}
+                  />
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    width: "50%",
+                    ml: 2,
+                  }}
+                >
+                  <LabelTypeSelect
+                    labelType={labelType}
+                    setLabelType={setLabelType}
+                  />
 
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <FingerPrintTypeSelect
-                  fingerPrintType={fingerPrintType}
-                  setFingerPrintType={setFingerPrintType}
-                />
-                <RemoveOutliersSelect
-                  removeOutliers={removeOutliers}
-                  setremoveOutliers={setremoveOutliers}
-                />
+                  <RemoveOutliersSelect
+                    removeOutliers={removeOutliers}
+                    setremoveOutliers={setremoveOutliers}
+                  />
+                </Box>
               </Box>
-
               {parsedFile && smilesColumn && labelColumn && labelType && (
                 <UploadFile
                   parsedFile={parsedFile}
@@ -140,7 +141,6 @@ const App = () => {
                   dimRedMethod={dimRedMethod}
                   fingerPrintType={fingerPrintType}
                   setAnalysisInProcess={setAnalysisInProcess}
-                  handleScroll={handleScroll}
                 />
               )}
             </Paper>

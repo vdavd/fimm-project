@@ -14,7 +14,7 @@ const removeOutliersSelect = ({
   };
 
   return (
-    <FormControl sx={{ my: 1 }}>
+    <FormControl sx={{ my: 3 }}>
       <FormControlLabel
         control={<Switch onChange={handleChange} checked={removeOutliers} />}
         label="Remove outliers"

@@ -269,7 +269,9 @@ const DrawPlot = ({
               colorscale: colorScale,
               cmin: Math.min(...labelsAsNumber),
               cmax: Math.max(...labelsAsNumber),
-              colorbar: { title: { text: labelColumn, font: { size: 16 } } },
+              colorbar: {
+                title: { text: labelColumn, font: { size: 16 }, side: "right" },
+              },
               size: zoomedView ? 0.00001 : 8,
             },
             showlegend: false,
@@ -365,7 +367,7 @@ const DrawPlot = ({
           setLayout((prev) => ({
             ...prev,
             images: newImages,
-            hoverdistance: 40,
+            hoverdistance: 50,
           }));
           setZoomedView(true);
         }
@@ -470,13 +472,13 @@ const DrawPlot = ({
                 borderRadius: 3,
               }}
             >
-              <Box sx={{ width: 250 }}>
+              <Box sx={{ width: 350 }}>
                 <Typography>Molecule size</Typography>
                 <Slider
                   value={moleculeSize}
                   defaultValue={0.5}
-                  min={0.05}
-                  max={1.0}
+                  min={0.02}
+                  max={2.0}
                   step={0.005}
                   onChange={handleMoleculeSizeChange}
                   disabled={!zoomedView}
