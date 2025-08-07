@@ -6,6 +6,7 @@ interface SelectFileProps {
   setSmilesColumn: (smilesColumn: string) => void;
   setLabelColumn: (labelColumn: string) => void;
   setAnalyzedData: (analyzedData: string) => void;
+  setFileReady: (fileReady: boolean) => void;
 }
 
 const SelectFile = ({
@@ -14,6 +15,7 @@ const SelectFile = ({
   setSmilesColumn,
   setLabelColumn,
   setAnalyzedData,
+  setFileReady,
 }: SelectFileProps) => {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -22,6 +24,7 @@ const SelectFile = ({
     setAnalyzedData("");
     setSmilesColumn("");
     setLabelColumn("");
+    setFileReady(true);
   };
 
   return (
