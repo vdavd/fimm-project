@@ -9,6 +9,7 @@ interface UploadFileProps {
   dimRedMethod: DimRedMethodType;
   fingerPrintType: FingerPrintTypeType;
   setAnalysisInProcess: (analysisInProcess: boolean) => void;
+  buttonDisabled: boolean;
 }
 const UploadFile = ({
   parsedFile,
@@ -17,6 +18,7 @@ const UploadFile = ({
   dimRedMethod,
   fingerPrintType,
   setAnalysisInProcess,
+  buttonDisabled,
 }: UploadFileProps) => {
   const handleUpload = async () => {
     const formData = new FormData();
@@ -39,6 +41,7 @@ const UploadFile = ({
           onClick={handleUpload}
           className="submit"
           variant="contained"
+          disabled={buttonDisabled}
           sx={{ my: 2 }}
         >
           Upload

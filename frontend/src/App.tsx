@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Box, Container, Paper, Typography } from "@mui/material";
+import { Box, Container, Paper, Typography, Zoom } from "@mui/material";
 import UploadFile from "./components/UploadFile";
 import DrawPlot from "./components/DrawPlot";
 import ColumnSelect from "./components/ColumnSelect";
@@ -48,7 +48,7 @@ const App = () => {
         sx={{
           width: "100%",
           maxWidth: "90%",
-          minHeight: "90vh",
+          minHeight: analyzedData ? "210vh" : "90vh",
           px: 4,
           py: 3,
           borderRadius: 5,
@@ -102,7 +102,8 @@ const App = () => {
                     display: "flex",
                     flexDirection: "column",
                     width: "50%",
-                    ml: 2,
+                    pl: 2,
+                    borderLeft: "2px solid #ccc",
                   }}
                 >
                   <FingerPrintTypeSelect
@@ -120,6 +121,8 @@ const App = () => {
                     flexDirection: "column",
                     width: "50%",
                     ml: 2,
+                    pl: 2,
+                    borderLeft: "2px solid #ccc",
                   }}
                 >
                   <LabelTypeSelect
@@ -133,16 +136,17 @@ const App = () => {
                   />
                 </Box>
               </Box>
-              {parsedFile && smilesColumn && labelColumn && labelType && (
-                <UploadFile
-                  parsedFile={parsedFile}
-                  smilesColumn={smilesColumn}
-                  setAnalyzedData={setAnalyzedData}
-                  dimRedMethod={dimRedMethod}
-                  fingerPrintType={fingerPrintType}
-                  setAnalysisInProcess={setAnalysisInProcess}
-                />
-              )}
+              <UploadFile
+                parsedFile={parsedFile}
+                smilesColumn={smilesColumn}
+                setAnalyzedData={setAnalyzedData}
+                dimRedMethod={dimRedMethod}
+                fingerPrintType={fingerPrintType}
+                setAnalysisInProcess={setAnalysisInProcess}
+                buttonDisabled={
+                  !(parsedFile && smilesColumn && labelColumn && labelType)
+                }
+              />
             </Paper>
           </>
         ) : (

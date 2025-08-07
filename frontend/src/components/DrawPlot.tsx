@@ -4,7 +4,7 @@ import type { PlotParams } from "react-plotly.js";
 import type { Image } from "plotly.js";
 import { colorPalette50, colorScale } from "../constants";
 import { generateOutlineCircleSVG, getColorFromScale } from "../util/svgUtil";
-import { Box, Paper, Slider, Typography } from "@mui/material";
+import { Box, Paper, Slider, Typography, Zoom } from "@mui/material";
 import type { DimRedMethodType } from "../types";
 import type { PlotDataObject } from "../types";
 import MoleculeInfo from "./MoleculeInfo";
@@ -59,6 +59,7 @@ const DrawPlot = ({
   const [moleculeSize, setMoleculeSize] = useState(0.5);
   const [selectedMolecule, setSelectedMolecule] =
     useState<PlotDataObject | null>(null);
+  const [plotReady, setPlotReady] = useState(false);
 
   useEffect(() => {
     const isNumber = (value: unknown) => {
@@ -456,50 +457,56 @@ const DrawPlot = ({
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              minHeight: "90vh",
+              height: "105vh",
             }}
           >
-            <Paper
-              elevation={3}
-              sx={{
-                width: "75%",
-                height: "90vh",
-                px: 4,
-                py: 3,
-                my: 2,
-                mr: 1.5,
-                backgroundColor: "#f8f8f8",
-                borderRadius: 3,
-              }}
-            >
-              <Box sx={{ width: 350 }}>
-                <Typography>Molecule size</Typography>
-                <Slider
-                  value={moleculeSize}
-                  defaultValue={0.5}
-                  min={0.02}
-                  max={2.0}
-                  step={0.005}
-                  onChange={handleMoleculeSizeChange}
-                  disabled={!zoomedView}
+            <Zoom in={plotReady} timeout={500}>
+              <Paper
+                elevation={3}
+                sx={{
+                  width: "75%",
+                  height: "90%",
+                  px: 4,
+                  py: 3,
+                  my: 2,
+                  mr: 1.5,
+                  backgroundColor: "#f8f8f8",
+                  borderRadius: 3,
+                }}
+              >
+                <Box sx={{ width: 350 }}>
+                  <Typography>Molecule size</Typography>
+                  <Slider
+                    value={moleculeSize}
+                    defaultValue={0.5}
+                    min={0.02}
+                    max={2.0}
+                    step={0.005}
+                    onChange={handleMoleculeSizeChange}
+                    disabled={!zoomedView}
+                  />
+                </Box>
+                <Plot
+                  data={traces}
+                  layout={layout}
+                  onRelayout={handleRelayout}
+                  onDoubleClick={handleDoubleClick}
+                  onHover={handleHover}
+                  onUnhover={handleUnhover}
+                  onClick={handleClick}
+                  useResizeHandler
+                  style={{ width: "100%", height: "85%" }}
+                  config={{ responsive: true }}
+                  onInitialized={() => setPlotReady(true)}
+                  onUpdate={() => setPlotReady(true)}
                 />
-              </Box>
-              <Plot
-                data={traces}
-                layout={layout}
-                onRelayout={handleRelayout}
-                onDoubleClick={handleDoubleClick}
-                onHover={handleHover}
-                onUnhover={handleUnhover}
-                onClick={handleClick}
-                useResizeHandler
-                style={{ width: "100%", height: "90%" }}
-                config={{ responsive: true }}
-              />
-            </Paper>
+              </Paper>
+            </Zoom>
+
             <MoleculeInfo
               selectedMolecule={selectedMolecule}
               labelColumn={labelColumn}
+              plotReady={plotReady}
             />
           </Box>
         </>
