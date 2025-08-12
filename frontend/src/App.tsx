@@ -10,6 +10,7 @@ import DimRedMethodSelect from "./components/DimRedMethodSelect";
 import FingerPrintTypeSelect from "./components/FingerPrintTypeSelect";
 import RemoveOutliersSelect from "./components/RemoveOutliersSelect";
 import PlotSkeleton from "./components/PlotSkeleton";
+import VantaBackground from "./components/VantaBackground";
 
 const App = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -35,172 +36,175 @@ const App = () => {
   }, [analysisInProcess]);
 
   return (
-    <Container
-      maxWidth="xl"
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Paper
-        elevation={3}
+    <>
+      <VantaBackground />
+      <Container
+        maxWidth="xl"
         sx={{
-          width: "100%",
-          maxWidth: "90%",
-          minHeight: analyzedData ? "210vh" : "90vh",
-          px: 4,
-          py: 3,
-          borderRadius: 5,
-          backgroundColor: "rgba(255, 255, 255, 0.3)",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        {file ? (
-          <>
-            <Fade in={fileReady} timeout={500}>
-              <Box>
-                <Typography variant="h4" textAlign="center">
-                  Molecular Similarity Tool
-                </Typography>
-                <SelectFile
-                  size="small"
-                  setFile={setFile}
-                  setSmilesColumn={setSmilesColumn}
-                  setLabelColumn={setLabelColumn}
-                  setAnalyzedData={setAnalyzedData}
-                  setFileReady={setFileReady}
-                />
-              </Box>
-            </Fade>
-            <Slide in={fileReady} timeout={500} direction="up">
-              <Paper
-                elevation={3}
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  px: 4,
-                  py: 3,
-                  my: 4,
-                  backgroundColor: "#f8f8f8",
-                  borderRadius: 3,
-                }}
-              >
-                <ColumnSelect
-                  file={file}
-                  smilesColumn={smilesColumn}
-                  labelColumn={labelColumn}
-                  setParsedFile={setParsedFile}
-                  setSmilesColumn={setSmilesColumn}
-                  setLabelColumn={setLabelColumn}
-                  setLabelType={setLabelType}
-                  setHighlightedSmiles={setHighlightedSmiles}
-                />
-                <Box
+        <Paper
+          elevation={0}
+          sx={{
+            width: "100%",
+            maxWidth: "90%",
+            minHeight: analyzedData ? "210vh" : "90vh",
+            px: 4,
+            py: 3,
+            borderRadius: 5,
+            backgroundColor: "rgba(255, 255, 255, 0)",
+          }}
+        >
+          {file ? (
+            <>
+              <Fade in={fileReady} timeout={500}>
+                <Box>
+                  <Typography variant="h4" textAlign="center">
+                    Molecular Similarity Tool
+                  </Typography>
+                  <SelectFile
+                    size="small"
+                    setFile={setFile}
+                    setSmilesColumn={setSmilesColumn}
+                    setLabelColumn={setLabelColumn}
+                    setAnalyzedData={setAnalyzedData}
+                    setFileReady={setFileReady}
+                  />
+                </Box>
+              </Fade>
+              <Slide in={fileReady} timeout={500} direction="up">
+                <Paper
+                  elevation={3}
                   sx={{
                     display: "flex",
-                    flexDirection: "row",
-                    width: "100%",
+                    flexDirection: "column",
+                    px: 4,
+                    py: 3,
+                    my: 4,
+                    backgroundColor: "#f8f8f8",
+                    borderRadius: 3,
                   }}
                 >
+                  <ColumnSelect
+                    file={file}
+                    smilesColumn={smilesColumn}
+                    labelColumn={labelColumn}
+                    setParsedFile={setParsedFile}
+                    setSmilesColumn={setSmilesColumn}
+                    setLabelColumn={setLabelColumn}
+                    setLabelType={setLabelType}
+                    setHighlightedSmiles={setHighlightedSmiles}
+                  />
                   <Box
                     sx={{
                       display: "flex",
-                      flexDirection: "column",
-                      width: "50%",
-                      pl: 2,
-                      borderLeft: "2px solid #ccc",
+                      flexDirection: "row",
+                      width: "100%",
                     }}
                   >
-                    <FingerPrintTypeSelect
-                      fingerPrintType={fingerPrintType}
-                      setFingerPrintType={setFingerPrintType}
-                    />
-                    <DimRedMethodSelect
-                      dimRedMethod={dimRedMethod}
-                      setDimRedMethod={setDimRedMethod}
-                    />
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      width: "50%",
-                      ml: 2,
-                      pl: 2,
-                      borderLeft: "2px solid #ccc",
-                    }}
-                  >
-                    <LabelTypeSelect
-                      labelType={labelType}
-                      setLabelType={setLabelType}
-                    />
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "50%",
+                        pl: 2,
+                        borderLeft: "2px solid #ccc",
+                      }}
+                    >
+                      <FingerPrintTypeSelect
+                        fingerPrintType={fingerPrintType}
+                        setFingerPrintType={setFingerPrintType}
+                      />
+                      <DimRedMethodSelect
+                        dimRedMethod={dimRedMethod}
+                        setDimRedMethod={setDimRedMethod}
+                      />
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        width: "50%",
+                        ml: 2,
+                        pl: 2,
+                        borderLeft: "2px solid #ccc",
+                      }}
+                    >
+                      <LabelTypeSelect
+                        labelType={labelType}
+                        setLabelType={setLabelType}
+                      />
 
-                    <RemoveOutliersSelect
-                      removeOutliers={removeOutliers}
-                      setremoveOutliers={setremoveOutliers}
-                    />
+                      <RemoveOutliersSelect
+                        removeOutliers={removeOutliers}
+                        setremoveOutliers={setremoveOutliers}
+                      />
+                    </Box>
                   </Box>
-                </Box>
-                <UploadFile
-                  parsedFile={parsedFile}
-                  smilesColumn={smilesColumn}
-                  setAnalyzedData={setAnalyzedData}
-                  dimRedMethod={dimRedMethod}
-                  fingerPrintType={fingerPrintType}
-                  setAnalysisInProcess={setAnalysisInProcess}
-                  buttonDisabled={
-                    !(parsedFile && smilesColumn && labelColumn && labelType)
-                  }
-                />
-              </Paper>
-            </Slide>
-          </>
-        ) : (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              mt: 4,
-              gap: 4,
-            }}
-          >
-            <Typography variant="h2" textAlign="center">
-              Molecular Similarity Tool
-            </Typography>
-            <SelectFile
-              size="large"
-              setFile={setFile}
-              setSmilesColumn={setSmilesColumn}
-              setLabelColumn={setLabelColumn}
-              setAnalyzedData={setAnalyzedData}
-              setFileReady={setFileReady}
-            />
-          </Box>
-        )}
-
-        <div ref={scrollTargetRef}>
-          {analysisInProcess ? (
-            <PlotSkeleton />
+                  <UploadFile
+                    parsedFile={parsedFile}
+                    smilesColumn={smilesColumn}
+                    setAnalyzedData={setAnalyzedData}
+                    dimRedMethod={dimRedMethod}
+                    fingerPrintType={fingerPrintType}
+                    setAnalysisInProcess={setAnalysisInProcess}
+                    buttonDisabled={
+                      !(parsedFile && smilesColumn && labelColumn && labelType)
+                    }
+                  />
+                </Paper>
+              </Slide>
+            </>
           ) : (
-            analyzedData &&
-            labelColumn && (
-              <DrawPlot
-                analyzedData={analyzedData}
-                labelColumn={labelColumn}
-                smilesColumn={smilesColumn}
-                labelType={labelType}
-                highlightedSmiles={highlightedSmiles}
-                dimRedMethod={dimRedMethod}
-                removeOutliers={removeOutliers}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                mt: 4,
+                gap: 4,
+              }}
+            >
+              <Typography variant="h2" textAlign="center">
+                Molecular Similarity Tool
+              </Typography>
+              <SelectFile
+                size="large"
+                setFile={setFile}
+                setSmilesColumn={setSmilesColumn}
+                setLabelColumn={setLabelColumn}
+                setAnalyzedData={setAnalyzedData}
+                setFileReady={setFileReady}
               />
-            )
+            </Box>
           )}
-        </div>
-      </Paper>
-    </Container>
+
+          <div ref={scrollTargetRef}>
+            {analysisInProcess ? (
+              <PlotSkeleton />
+            ) : (
+              analyzedData &&
+              labelColumn && (
+                <DrawPlot
+                  analyzedData={analyzedData}
+                  labelColumn={labelColumn}
+                  smilesColumn={smilesColumn}
+                  labelType={labelType}
+                  highlightedSmiles={highlightedSmiles}
+                  dimRedMethod={dimRedMethod}
+                  removeOutliers={removeOutliers}
+                />
+              )
+            )}
+          </div>
+        </Paper>
+      </Container>
+    </>
   );
 };
 
