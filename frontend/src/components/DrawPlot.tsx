@@ -470,7 +470,6 @@ const DrawPlot = ({
                   py: 3,
                   my: 2,
                   mr: 1.5,
-                  backgroundColor: "#f8f8f8",
                   borderRadius: 3,
                 }}
               >

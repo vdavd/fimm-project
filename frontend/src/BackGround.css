@@ -1,0 +1,13 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background-image: url("./images/upscaled_depth.jpg");
+  background-size: cover; /* fill the screen */
+  background-position: center; /* keep it centered */
+  background-repeat: no-repeat; /* no tiling */
+  background-attachment: fixed; /* makes it stay still on scroll */
+}

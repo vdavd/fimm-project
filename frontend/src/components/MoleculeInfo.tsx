@@ -14,6 +14,7 @@ import {
 import type { PlotDataObject, MoleculeProperties } from "../types";
 import { useEffect, useState } from "react";
 import { getMoleculeData } from "../services/pubChemApi";
+import PubChemLogo from "../images/PubChem_logo.svg";
 
 interface MoleculeInfoProps {
   selectedMolecule: PlotDataObject | null;
@@ -103,7 +104,6 @@ const MoleculeInfo = ({
                   py: 3,
                   mt: 2,
                   ml: 1.5,
-                  backgroundColor: "#f8f8f8",
                   borderRadius: 3,
                 }}
               >
@@ -132,7 +132,6 @@ const MoleculeInfo = ({
                     mt: 2,
                     mb: 4,
                     ml: 1.5,
-                    backgroundColor: "#f8f8f8",
                     borderRadius: 3,
                     height: "90%",
                     overflow: "auto",
@@ -175,16 +174,22 @@ const MoleculeInfo = ({
                         <Link
                           sx={{ py: 1, fontSize: 16 }}
                           href={`https://pubchem.ncbi.nlm.nih.gov/compound/${moleculeProperties.cid}`}
-                          variant="button"
+                          underline="none"
                           target="_blank"
                           rel="noreferrer"
                         >
-                          PubChem Link
+                          <img
+                            src={PubChemLogo}
+                            alt="PubChem link"
+                            style={{
+                              width: "100%",
+                            }}
+                          />
                         </Link>
                       </ListItem>
                     </List>
                   ) : (
-                    <Stack spacing={1.5} sx={{ pt: 2 }}>
+                    <Stack spacing={1.5} sx={{ pt: 2, alignItems: "center" }}>
                       {Array.from({ length: 7 }).map((_, i) => (
                         <Skeleton
                           sx={{ borderRadius: 3 }}
@@ -196,9 +201,9 @@ const MoleculeInfo = ({
                         />
                       ))}
                       <Skeleton
-                        sx={{ ml: 10 }}
-                        variant="text"
-                        width="75%"
+                        sx={{ borderRadius: 1 }}
+                        variant="rectangular"
+                        width="85%"
                         height={60}
                         animation="wave"
                       />

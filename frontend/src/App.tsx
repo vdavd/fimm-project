@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from "react";
-import { Box, Container, Fade, Paper, Slide, Typography } from "@mui/material";
+import {
+  Box,
+  Container,
+  Fade,
+  Paper,
+  Slide,
+  ThemeProvider,
+  Typography,
+} from "@mui/material";
 import UploadFile from "./components/UploadFile";
 import DrawPlot from "./components/DrawPlot";
 import ColumnSelect from "./components/ColumnSelect";
@@ -10,7 +18,7 @@ import DimRedMethodSelect from "./components/DimRedMethodSelect";
 import FingerPrintTypeSelect from "./components/FingerPrintTypeSelect";
 import RemoveOutliersSelect from "./components/RemoveOutliersSelect";
 import PlotSkeleton from "./components/PlotSkeleton";
-import VantaBackground from "./components/VantaBackground";
+import theme from "./MuiTheme";
 
 const App = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -36,8 +44,7 @@ const App = () => {
   }, [analysisInProcess]);
 
   return (
-    <>
-      <VantaBackground />
+    <ThemeProvider theme={theme}>
       <Container
         maxWidth="xl"
         sx={{
@@ -56,14 +63,21 @@ const App = () => {
             px: 4,
             py: 3,
             borderRadius: 5,
-            backgroundColor: "rgba(255, 255, 255, 0)",
+            backgroundColor: "#FFFFFF00",
           }}
         >
           {file ? (
             <>
               <Fade in={fileReady} timeout={500}>
                 <Box>
-                  <Typography variant="h4" textAlign="center">
+                  <Typography
+                    sx={{
+                      color: "white",
+                      textShadow: "4px 4px 6px rgba(0,0,0,1)",
+                    }}
+                    variant="h3"
+                    textAlign="center"
+                  >
                     Molecular Similarity Tool
                   </Typography>
                   <SelectFile
@@ -85,7 +99,7 @@ const App = () => {
                     px: 4,
                     py: 3,
                     my: 4,
-                    backgroundColor: "#f8f8f8",
+                    //backgroundColor: "#f8f8f8",
                     borderRadius: 3,
                   }}
                 >
@@ -166,11 +180,18 @@ const App = () => {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                mt: 4,
-                gap: 4,
+                mt: 10,
+                gap: 6,
               }}
             >
-              <Typography variant="h2" textAlign="center">
+              <Typography
+                sx={{
+                  color: "white",
+                  textShadow: "8px 8px 10px rgba(0,0,0,1)",
+                }}
+                variant="h1"
+                textAlign="center"
+              >
                 Molecular Similarity Tool
               </Typography>
               <SelectFile
@@ -204,7 +225,7 @@ const App = () => {
           </div>
         </Paper>
       </Container>
-    </>
+    </ThemeProvider>
   );
 };
 

@@ -18,11 +18,10 @@ export const vantaBackground = () => {
           gyroControls: false,
           minHeight: 200.0,
           minWidth: 200.0,
-          scale: 1.2,
-          color1: 0x7c1fa4,
-          color2: 0x59b8e1,
-          size: 1.1,
-          speed: 1,
+          scale: 1.0,
+          color1: 0xc5,
+          color2: 0xb2e3ff,
+          speed: 0.75,
         })
       );
     }
