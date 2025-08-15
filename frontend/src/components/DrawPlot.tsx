@@ -194,7 +194,7 @@ const DrawPlot = ({
               color: "rgba(0,0,0,0)",
               line: {
                 width: 2,
-                color: "black",
+                color: "red",
               },
             },
             showlegend: false,
@@ -294,7 +294,7 @@ const DrawPlot = ({
               color: "rgba(0,0,0,0)",
               line: {
                 width: 2,
-                color: "black",
+                color: "red",
               },
             },
             showlegend: false,

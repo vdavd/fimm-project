@@ -34,9 +34,9 @@ const SelectFile = ({
           variant="contained"
           component="label"
           sx={{
-            height: 80,
-            width: 260,
-            fontSize: 32,
+            height: 65,
+            width: 210,
+            fontSize: 26,
             boxShadow: 10,
           }}
         >
@@ -50,7 +50,11 @@ const SelectFile = ({
           />
         </Button>
       ) : (
-        <Button variant="contained" component="label" sx={{ boxShadow: 3 }}>
+        <Button
+          variant="contained"
+          component="label"
+          sx={{ boxShadow: 3, position: "absolute", top: 20, right: 35 }}
+        >
           Select File
           <input
             id="file"

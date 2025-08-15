@@ -19,6 +19,8 @@ import FingerPrintTypeSelect from "./components/FingerPrintTypeSelect";
 import RemoveOutliersSelect from "./components/RemoveOutliersSelect";
 import PlotSkeleton from "./components/PlotSkeleton";
 import theme from "./MuiTheme";
+import fimmLogo from "./images/fimm_logo.png";
+import hyLogo from "./images/HY__LD01_LogoFP_EN_B3____BW.png";
 
 const App = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -69,7 +71,15 @@ const App = () => {
           {file ? (
             <>
               <Fade in={fileReady} timeout={500}>
-                <Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 10,
+                  }}
+                >
                   <Typography
                     sx={{
                       color: "white",
@@ -80,6 +90,23 @@ const App = () => {
                   >
                     Molecular Similarity Tool
                   </Typography>
+                  <img src={fimmLogo} height={80} />
+                  <img src={hyLogo} height={90} />
+                </Box>
+              </Fade>
+              <Slide in={fileReady} timeout={500} direction="up">
+                <Paper
+                  elevation={3}
+                  sx={{
+                    position: "relative",
+                    display: "flex",
+                    flexDirection: "column",
+                    px: 4,
+                    py: 3,
+                    my: 4,
+                    borderRadius: 3,
+                  }}
+                >
                   <SelectFile
                     size="small"
                     setFile={setFile}
@@ -88,21 +115,6 @@ const App = () => {
                     setAnalyzedData={setAnalyzedData}
                     setFileReady={setFileReady}
                   />
-                </Box>
-              </Fade>
-              <Slide in={fileReady} timeout={500} direction="up">
-                <Paper
-                  elevation={3}
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    px: 4,
-                    py: 3,
-                    my: 4,
-                    //backgroundColor: "#f8f8f8",
-                    borderRadius: 3,
-                  }}
-                >
                   <ColumnSelect
                     file={file}
                     smilesColumn={smilesColumn}
@@ -181,7 +193,7 @@ const App = () => {
                 justifyContent: "center",
                 alignItems: "center",
                 mt: 10,
-                gap: 6,
+                gap: 16,
               }}
             >
               <Typography
@@ -202,6 +214,19 @@ const App = () => {
                 setAnalyzedData={setAnalyzedData}
                 setFileReady={setFileReady}
               />
+              <Box
+                sx={{
+                  mt: "18%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 10,
+                }}
+              >
+                <img src={fimmLogo} height={120} />
+                <img src={hyLogo} height={140} />
+              </Box>
             </Box>
           )}
 
