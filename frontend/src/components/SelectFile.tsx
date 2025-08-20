@@ -1,4 +1,5 @@
-import { Button } from "@mui/material";
+import { Alert, Box, Button } from "@mui/material";
+import { useState } from "react";
 
 interface SelectFileProps {
   size: "small" | "large";
@@ -17,9 +18,27 @@ const SelectFile = ({
   setAnalyzedData,
   setFileReady,
 }: SelectFileProps) => {
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setFile(e.target.files[0]);
+  const [error, setError] = useState<string | null>(null);
+
+  const MAX_SIZE_MB = 5;
+  const MAX_SIZE = MAX_SIZE_MB * 1024 * 1024;
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      const file = event.target.files[0];
+
+      const MAX_SIZE_MB = 5;
+      const MAX_SIZE = MAX_SIZE_MB * 1024 * 1024;
+
+      if (file.size > MAX_SIZE) {
+        setError(
+          `File size too large. Maximum allowed size: ${MAX_SIZE_MB} MB`
+        );
+        return;
+      }
+
+      setError(null);
+      setFile(event.target.files[0]);
     }
     setAnalyzedData("");
     setSmilesColumn("");
@@ -30,40 +49,46 @@ const SelectFile = ({
   return (
     <div>
       {size === "large" ? (
-        <Button
-          variant="contained"
-          component="label"
-          sx={{
-            height: 65,
-            width: 210,
-            fontSize: 26,
-            boxShadow: 10,
-          }}
-        >
-          Select File
-          <input
-            id="file"
-            type="file"
-            accept=".csv"
-            onChange={handleFileChange}
-            hidden
-          />
-        </Button>
+        <>
+          <Button
+            variant="contained"
+            component="label"
+            sx={{
+              height: 65,
+              width: 210,
+              fontSize: 26,
+              boxShadow: 10,
+            }}
+          >
+            Select File
+            <input
+              id="file"
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              hidden
+            />
+          </Button>
+          {error && <Alert severity="error">{error}</Alert>}
+        </>
       ) : (
-        <Button
-          variant="contained"
-          component="label"
-          sx={{ boxShadow: 3, position: "absolute", top: 20, right: 35 }}
-        >
-          Select File
-          <input
-            id="file"
-            type="file"
-            accept=".csv"
-            onChange={handleFileChange}
-            hidden
-          />
-        </Button>
+        <>
+          <Button
+            variant="contained"
+            component="label"
+            sx={{ boxShadow: 3, position: "absolute", top: 20, right: 35 }}
+          >
+            Select File
+            <input
+              id="file"
+              type="file"
+              accept=".csv"
+              onChange={handleFileChange}
+              hidden
+            />
+          </Button>
+          {error && <Alert severity="error">{error}</Alert>}
+        </>
       )}
     </div>
   );

@@ -1,6 +1,10 @@
 import { uploadData } from "../services/data";
 import { Button } from "@mui/material";
-import type { DimRedMethodType, FingerPrintTypeType } from "../types";
+import type {
+  DimRedMethodType,
+  FileUploadParams,
+  FingerPrintTypeType,
+} from "../types";
 
 interface UploadFileProps {
   parsedFile: string;
@@ -23,18 +27,19 @@ const UploadFile = ({
   buttonDisabled,
 }: UploadFileProps) => {
   const handleUpload = async () => {
-    const formData = new FormData();
     if (parsedFile) {
-      formData.append("csv_data", parsedFile);
-      formData.append("smiles_column", smilesColumn);
-      formData.append("dim_red_method", dimRedMethod);
-      formData.append("fingerprint_type", fingerPrintType);
-      formData.append("remove_outliers", removeOutliers.toString());
+      const params: FileUploadParams = {
+        smilesColumn: smilesColumn,
+        dimRedMethod: dimRedMethod,
+        fingerprintType: fingerPrintType,
+        removeOutliers: removeOutliers.toString(),
+      };
+
+      setAnalysisInProcess(true);
+      const data = await uploadData(parsedFile, params);
+      setAnalyzedData(data);
+      setAnalysisInProcess(false);
     }
-    setAnalysisInProcess(true);
-    const data = await uploadData(formData);
-    setAnalyzedData(data);
-    setAnalysisInProcess(false);
   };
 
   return (
