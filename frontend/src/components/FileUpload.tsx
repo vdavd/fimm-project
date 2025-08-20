@@ -6,7 +6,7 @@ import type {
   FingerPrintTypeType,
 } from "../types";
 
-interface UploadFileProps {
+interface FileUploadProps {
   parsedFile: string;
   smilesColumn: string;
   setAnalyzedData: (analyzedData: string) => void;
@@ -16,7 +16,7 @@ interface UploadFileProps {
   setAnalysisInProcess: (analysisInProcess: boolean) => void;
   buttonDisabled: boolean;
 }
-const UploadFile = ({
+const FileUpload = ({
   parsedFile,
   smilesColumn,
   setAnalyzedData,
@@ -25,7 +25,7 @@ const UploadFile = ({
   removeOutliers,
   setAnalysisInProcess,
   buttonDisabled,
-}: UploadFileProps) => {
+}: FileUploadProps) => {
   const handleUpload = async () => {
     if (parsedFile) {
       const params: FileUploadParams = {
@@ -59,4 +59,4 @@ const UploadFile = ({
   );
 };
 
-export default UploadFile;
+export default FileUpload;

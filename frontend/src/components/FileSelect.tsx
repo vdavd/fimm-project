@@ -1,6 +1,6 @@
 import { Button } from "@mui/material";
 
-interface SelectFileProps {
+interface FileSelectProps {
   size: "small" | "large";
   setFile: (file: File | null) => void;
   setSmilesColumn: (smilesColumn: string) => void;
@@ -10,7 +10,7 @@ interface SelectFileProps {
   setFileSelectError: (fileSelectError: string | null) => void;
 }
 
-const SelectFile = ({
+const FileSelect = ({
   size,
   setFile,
   setSmilesColumn,
@@ -18,7 +18,7 @@ const SelectFile = ({
   setAnalyzedData,
   setFileReady,
   setFileSelectError,
-}: SelectFileProps) => {
+}: FileSelectProps) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const file = event.target.files[0];
@@ -88,4 +88,4 @@ const SelectFile = ({
   );
 };
 
-export default SelectFile;
+export default FileSelect;

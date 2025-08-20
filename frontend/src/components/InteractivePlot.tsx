@@ -9,7 +9,7 @@ import type { DimRedMethodType } from "../types";
 import type { PlotDataObject } from "../types";
 import MoleculeInfo from "./MoleculeInfo";
 
-interface DrawPlotProps {
+interface InteractivePlotProps {
   analyzedData: string;
   labelColumn: string;
   smilesColumn: string;
@@ -19,7 +19,7 @@ interface DrawPlotProps {
   removeOutliers: boolean;
 }
 
-const DrawPlot = ({
+const InteractivePlot = ({
   analyzedData,
   labelColumn,
   smilesColumn,
@@ -27,7 +27,7 @@ const DrawPlot = ({
   highlightedSmiles,
   dimRedMethod,
   removeOutliers,
-}: DrawPlotProps) => {
+}: InteractivePlotProps) => {
   const [parsedData, setParsedData] = useState<PlotDataObject[] | null>(null);
   const [plotData, setPlotData] = useState<PlotDataObject[] | null>(null);
   const [traces, setTraces] = useState<PlotParams["data"] | null>(null);
@@ -503,4 +503,4 @@ const DrawPlot = ({
   );
 };
 
-export default DrawPlot;
+export default InteractivePlot;
