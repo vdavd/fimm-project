@@ -81,7 +81,6 @@ const DrawPlot = ({
         value === null ? "NA" : value
       );
       const svg = Object.values(objectData.SVG);
-      const outlier = Object.values(objectData.isoforest_outlier);
 
       if (
         id.every((value) => isString(value)) &&
@@ -89,8 +88,7 @@ const DrawPlot = ({
         pc1.every((value) => isNumber(value)) &&
         pc2.every((value) => isNumber(value)) &&
         label.every((value) => isNumber(value) || isString(value)) &&
-        svg.every((value) => isString(value)) &&
-        outlier.every((value) => isNumber(value))
+        svg.every((value) => isString(value))
       ) {
         const parsedDataObjectList = pc1.map((_value, index) => {
           return {
@@ -101,7 +99,6 @@ const DrawPlot = ({
             label: label[index],
             svg: svg[index],
             color: "#000000",
-            outlier: outlier[index] < 0,
           };
         });
         setParsedData(parsedDataObjectList);
@@ -172,11 +169,7 @@ const DrawPlot = ({
           return coloredPlotData;
         };
 
-        const coloredPlotData = colorSvgsCategorical();
-
-        const traceData = removeOutliers
-          ? coloredPlotData.filter((pd) => !pd.outlier)
-          : coloredPlotData;
+        const traceData = colorSvgsCategorical();
 
         setPlotData(traceData);
 
@@ -251,11 +244,7 @@ const DrawPlot = ({
           return coloredPlotData;
         };
 
-        const coloredPlotData = colorSvgsContinuous();
-
-        const traceData = removeOutliers
-          ? coloredPlotData.filter((pd) => !pd.outlier)
-          : coloredPlotData;
+        const traceData = colorSvgsContinuous();
 
         setPlotData(traceData);
 

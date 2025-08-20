@@ -25,6 +25,7 @@ def generate_mols(df: pd.DataFrame, smiles_column: str):
     # Remove rows where mols couldn't be generated from smiles
     valid_mols_df = df.dropna(subset=['mol'])
     valid_mols_df = valid_mols_df.reset_index(drop=True)
+    print(f"{len(df)-len(valid_mols_df)} rows removed because of malformed smiles")
 
     return valid_mols_df
 
@@ -112,23 +113,32 @@ def generate_svgs(df: pd.DataFrame):
 
     return pd.DataFrame({'SVG': svg_images })
 
-def outlier_detection(features_df: pd.DataFrame):
+def outlier_detection(df: pd.DataFrame):
     iforest = IsolationForest(random_state=42)
-    prediction = iforest.fit_predict(features_df)
-    return prediction
+    prediction = iforest.fit_predict(df)
+    mask = prediction == 1
 
-def analyze_data(df: pd.DataFrame, smiles_column: str, dim_red_method: str, fingerprint_type: str):
+    return mask
+    df_without_outliers = df[mask].reset_index(drop=True)
+
+
+
+def analyze_data(df: pd.DataFrame, smiles_column: str, dim_red_method: str, fingerprint_type: str, remove_outliers: bool):
     # Remove missing values from SMILES column
 
     df_without_na = remove_missing_smiles(df, smiles_column)
     # Generate mols from SMILES
     df_with_mols = generate_mols(df_without_na, smiles_column)
 
-    # Generate SVG images from mol objects
-    df_with_svg = pd.concat([df_with_mols, generate_svgs(df_with_mols)], axis=1)
-
     # Generate Morgan fingerprints
     fingerprint_df = generate_fingerprints(df_with_mols, fingerprint_type)
+
+    if remove_outliers:
+        print("Removing outliers...")
+        mask = outlier_detection(fingerprint_df)
+        fingerprint_df = fingerprint_df[mask].reset_index(drop=True)
+        df_with_mols = df_with_mols[mask].reset_index(drop=True)
+        print(f"{(mask == False).sum()} outliers removed")
 
     if dim_red_method == "PCA":
         # Perform PCA on fingerprints
@@ -137,12 +147,11 @@ def analyze_data(df: pd.DataFrame, smiles_column: str, dim_red_method: str, fing
     elif dim_red_method == "UMAP":
         principal_df = perform_umap(fingerprint_df)
 
+    # Generate SVG images from mol objects
+    df_with_svg = pd.concat([df_with_mols, generate_svgs(df_with_mols)], axis=1)
+
     # Concatenate PCA results with df containing other data
     final_df = pd.concat([df_with_svg, principal_df], axis=1)
 
-    # Outlier detection
-    print("Detecting outliers....")
-    outlier_list = outlier_detection(fingerprint_df)
-    print(f"{np.sum(outlier_list < 0, axis=0)} outliers detected")
-    final_df["isoforest_outlier"] = outlier_list
     return final_df
+

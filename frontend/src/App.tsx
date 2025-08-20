@@ -177,6 +177,7 @@ const App = () => {
                     setAnalyzedData={setAnalyzedData}
                     dimRedMethod={dimRedMethod}
                     fingerPrintType={fingerPrintType}
+                    removeOutliers={removeOutliers}
                     setAnalysisInProcess={setAnalysisInProcess}
                     buttonDisabled={
                       !(parsedFile && smilesColumn && labelColumn && labelType)

@@ -23,7 +23,8 @@ def root():
 
 @app.post("/api/data")
 def process_data(csv_data: Annotated[str, Form()], smiles_column: Annotated[str, Form()],
-                 dim_red_method: Annotated[str, Form()], fingerprint_type: Annotated[str, Form()]):
+                 dim_red_method: Annotated[str, Form()], fingerprint_type: Annotated[str, Form()],
+                 remove_outliers: Annotated[bool, Form()]):
     df = pd.read_csv(StringIO(csv_data))
 
     df = df.reset_index(drop=True)
@@ -31,6 +32,6 @@ def process_data(csv_data: Annotated[str, Form()], smiles_column: Annotated[str,
     if not validate_dataframe(df, smiles_column):
         return {"error": "SMILES not found"}
     
-    result_df = analyze_data(df, smiles_column, dim_red_method, fingerprint_type)
+    result_df = analyze_data(df, smiles_column, dim_red_method, fingerprint_type, remove_outliers)
 
     return result_df.to_json()

@@ -10,7 +10,6 @@ export interface PlotDataObject {
   label: number | string;
   svg: string;
   color: string;
-  outlier: boolean;
 }
 
 type LabeledValue<T> = {
