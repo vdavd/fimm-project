@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {
+  Alert,
   Box,
   Container,
   Fade,
@@ -36,6 +37,7 @@ const App = () => {
   const [removeOutliers, setremoveOutliers] = useState(false);
   const [analysisInProcess, setAnalysisInProcess] = useState(false);
   const [fileReady, setFileReady] = useState(false);
+  const [fileSelectError, setFileSelectError] = useState<string | null>(null);
 
   const scrollTargetRef = useRef<HTMLDivElement>(null);
 
@@ -114,7 +116,20 @@ const App = () => {
                     setLabelColumn={setLabelColumn}
                     setAnalyzedData={setAnalyzedData}
                     setFileReady={setFileReady}
+                    setFileSelectError={setFileSelectError}
                   />
+                  {fileSelectError && (
+                    <Alert
+                      sx={{
+                        position: "absolute",
+                        top: 12,
+                        right: 180,
+                      }}
+                      severity="error"
+                    >
+                      {fileSelectError}
+                    </Alert>
+                  )}
                   <ColumnSelect
                     file={file}
                     smilesColumn={smilesColumn}
@@ -193,14 +208,14 @@ const App = () => {
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                mt: 10,
-                gap: 16,
               }}
             >
               <Typography
                 sx={{
                   color: "white",
                   textShadow: "8px 8px 10px rgba(0,0,0,1)",
+                  mt: 6,
+                  mb: 20,
                 }}
                 variant="h1"
                 textAlign="center"
@@ -214,15 +229,25 @@ const App = () => {
                 setLabelColumn={setLabelColumn}
                 setAnalyzedData={setAnalyzedData}
                 setFileReady={setFileReady}
+                setFileSelectError={setFileSelectError}
               />
+              {fileSelectError && (
+                <Alert sx={{ mt: 4 }} severity="error">
+                  {fileSelectError}
+                </Alert>
+              )}
               <Box
                 sx={{
-                  mt: "18%",
+                  position: "fixed",
+                  bottom: 0,
+                  left: 0,
+                  width: "100%",
                   display: "flex",
                   flexDirection: "row",
                   justifyContent: "center",
                   alignItems: "center",
                   gap: 10,
+                  pb: 2,
                 }}
               >
                 <img src={fimmLogo} height={120} />

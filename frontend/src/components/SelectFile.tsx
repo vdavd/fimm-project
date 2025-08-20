@@ -1,5 +1,4 @@
-import { Alert, Box, Button } from "@mui/material";
-import { useState } from "react";
+import { Button } from "@mui/material";
 
 interface SelectFileProps {
   size: "small" | "large";
@@ -8,6 +7,7 @@ interface SelectFileProps {
   setLabelColumn: (labelColumn: string) => void;
   setAnalyzedData: (analyzedData: string) => void;
   setFileReady: (fileReady: boolean) => void;
+  setFileSelectError: (fileSelectError: string | null) => void;
 }
 
 const SelectFile = ({
@@ -17,12 +17,8 @@ const SelectFile = ({
   setLabelColumn,
   setAnalyzedData,
   setFileReady,
+  setFileSelectError,
 }: SelectFileProps) => {
-  const [error, setError] = useState<string | null>(null);
-
-  const MAX_SIZE_MB = 5;
-  const MAX_SIZE = MAX_SIZE_MB * 1024 * 1024;
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const file = event.target.files[0];
@@ -31,13 +27,13 @@ const SelectFile = ({
       const MAX_SIZE = MAX_SIZE_MB * 1024 * 1024;
 
       if (file.size > MAX_SIZE) {
-        setError(
+        setFileSelectError(
           `File size too large. Maximum allowed size: ${MAX_SIZE_MB} MB`
         );
         return;
       }
 
-      setError(null);
+      setFileSelectError(null);
       setFile(event.target.files[0]);
     }
     setAnalyzedData("");
@@ -69,14 +65,13 @@ const SelectFile = ({
               hidden
             />
           </Button>
-          {error && <Alert severity="error">{error}</Alert>}
         </>
       ) : (
         <>
           <Button
             variant="contained"
             component="label"
-            sx={{ boxShadow: 3, position: "absolute", top: 20, right: 35 }}
+            sx={{ boxShadow: 3, position: "absolute", top: 15, right: 35 }}
           >
             Select File
             <input
@@ -87,7 +82,6 @@ const SelectFile = ({
               hidden
             />
           </Button>
-          {error && <Alert severity="error">{error}</Alert>}
         </>
       )}
     </div>
