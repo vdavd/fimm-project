@@ -8,6 +8,7 @@ const theme = createTheme({
     h1: { color: "#F6FAFC", fontFamily: '"Inter", Arial, sans-serif' },
     h2: { color: "#F6FAFC", fontFamily: '"Inter", Arial, sans-serif' },
     h3: { color: "#F6FAFC", fontFamily: '"Inter", Arial, sans-serif' },
+    h4: { color: "#F6FAFC", fontFamily: '"Inter", Arial, sans-serif' },
   },
   components: {
     MuiButton: {
@@ -19,6 +20,14 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: "#F6FAFC",
+        },
+      },
+    },
+    MuiLink: {
+      styleOverrides: {
+        root: {
+          color: "#F6FAFC",
+          textShadow: "4px 4px 6px rgba(0,0,0,1)",
         },
       },
     },

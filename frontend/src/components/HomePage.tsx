@@ -24,6 +24,7 @@ import RemoveOutliersSelect from "./RemoveOutliersSelect";
 import PlotSkeleton from "./PlotSkeleton";
 import fimmLogo from "../images/fimm_logo.png";
 import hyLogo from "../images/HY__LD01_LogoFP_EN_B3____BW.png";
+import NavBar from "./NavBar";
 
 const HomePage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -59,6 +60,7 @@ const HomePage = () => {
         alignItems: "center",
       }}
     >
+      <NavBar />
       <Paper
         elevation={0}
         sx={{
@@ -88,7 +90,7 @@ const HomePage = () => {
                     color: "white",
                     textShadow: "4px 4px 6px rgba(0,0,0,1)",
                   }}
-                  variant="h3"
+                  variant="h2"
                   textAlign="center"
                 >
                   Molecular Similarity Tool
@@ -216,7 +218,7 @@ const HomePage = () => {
                 color: "white",
                 textShadow: "8px 8px 10px rgba(0,0,0,1)",
                 mt: 6,
-                mb: 20,
+                mb: 16,
               }}
               variant="h1"
               textAlign="center"

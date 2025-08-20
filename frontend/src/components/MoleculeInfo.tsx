@@ -227,7 +227,7 @@ const MoleculeInfo = ({
             alignItems: "stretch",
           }}
         >
-          <Zoom in={plotReady} timeout={500}>
+          <Zoom in={plotReady} timeout={500} unmountOnExit>
             <Paper
               elevation={3}
               sx={{
