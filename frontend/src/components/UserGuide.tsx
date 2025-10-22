@@ -1,4 +1,5 @@
 import { Container, Typography } from "@mui/material";
+import NavBar from "./NavBar";
 
 const UserGuide = () => {
   return (
@@ -11,6 +12,7 @@ const UserGuide = () => {
         alignItems: "center",
       }}
     >
+      <NavBar />
       <Typography>This is the user guide page</Typography>
     </Container>
   );

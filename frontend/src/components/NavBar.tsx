@@ -8,7 +8,7 @@ const NavBar = () => {
       sx={{
         display: "flex",
         justifyContent: "center",
-        gap: 6,
+        gap: 10,
         width: "100%",
         backgroundColor: "transparent",
         mt: 2,
@@ -16,16 +16,42 @@ const NavBar = () => {
     >
       <Link
         href="/"
-        underline={location.pathname == "/" ? "always" : "none"}
         variant="h4"
+        underline="none"
+        sx={{
+          textShadow:
+            location.pathname == "/"
+              ? "8px 8px 5px rgba(0,0,0,1)"
+              : "4px 4px 6px rgba(0,0,0,1)",
+        }}
       >
-        HOME
+        Home
       </Link>
-      <Link href="/guide" underline="none" variant="h4">
-        USER GUIDE
+      <Link
+        href="/guide"
+        underline="none"
+        variant="h4"
+        sx={{
+          textShadow:
+            location.pathname == "/guide"
+              ? "8px 8px 5px rgba(0,0,0,1)"
+              : "4px 4px 6px rgba(0,0,0,1)",
+        }}
+      >
+        User guide
       </Link>
-      <Link href="/contact" underline="none" variant="h4">
-        CONTACT
+      <Link
+        href="/contact"
+        underline="none"
+        variant="h4"
+        sx={{
+          textShadow:
+            location.pathname == "/contact"
+              ? "8px 8px 5px rgba(0,0,0,1)"
+              : "4px 4px 6px rgba(0,0,0,1)",
+        }}
+      >
+        Contact
       </Link>
     </Box>
   );

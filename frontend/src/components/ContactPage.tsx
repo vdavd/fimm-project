@@ -1,4 +1,5 @@
 import { Container, Typography } from "@mui/material";
+import NavBar from "./NavBar";
 
 const ContactPage = () => {
   return (
@@ -11,6 +12,7 @@ const ContactPage = () => {
         alignItems: "center",
       }}
     >
+      <NavBar />
       <Typography>This is the contact page</Typography>
     </Container>
   );

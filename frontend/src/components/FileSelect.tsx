@@ -50,10 +50,11 @@ const FileSelect = ({
             variant="contained"
             component="label"
             sx={{
-              height: 65,
-              width: 210,
-              fontSize: 26,
+              py: 1,
+              px: 3,
+              fontSize: 34,
               boxShadow: 10,
+              textShadow: "4px 4px 6px rgba(0,0,0,0.5)",
             }}
           >
             Select File

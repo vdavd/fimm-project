@@ -25,6 +25,7 @@ import PlotSkeleton from "./PlotSkeleton";
 import fimmLogo from "../images/fimm_logo.png";
 import hyLogo from "../images/HY__LD01_LogoFP_EN_B3____BW.png";
 import NavBar from "./NavBar";
+import SelectExampleData from "./SelectExampleData";
 
 const HomePage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -218,22 +219,51 @@ const HomePage = () => {
                 color: "white",
                 textShadow: "8px 8px 10px rgba(0,0,0,1)",
                 mt: 6,
-                mb: 16,
+                mb: 18,
               }}
               variant="h1"
               textAlign="center"
             >
               Molecular Similarity Tool
             </Typography>
-            <SelectFile
-              size="large"
-              setFile={setFile}
-              setSmilesColumn={setSmilesColumn}
-              setLabelColumn={setLabelColumn}
-              setAnalyzedData={setAnalyzedData}
-              setFileReady={setFileReady}
-              setFileSelectError={setFileSelectError}
-            />
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <SelectFile
+                size="large"
+                setFile={setFile}
+                setSmilesColumn={setSmilesColumn}
+                setLabelColumn={setLabelColumn}
+                setAnalyzedData={setAnalyzedData}
+                setFileReady={setFileReady}
+                setFileSelectError={setFileSelectError}
+              />
+
+              <Typography
+                sx={{
+                  color: "white",
+                  textShadow: "4px 4px 8px rgba(0,0,0,1)",
+                  mx: 4,
+                }}
+                variant="h4"
+                textAlign="center"
+              >
+                OR
+              </Typography>
+
+              <SelectExampleData
+                setFile={setFile}
+                setFileReady={setFileReady}
+                setLabelColumn={setLabelColumn}
+                setLabelType={setLabelType}
+              />
+            </Box>
+
             {fileSelectError && (
               <Alert sx={{ mt: 4 }} severity="error">
                 {fileSelectError}
