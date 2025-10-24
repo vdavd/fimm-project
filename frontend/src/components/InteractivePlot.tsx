@@ -70,6 +70,10 @@ const InteractivePlot = ({
       return typeof value === "string";
     };
 
+    const isBoolean = (value: unknown) => {
+      return typeof value === "boolean";
+    };
+
     const parseData = (data: string) => {
       const objectData = JSON.parse(data);
 
@@ -87,7 +91,9 @@ const InteractivePlot = ({
         smiles.every((value) => isString(value)) &&
         pc1.every((value) => isNumber(value)) &&
         pc2.every((value) => isNumber(value)) &&
-        label.every((value) => isNumber(value) || isString(value)) &&
+        label.every(
+          (value) => isNumber(value) || isString(value) || isBoolean(value)
+        ) &&
         svg.every((value) => isString(value))
       ) {
         const parsedDataObjectList = pc1.map((_value, index) => {
@@ -205,7 +211,7 @@ const InteractivePlot = ({
             type: "scatter",
             name: label.toString(),
             marker: {
-              color: labelsWithColor[label],
+              color: labelsWithColor[label.toString()],
               size: 8,
               opacity: zoomedView ? 0 : 1,
             },
@@ -451,7 +457,7 @@ const InteractivePlot = ({
           >
             <Zoom in={plotReady} timeout={500}>
               <Paper
-                elevation={3}
+                elevation={10}
                 sx={{
                   width: "75%",
                   height: "90%",
@@ -484,7 +490,15 @@ const InteractivePlot = ({
                   onClick={handleClick}
                   useResizeHandler
                   style={{ width: "100%", height: "85%" }}
-                  config={{ responsive: true }}
+                  config={{
+                    responsive: true,
+                    modeBarButtonsToRemove: [
+                      "select2d",
+                      "lasso2d",
+                      "autoScale2d",
+                      "resetScale2d",
+                    ],
+                  }}
                   onInitialized={() => setPlotReady(true)}
                   onUpdate={() => setPlotReady(true)}
                 />

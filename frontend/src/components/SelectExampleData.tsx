@@ -1,5 +1,5 @@
 import { Button } from "@mui/material";
-import exampleDataUrl from "../data/BBBP_sample.csv";
+import exampleDataUrl from "../data/example_data_BBB.csv";
 import type { LabelType } from "../types";
 
 interface SelectExampleDataProps {
@@ -8,7 +8,7 @@ interface SelectExampleDataProps {
   setLabelColumn: (labelColumn: string) => void;
   setLabelType: (labelType: LabelType) => void;
 }
-const LABEL_COLUMN = "p_np";
+const LABEL_COLUMN = "passes_blood_brain_barrier";
 const LABEL_TYPE: LabelType = "categorical";
 
 const SelectExampleData = ({
@@ -23,7 +23,7 @@ const SelectExampleData = ({
     const blob = await response.blob();
 
     // Create a File object from the blob
-    const file = new File([blob], "example.pdf", { type: blob.type });
+    const file = new File([blob], "example_data_BBB.csv", { type: blob.type });
     setFile(file);
     setFileReady(true);
     setLabelColumn(LABEL_COLUMN);
@@ -38,7 +38,7 @@ const SelectExampleData = ({
       sx={{
         py: 1,
         px: 3,
-        fontSize: 34,
+        fontSize: 28,
         boxShadow: 10,
         textShadow: "4px 4px 6px rgba(0,0,0,0.5)",
       }}

@@ -14,7 +14,7 @@ export interface PlotDataObject {
   smiles: string;
   pc1: number;
   pc2: number;
-  label: number | string;
+  label: number | string | boolean;
   svg: string;
   color: string;
 }

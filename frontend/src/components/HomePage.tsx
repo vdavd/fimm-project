@@ -11,7 +11,7 @@ import {
 import UploadFile from "./FileUpload";
 import DrawPlot from "./InteractivePlot";
 import ColumnSelect from "./ColumnSelect";
-import SelectFile from "./FileSelect";
+import SelectFile from "./SelectFile";
 import LabelTypeSelect from "./LabelTypeSelect";
 import type {
   FingerPrintTypeType,
@@ -22,10 +22,9 @@ import DimRedMethodSelect from "./DimRedMethodSelect";
 import FingerPrintTypeSelect from "./FingerPrintTypeSelect";
 import RemoveOutliersSelect from "./RemoveOutliersSelect";
 import PlotSkeleton from "./PlotSkeleton";
-import fimmLogo from "../images/fimm_logo.png";
-import hyLogo from "../images/HY__LD01_LogoFP_EN_B3____BW.png";
 import NavBar from "./NavBar";
 import SelectExampleData from "./SelectExampleData";
+import HeaderBar from "./HeaderBar";
 
 const HomePage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -42,8 +41,13 @@ const HomePage = () => {
   const [analysisInProcess, setAnalysisInProcess] = useState(false);
   const [fileReady, setFileReady] = useState(false);
   const [fileSelectError, setFileSelectError] = useState<string | null>(null);
+  const [loaded, setLoaded] = useState(false);
 
   const scrollTargetRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
 
   useEffect(() => {
     if (analysisInProcess && scrollTargetRef.current) {
@@ -61,48 +65,31 @@ const HomePage = () => {
         alignItems: "center",
       }}
     >
-      <NavBar />
-      <Paper
-        elevation={0}
+      <Fade in={loaded} timeout={300}>
+        <Box>
+          <NavBar />
+        </Box>
+      </Fade>
+
+      <Box
         sx={{
           width: "100%",
           maxWidth: "90%",
           minHeight: analyzedData ? "210vh" : "90vh",
           px: 4,
           py: 3,
-          borderRadius: 5,
-          backgroundColor: "#FFFFFF00",
         }}
       >
         {file ? (
           <>
             <Fade in={fileReady} timeout={500}>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 10,
-                }}
-              >
-                <Typography
-                  sx={{
-                    color: "white",
-                    textShadow: "4px 4px 6px rgba(0,0,0,1)",
-                  }}
-                  variant="h2"
-                  textAlign="center"
-                >
-                  Molecular Similarity Tool
-                </Typography>
-                <img src={fimmLogo} height={80} />
-                <img src={hyLogo} height={90} />
+              <Box>
+                <HeaderBar />
               </Box>
             </Fade>
             <Slide in={fileReady} timeout={500} direction="up">
               <Paper
-                elevation={3}
+                elevation={10}
                 sx={{
                   position: "relative",
                   display: "flex",
@@ -214,78 +201,87 @@ const HomePage = () => {
               alignItems: "center",
             }}
           >
-            <Typography
-              sx={{
-                color: "white",
-                textShadow: "8px 8px 10px rgba(0,0,0,1)",
-                mt: 6,
-                mb: 18,
-              }}
-              variant="h1"
-              textAlign="center"
-            >
-              Molecular Similarity Tool
-            </Typography>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <SelectFile
-                size="large"
-                setFile={setFile}
-                setSmilesColumn={setSmilesColumn}
-                setLabelColumn={setLabelColumn}
-                setAnalyzedData={setAnalyzedData}
-                setFileReady={setFileReady}
-                setFileSelectError={setFileSelectError}
-              />
-
+            <Fade in={loaded} timeout={600}>
               <Typography
                 sx={{
-                  color: "white",
-                  textShadow: "4px 4px 8px rgba(0,0,0,1)",
-                  mx: 4,
+                  textShadow: "8px 8px 10px rgba(0,0,0,1)",
+                  mt: 8,
+                  mb: 18,
                 }}
-                variant="h4"
+                variant="h1"
+                fontSize={80}
                 textAlign="center"
               >
-                OR
+                Molecular Similarity Tool
               </Typography>
+            </Fade>
+            <Fade in={loaded} timeout={1200}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <SelectFile
+                  size="large"
+                  setFile={setFile}
+                  setSmilesColumn={setSmilesColumn}
+                  setLabelColumn={setLabelColumn}
+                  setAnalyzedData={setAnalyzedData}
+                  setFileReady={setFileReady}
+                  setFileSelectError={setFileSelectError}
+                />
 
-              <SelectExampleData
-                setFile={setFile}
-                setFileReady={setFileReady}
-                setLabelColumn={setLabelColumn}
-                setLabelType={setLabelType}
-              />
-            </Box>
+                <Typography
+                  sx={{
+                    color: "white",
+                    textShadow: "4px 4px 8px rgba(0,0,0,1)",
+                    mx: 4,
+                  }}
+                  variant="h5"
+                  textAlign="center"
+                >
+                  OR
+                </Typography>
+
+                <SelectExampleData
+                  setFile={setFile}
+                  setFileReady={setFileReady}
+                  setLabelColumn={setLabelColumn}
+                  setLabelType={setLabelType}
+                />
+              </Box>
+            </Fade>
 
             {fileSelectError && (
               <Alert sx={{ mt: 4 }} severity="error">
                 {fileSelectError}
               </Alert>
             )}
-            <Box
-              sx={{
-                position: "fixed",
-                bottom: 0,
-                left: 0,
-                width: "100%",
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                gap: 10,
-                pb: 2,
-              }}
-            >
-              <img src={fimmLogo} height={120} />
-              <img src={hyLogo} height={140} />
-            </Box>
+            <Fade in={loaded} timeout={600}>
+              <Box
+                sx={{
+                  position: "fixed",
+                  bottom: 0,
+                  left: 0,
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 10,
+                  pb: 2,
+                }}
+              >
+                <img src="images/fimm_logo.png" height={120} />
+                <img
+                  src="images/HY__LD01_LogoFP_EN_B3____BW.png"
+                  height={140}
+                />
+              </Box>
+            </Fade>
           </Box>
         )}
 
@@ -307,7 +303,7 @@ const HomePage = () => {
             )
           )}
         </div>
-      </Paper>
+      </Box>
     </Container>
   );
 };

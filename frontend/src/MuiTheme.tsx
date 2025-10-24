@@ -10,7 +10,18 @@ const theme = createTheme({
     h3: { color: "#F6FAFC", fontFamily: '"Inter", Arial, sans-serif' },
     h4: { color: "#F6FAFC", fontFamily: '"Inter", Arial, sans-serif' },
   },
+
   components: {
+    MuiListItemText: {
+      styleOverrides: {
+        primary: {
+          fontSize: 16,
+        },
+        secondary: {
+          fontSize: 15,
+        },
+      },
+    },
     MuiButton: {
       defaultProps: {
         style: { borderRadius: 40 },

@@ -14,7 +14,7 @@ const PlotSkeleton = () => {
         }}
       >
         <Paper
-          elevation={3}
+          elevation={10}
           sx={{
             width: "100%",
             height: "90vh",

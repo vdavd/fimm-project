@@ -52,7 +52,7 @@ const FileSelect = ({
             sx={{
               py: 1,
               px: 3,
-              fontSize: 34,
+              fontSize: 28,
               boxShadow: 10,
               textShadow: "4px 4px 6px rgba(0,0,0,0.5)",
             }}

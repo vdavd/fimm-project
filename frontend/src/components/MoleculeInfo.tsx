@@ -14,7 +14,6 @@ import {
 import type { PlotDataObject, MoleculeProperties } from "../types";
 import { useEffect, useState } from "react";
 import { getMoleculeData } from "../services/pubChemApi";
-import PubChemLogo from "../images/PubChem_logo.svg";
 
 interface MoleculeInfoProps {
   selectedMolecule: PlotDataObject | null;
@@ -98,7 +97,7 @@ const MoleculeInfo = ({
           >
             <Slide in={moleculeSelected} timeout={500} direction="down">
               <Paper
-                elevation={3}
+                elevation={10}
                 sx={{
                   px: 4,
                   py: 3,
@@ -125,7 +124,7 @@ const MoleculeInfo = ({
             >
               <Slide in={moleculeSelected} timeout={500} direction="up">
                 <Paper
-                  elevation={3}
+                  elevation={10}
                   sx={{
                     px: 4,
                     py: 3,
@@ -172,17 +171,20 @@ const MoleculeInfo = ({
                         ))}
                       <ListItem>
                         <Link
-                          sx={{ py: 1, fontSize: 16 }}
                           href={`https://pubchem.ncbi.nlm.nih.gov/compound/${moleculeProperties.cid}`}
                           underline="none"
                           target="_blank"
                           rel="noreferrer"
+                          sx={{ py: 1, fontSize: 16, lineHeight: 0 }}
                         >
                           <img
-                            src={PubChemLogo}
+                            src="/images/PubChem_logo.svg"
                             alt="PubChem link"
                             style={{
-                              width: "100%",
+                              width: "10em",
+                              height: "auto",
+                              display: "inline-block",
+                              verticalAlign: "middle",
                             }}
                           />
                         </Link>
@@ -229,7 +231,7 @@ const MoleculeInfo = ({
         >
           <Zoom in={plotReady} timeout={500} unmountOnExit>
             <Paper
-              elevation={3}
+              elevation={10}
               sx={{
                 height: "90%",
                 px: 4,
