@@ -26,7 +26,8 @@ async def process_data(    request: Request,
     smiles_column: str = Query(..., alias="smilesColumn"),
     dim_red_method: str = Query(..., alias="dimRedMethod"),
     fingerprint_type: str = Query(..., alias="fingerprintType"),
-    remove_outliers: bool = Query(..., alias="removeOutliers")
+    remove_outliers: bool = Query(..., alias="removeOutliers"),
+    number_neighbors_umap: int = Query(..., alias="numberNeighborsUmap")
 ):
     # Read raw CSV text from body
     csv_bytes = await request.body()
@@ -40,6 +41,6 @@ async def process_data(    request: Request,
     if not validate_dataframe(df, smiles_column):
         return {"error": "SMILES not found"}
     
-    result_df = analyze_data(df, smiles_column, dim_red_method, fingerprint_type, remove_outliers)
+    result_df = analyze_data(df, smiles_column, dim_red_method, fingerprint_type, remove_outliers, number_neighbors_umap)
 
     return result_df.to_json()

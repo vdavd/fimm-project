@@ -36,7 +36,7 @@ const UserGuide = () => {
         alignItems: "center",
       }}
     >
-      <Fade in={loaded} timeout={300}>
+      <Fade in={loaded} timeout={800}>
         <Box>
           <NavBar />
         </Box>
@@ -49,7 +49,7 @@ const UserGuide = () => {
           py: 3,
         }}
       >
-        <Fade in={loaded} timeout={600}>
+        <Fade in={loaded} timeout={800}>
           <Box>
             <HeaderBar />
           </Box>

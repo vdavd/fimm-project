@@ -38,6 +38,9 @@ const HomePage = () => {
   const [fingerPrintType, setFingerPrintType] =
     useState<FingerPrintTypeType>("Morgan");
   const [removeOutliers, setremoveOutliers] = useState(false);
+  const [numberNeighborsUmap, setNumberNeighborsUmap] = useState<number | null>(
+    25
+  );
   const [analysisInProcess, setAnalysisInProcess] = useState(false);
   const [fileReady, setFileReady] = useState(false);
   const [fileSelectError, setFileSelectError] = useState<string | null>(null);
@@ -65,7 +68,7 @@ const HomePage = () => {
         alignItems: "center",
       }}
     >
-      <Fade in={loaded} timeout={300}>
+      <Fade in={loaded} timeout={800}>
         <Box>
           <NavBar />
         </Box>
@@ -154,6 +157,8 @@ const HomePage = () => {
                     <DimRedMethodSelect
                       dimRedMethod={dimRedMethod}
                       setDimRedMethod={setDimRedMethod}
+                      numberNeighborsUmap={numberNeighborsUmap}
+                      setNumberNeighborsUmap={setNumberNeighborsUmap}
                     />
                   </Box>
                   <Box
@@ -184,6 +189,7 @@ const HomePage = () => {
                   dimRedMethod={dimRedMethod}
                   fingerPrintType={fingerPrintType}
                   removeOutliers={removeOutliers}
+                  numberNeighborsUmap={numberNeighborsUmap}
                   setAnalysisInProcess={setAnalysisInProcess}
                   buttonDisabled={
                     !(parsedFile && smilesColumn && labelColumn && labelType)
@@ -201,7 +207,7 @@ const HomePage = () => {
               alignItems: "center",
             }}
           >
-            <Fade in={loaded} timeout={600}>
+            <Fade in={loaded} timeout={800}>
               <Typography
                 sx={{
                   textShadow: "8px 8px 10px rgba(0,0,0,1)",
@@ -215,7 +221,7 @@ const HomePage = () => {
                 Molecular Similarity Tool
               </Typography>
             </Fade>
-            <Fade in={loaded} timeout={1200}>
+            <Fade in={loaded} timeout={800}>
               <Box
                 sx={{
                   display: "flex",
@@ -260,7 +266,7 @@ const HomePage = () => {
                 {fileSelectError}
               </Alert>
             )}
-            <Fade in={loaded} timeout={600}>
+            <Fade in={loaded} timeout={800}>
               <Box
                 sx={{
                   position: "fixed",

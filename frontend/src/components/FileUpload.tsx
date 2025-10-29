@@ -13,6 +13,7 @@ interface FileUploadProps {
   dimRedMethod: DimRedMethodType;
   fingerPrintType: FingerPrintTypeType;
   removeOutliers: boolean;
+  numberNeighborsUmap: number | null;
   setAnalysisInProcess: (analysisInProcess: boolean) => void;
   buttonDisabled: boolean;
 }
@@ -23,16 +24,25 @@ const FileUpload = ({
   dimRedMethod,
   fingerPrintType,
   removeOutliers,
+  numberNeighborsUmap,
   setAnalysisInProcess,
   buttonDisabled,
 }: FileUploadProps) => {
   const handleUpload = async () => {
+    const checkNumberNeighbors = (numberNeighbors: number | null): number => {
+      if (typeof numberNeighbors !== "number") {
+        return 25;
+      } else {
+        return numberNeighbors;
+      }
+    };
     if (parsedFile) {
       const params: FileUploadParams = {
         smilesColumn: smilesColumn,
         dimRedMethod: dimRedMethod,
         fingerprintType: fingerPrintType,
         removeOutliers: removeOutliers.toString(),
+        numberNeighborsUmap: checkNumberNeighbors(numberNeighborsUmap),
       };
 
       setAnalysisInProcess(true);

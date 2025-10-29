@@ -7,6 +7,7 @@ export interface FileUploadParams {
   dimRedMethod: string;
   fingerprintType: FingerPrintTypeType;
   removeOutliers: string;
+  numberNeighborsUmap: number;
 }
 
 export interface PlotDataObject {

@@ -77,9 +77,9 @@ def perform_pca(fingerprint_df: pd.DataFrame):
 
     return principal_df
 
-def perform_umap(fingerprint_df: pd.DataFrame):
-    print("performing umap...")
-    reducer = umap.UMAP(n_neighbors=100)
+def perform_umap(fingerprint_df: pd.DataFrame, n_neighbors):
+    print(f"performing umap with n_neighbors: {n_neighbors}...")
+    reducer = umap.UMAP(n_neighbors=n_neighbors)
 
     # Perform UMAP
     embedding = reducer.fit_transform(fingerprint_df)
@@ -123,7 +123,7 @@ def outlier_detection(df: pd.DataFrame):
 
 
 
-def analyze_data(df: pd.DataFrame, smiles_column: str, dim_red_method: str, fingerprint_type: str, remove_outliers: bool):
+def analyze_data(df: pd.DataFrame, smiles_column: str, dim_red_method: str, fingerprint_type: str, remove_outliers: bool, n_neighbors_umap: int):
     # Remove missing values from SMILES column
 
     df_without_na = remove_missing_smiles(df, smiles_column)
@@ -145,7 +145,7 @@ def analyze_data(df: pd.DataFrame, smiles_column: str, dim_red_method: str, fing
         principal_df = perform_pca(fingerprint_df)
 
     elif dim_red_method == "UMAP":
-        principal_df = perform_umap(fingerprint_df)
+        principal_df = perform_umap(fingerprint_df, n_neighbors_umap)
 
     # Generate SVG images from mol objects
     df_with_svg = pd.concat([df_with_mols, generate_svgs(df_with_mols)], axis=1)
