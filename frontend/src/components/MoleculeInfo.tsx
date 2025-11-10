@@ -111,7 +111,7 @@ const MoleculeInfo = ({
                   {labelColumn}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {selectedMolecule.label}
+                  {selectedMolecule.label.toString()}
                 </Typography>
               </Paper>
             </Slide>

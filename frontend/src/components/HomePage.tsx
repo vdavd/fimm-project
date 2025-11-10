@@ -9,7 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import UploadFile from "./FileUpload";
-import DrawPlot from "./InteractivePlot";
+import InteractivePlot from "./InteractivePlot";
 import ColumnSelect from "./ColumnSelect";
 import SelectFile from "./SelectFile";
 import LabelTypeSelect from "./LabelTypeSelect";
@@ -85,12 +85,12 @@ const HomePage = () => {
       >
         {file ? (
           <>
-            <Fade in={fileReady} timeout={500}>
+            <Fade in={fileReady} timeout={800}>
               <Box>
                 <HeaderBar />
               </Box>
             </Fade>
-            <Slide in={fileReady} timeout={500} direction="up">
+            <Slide in={fileReady} timeout={800} direction="up">
               <Paper
                 elevation={10}
                 sx={{
@@ -133,6 +133,7 @@ const HomePage = () => {
                   setLabelColumn={setLabelColumn}
                   setLabelType={setLabelType}
                   setHighlightedSmiles={setHighlightedSmiles}
+                  analyzedData={analyzedData}
                 />
                 <Box
                   sx={{
@@ -297,7 +298,7 @@ const HomePage = () => {
           ) : (
             analyzedData &&
             labelColumn && (
-              <DrawPlot
+              <InteractivePlot
                 analyzedData={analyzedData}
                 labelColumn={labelColumn}
                 smilesColumn={smilesColumn}

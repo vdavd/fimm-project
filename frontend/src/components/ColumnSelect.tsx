@@ -27,7 +27,10 @@ interface ColumnSelectProps {
   setLabelColumn: (labelcolumn: string) => void;
   setLabelType: (labelType: LabelType) => void;
   setHighlightedSmiles: (highLightedSmiles: string[]) => void;
+  analyzedData: string;
 }
+
+type RowObject = Record<string, any> & { molSimToolId: number };
 
 const ColumnSelect = ({
   file,
@@ -38,9 +41,11 @@ const ColumnSelect = ({
   setLabelColumn,
   setLabelType,
   setHighlightedSmiles,
+  analyzedData,
 }: ColumnSelectProps) => {
-  const [rows, setRows] = useState<object[]>([]);
+  const [rows, setRows] = useState<RowObject[]>([]);
   const [columns, setColumns] = useState<string[]>([]);
+  const [missingRowIds, setMissingRowIds] = useState<number[]>([]);
 
   const gridApiRef = useGridApiRef();
 
@@ -51,20 +56,14 @@ const ColumnSelect = ({
           const data = results.data as object[];
           const columns = Object.keys(data[0]);
 
-          if (columns.includes("id")) {
-            setRows(data);
-            setColumns(columns);
-            setParsedFile(Papa.unparse(data));
-          } else {
-            const dataWithIds = data.map((item, index) => ({
-              id: index,
-              ...item,
-            }));
-            setRows(dataWithIds);
-            const colsWithID = ["id", ...columns];
-            setColumns(colsWithID);
-            setParsedFile(Papa.unparse(dataWithIds));
-          }
+          const dataWithIds = data.map((item, index) => ({
+            molSimToolId: index,
+            ...item,
+          }));
+          setRows(dataWithIds);
+          const colsWithID = ["molSimToolId", ...columns];
+          setColumns(colsWithID);
+          setParsedFile(Papa.unparse(dataWithIds));
           // look for a smiles column in the data and automaticlly set it if found
           const smilesColumnCandidates = columns.filter((column) =>
             column.toLowerCase().includes("smiles")
@@ -78,6 +77,22 @@ const ColumnSelect = ({
       });
     }
   }, [file, setParsedFile, setSmilesColumn]);
+
+  useEffect(() => {
+    const findMissingIds = (analyzedData: string, rows: RowObject[]) => {
+      const objectData = JSON.parse(analyzedData);
+      const analyzedDataIds = Object.values(objectData.molSimToolId).map((id) =>
+        Number(id)
+      );
+      const rowIds = rows.map((row) => Number(row.molSimToolId));
+
+      const missingIds = rowIds.filter((id) => !analyzedDataIds.includes(id));
+      setMissingRowIds(missingIds);
+    };
+    if (analyzedData !== "" && rows.length !== 0) {
+      findMissingIds(analyzedData, rows);
+    }
+  }, [analyzedData]);
 
   useEffect(() => {
     if (gridApiRef.current) {
@@ -117,7 +132,9 @@ const ColumnSelect = ({
     setHighlightedSmiles(selectedIds);
   };
 
-  const gridColumns: GridColDef[] = columns.map((column) => {
+  const visibleColumns = columns.filter((column) => column !== "molSimToolId");
+
+  const gridColumns: GridColDef[] = visibleColumns.map((column) => {
     if (column === "id" || column === "") {
       return { field: column, headerName: column, width: 75 };
     }
@@ -138,12 +155,24 @@ const ColumnSelect = ({
     ...gridColumns,
   ];
 
+  const getRowId = (row: RowObject) => {
+    return row.molSimToolId;
+  };
+
   return (
     <>
       <Typography variant="h6">{file?.name}</Typography>
       <DataGrid
+        getRowId={getRowId}
         apiRef={gridApiRef}
-        sx={{ my: 2 }}
+        sx={{
+          my: 2,
+          "& .disabled-row": {
+            backgroundColor: "#f5f5f5",
+            color: "#9e9e9e",
+            pointerEvents: "none", // optional: block hover/click
+          },
+        }}
         rows={rows}
         columns={gridColumnsCheckboxSelection}
         initialState={{ pagination: { paginationModel: { pageSize: 5 } } }}
@@ -156,6 +185,12 @@ const ColumnSelect = ({
         disableRowSelectionOnClick
         onRowSelectionModelChange={handleHighlightSelectionChange}
         localeText={{ checkboxSelectionHeaderName: "Highlight" }}
+        isRowSelectable={(params) =>
+          !missingRowIds.includes(params.row.molSimToolId)
+        }
+        getRowClassName={(params) =>
+          missingRowIds.includes(params.row.molSimToolId) ? "disabled-row" : ""
+        }
       />
       <Box sx={{ minWidth: 120, display: "flex", gap: 2 }}>
         <FormControl fullWidth>
