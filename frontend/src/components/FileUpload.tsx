@@ -1,8 +1,8 @@
-import { uploadData } from "../services/data";
+import { uploadPlotData } from "../services/data";
 import { Button } from "@mui/material";
 import type {
   DimRedMethodType,
-  FileUploadParams,
+  PlotDataUploadParams,
   FingerPrintTypeType,
 } from "../types";
 
@@ -37,7 +37,7 @@ const FileUpload = ({
       }
     };
     if (parsedFile) {
-      const params: FileUploadParams = {
+      const params: PlotDataUploadParams = {
         smilesColumn: smilesColumn,
         dimRedMethod: dimRedMethod,
         fingerprintType: fingerPrintType,
@@ -46,7 +46,7 @@ const FileUpload = ({
       };
 
       setAnalysisInProcess(true);
-      const data = await uploadData(parsedFile, params);
+      const data = await uploadPlotData(parsedFile, params);
       setAnalyzedData(data);
       setAnalysisInProcess(false);
     }

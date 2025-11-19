@@ -2,12 +2,18 @@ export type LabelType = "categorical" | "continuous" | "";
 export type DimRedMethodType = "PCA" | "UMAP";
 export type FingerPrintTypeType = "Morgan" | "Topological" | "MACCS";
 
-export interface FileUploadParams {
+export interface PlotDataUploadParams {
   smilesColumn: string;
   dimRedMethod: string;
   fingerprintType: FingerPrintTypeType;
   removeOutliers: string;
   numberNeighborsUmap: number;
+}
+
+export interface SimilarityDataUploadParams {
+  smilesColumn: string;
+  targetSmiles: string[];
+  fingerprintType: string;
 }
 
 export interface PlotDataObject {

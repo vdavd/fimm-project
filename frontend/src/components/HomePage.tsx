@@ -25,6 +25,7 @@ import PlotSkeleton from "./PlotSkeleton";
 import NavBar from "./NavBar";
 import SelectExampleData from "./SelectExampleData";
 import HeaderBar from "./HeaderBar";
+import SimilaritySearch from "./SimilaritySearch";
 
 const HomePage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -90,6 +91,11 @@ const HomePage = () => {
                 <HeaderBar />
               </Box>
             </Fade>
+            <SimilaritySearch
+              parsedFile={parsedFile}
+              smilesColumn={smilesColumn}
+              fingerprintType={fingerPrintType}
+            />
             <Slide in={fileReady} timeout={800} direction="up">
               <Paper
                 elevation={10}
