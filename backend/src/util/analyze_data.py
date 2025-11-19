@@ -6,6 +6,7 @@ from sklearn.decomposition import PCA
 from sklearn.ensemble import IsolationForest
 import urllib.parse
 import umap
+from fastapi import HTTPException
 
 def remove_missing_smiles(df: pd.DataFrame, smiles_column: str):
     df_without_na = df.dropna(subset=[smiles_column])
@@ -17,7 +18,7 @@ def generate_mols(df: pd.DataFrame, smiles_column: str):
 
     # Generate mols objects for each smiles
     for smiles in df[smiles_column]:       
-        mol = MolFromSmiles(smiles, sanitize=True)
+        mol = MolFromSmiles(str(smiles), sanitize=True)
         molecules.append(mol)
     
     df['mol'] = molecules
@@ -26,6 +27,9 @@ def generate_mols(df: pd.DataFrame, smiles_column: str):
     valid_mols_df = df.dropna(subset=['mol'])
     valid_mols_df = valid_mols_df.reset_index(drop=True)
     print(f"{len(df)-len(valid_mols_df)} rows removed because of malformed smiles")
+
+    if len(valid_mols_df) == 0:
+        raise HTTPException(status_code=400, detail=f"Selected SMILES column has to contain at least one valid SMILES string")
 
     return valid_mols_df
 

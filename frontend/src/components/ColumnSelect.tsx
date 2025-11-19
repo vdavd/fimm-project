@@ -16,7 +16,7 @@ import type { SelectChangeEvent } from "@mui/material";
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
 import type { LabelType } from "../types";
-import SearchToolbar from "./SearchToolbar";
+import SearchToolbar from "./CustomToolbar";
 
 interface ColumnSelectProps {
   file: File | null;

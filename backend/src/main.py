@@ -3,7 +3,7 @@ from io import StringIO
 from typing import List
 from fastapi import FastAPI, Request, Query
 from fastapi.middleware.cors import CORSMiddleware
-from util.validation import validate_dataframe
+from util.validation import validate_dataframe, validate_target_smiles
 from util.analyze_data import analyze_plot_data
 from util.analyze_data import analyze_similarity_data
 app = FastAPI()
@@ -64,6 +64,8 @@ async def process_similarity_data(    request: Request,
     
     if not validate_dataframe(df, smiles_column):
         return {"error": "SMILES not found"}
+    
+    validate_target_smiles(target_smiles)
     
     result_df = analyze_similarity_data(df, smiles_column, target_smiles, fingerprint_type)
 

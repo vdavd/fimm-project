@@ -1,10 +1,11 @@
 import { uploadPlotData } from "../services/data";
-import { Button } from "@mui/material";
+import { Alert, Button, Stack } from "@mui/material";
 import type {
   DimRedMethodType,
   PlotDataUploadParams,
   FingerPrintTypeType,
 } from "../types";
+import { useState } from "react";
 
 interface FileUploadProps {
   parsedFile: string;
@@ -28,6 +29,8 @@ const FileUpload = ({
   setAnalysisInProcess,
   buttonDisabled,
 }: FileUploadProps) => {
+  const [plotDataError, setPlotDataError] = useState("");
+
   const handleUpload = async () => {
     const checkNumberNeighbors = (numberNeighbors: number | null): number => {
       if (typeof numberNeighbors !== "number") {
@@ -45,25 +48,38 @@ const FileUpload = ({
         numberNeighborsUmap: checkNumberNeighbors(numberNeighborsUmap),
       };
 
-      setAnalysisInProcess(true);
-      const data = await uploadPlotData(parsedFile, params);
-      setAnalyzedData(data);
-      setAnalysisInProcess(false);
+      setPlotDataError("");
+      try {
+        setAnalysisInProcess(true);
+        const data = await uploadPlotData(parsedFile, params);
+        setAnalyzedData(data);
+        setAnalysisInProcess(false);
+      } catch (err: any) {
+        setAnalysisInProcess(false);
+        setPlotDataError(err.message);
+      }
     }
   };
 
   return (
     <div>
       {parsedFile && (
-        <Button
-          onClick={handleUpload}
-          className="submit"
-          variant="contained"
-          disabled={buttonDisabled}
-          sx={{ my: 2 }}
-        >
-          Upload
-        </Button>
+        <Stack direction="row" spacing={2} alignItems="center" sx={{ my: 2 }}>
+          <Button
+            onClick={handleUpload}
+            className="submit"
+            variant="contained"
+            disabled={buttonDisabled}
+            sx={{ my: 2 }}
+          >
+            Upload
+          </Button>
+          {plotDataError && (
+            <Alert sx={{ my: 2 }} severity="error">
+              {plotDataError}
+            </Alert>
+          )}
+        </Stack>
       )}
     </div>
   );

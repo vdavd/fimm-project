@@ -1,15 +1,17 @@
-import { InputAdornment, TextField, Toolbar } from "@mui/material";
+import { InputAdornment, TextField, Toolbar, Tooltip } from "@mui/material";
 import {
+  ExportCsv,
   QuickFilter,
   QuickFilterClear,
   QuickFilterControl,
 } from "@mui/x-data-grid";
 import SearchIcon from "@mui/icons-material/Search";
 import CancelIcon from "@mui/icons-material/Cancel";
+import FileDownloadIcon from "@mui/icons-material/FileDownload";
 
 const SearchToolbar = () => {
   return (
-    <Toolbar>
+    <Toolbar sx={{ justifyContent: "space-between" }}>
       <QuickFilter expanded>
         <QuickFilterControl
           render={({ ref, ...other }) => (
@@ -47,6 +49,11 @@ const SearchToolbar = () => {
           )}
         />
       </QuickFilter>
+      <Tooltip title="Download as CSV">
+        <ExportCsv>
+          <FileDownloadIcon fontSize="small" />
+        </ExportCsv>
+      </Tooltip>
     </Toolbar>
   );
 };

@@ -1,4 +1,4 @@
-import { Button, Chip, Paper, Stack, TextField } from "@mui/material";
+import { Alert, Button, Chip, Paper, Stack, TextField } from "@mui/material";
 import { useState } from "react";
 import type { SimilarityDataUploadParams } from "../types";
 import { uploadSimilarityData } from "../services/data";
@@ -18,6 +18,7 @@ const SimilaritySearch = ({
   const [manualInputSmiles, setManualInputSmiles] = useState("");
   const [targetSmiles, setTargetSmiles] = useState<string[]>([]);
   const [similarityData, setSimilarityData] = useState("");
+  const [similarityDataError, setSimilarityDataError] = useState("");
 
   const handleButtonClick = () => {
     if (
@@ -44,13 +45,19 @@ const SimilaritySearch = ({
       parsedFile &&
       smilesColumn
     ) {
+      setSimilarityDataError("");
+
       const params: SimilarityDataUploadParams = {
         smilesColumn: smilesColumn,
         targetSmiles: targetSmiles,
         fingerprintType: fingerprintType,
       };
-      const data: string = await uploadSimilarityData(parsedFile, params);
-      setSimilarityData(data);
+      try {
+        const data: string = await uploadSimilarityData(parsedFile, params);
+        setSimilarityData(data);
+      } catch (err: any) {
+        setSimilarityDataError(err.message);
+      }
     }
   };
 
@@ -75,7 +82,11 @@ const SimilaritySearch = ({
           value={manualInputSmiles}
           onChange={(e) => setManualInputSmiles(e.target.value)}
         />
-        <Button variant="contained" onClick={handleButtonClick}>
+        <Button
+          variant="contained"
+          onClick={handleButtonClick}
+          disabled={targetSmiles.length >= 5}
+        >
           Add
         </Button>
       </Stack>
@@ -94,9 +105,18 @@ const SimilaritySearch = ({
           />
         ))}
       </Stack>
-      <Button variant="contained" onClick={handleUpload}>
+      <Button
+        variant="contained"
+        onClick={handleUpload}
+        disabled={targetSmiles.length > 5}
+      >
         Upload
       </Button>
+      {similarityDataError && (
+        <Alert sx={{}} severity="error">
+          {similarityDataError}
+        </Alert>
+      )}
       {similarityData && (
         <SimilaritySearchResult similarityData={similarityData} />
       )}
