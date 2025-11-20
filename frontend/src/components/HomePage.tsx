@@ -12,21 +12,18 @@ import UploadFile from "./FileUpload";
 import InteractivePlot from "./InteractivePlot";
 import DisplayData from "./DisplayData";
 import SelectFile from "./SelectFile";
-import LabelTypeSelect from "./LabelTypeSelect";
 import type {
   FingerPrintTypeType,
   DimRedMethodType,
   LabelType,
   RowObject,
 } from "../types";
-import DimRedMethodSelect from "./DimRedMethodSelect";
-import FingerPrintTypeSelect from "./FingerPrintTypeSelect";
-import RemoveOutliersSelect from "./RemoveOutliersSelect";
 import PlotSkeleton from "./PlotSkeleton";
 import NavBar from "./NavBar";
 import SelectExampleData from "./SelectExampleData";
 import HeaderBar from "./HeaderBar";
-import SimilaritySearch from "./SimilaritySearch";
+import VisualizationSettings from "./VisualizationSettings";
+import SimilaritySearchSettings from "./SimilaritySearchSettings";
 
 const HomePage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -94,10 +91,9 @@ const HomePage = () => {
                 <HeaderBar />
               </Box>
             </Fade>
-            <SimilaritySearch
+            <SimilaritySearchSettings
               parsedFile={parsedFile}
-              smilesColumn={smilesColumn}
-              fingerprintType={fingerPrintType}
+              columns={columns}
             />
             <Slide in={fileReady} timeout={800} direction="up">
               <Paper
@@ -139,63 +135,29 @@ const HomePage = () => {
                   columns={columns}
                   setRows={setRows}
                   setColumns={setColumns}
-                  smilesColumn={smilesColumn}
-                  labelColumn={labelColumn}
                   setParsedFile={setParsedFile}
                   setSmilesColumn={setSmilesColumn}
-                  setLabelColumn={setLabelColumn}
-                  setLabelType={setLabelType}
                   setHighlightedSmiles={setHighlightedSmiles}
                   analyzedData={analyzedData}
                 />
-                <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    width: "100%",
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      width: "50%",
-                      pl: 2,
-                      borderLeft: "2px solid #ccc",
-                    }}
-                  >
-                    <FingerPrintTypeSelect
-                      fingerPrintType={fingerPrintType}
-                      setFingerPrintType={setFingerPrintType}
-                    />
-                    <DimRedMethodSelect
-                      dimRedMethod={dimRedMethod}
-                      setDimRedMethod={setDimRedMethod}
-                      numberNeighborsUmap={numberNeighborsUmap}
-                      setNumberNeighborsUmap={setNumberNeighborsUmap}
-                    />
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      width: "50%",
-                      ml: 2,
-                      pl: 2,
-                      borderLeft: "2px solid #ccc",
-                    }}
-                  >
-                    <LabelTypeSelect
-                      labelType={labelType}
-                      setLabelType={setLabelType}
-                    />
-
-                    <RemoveOutliersSelect
-                      removeOutliers={removeOutliers}
-                      setremoveOutliers={setremoveOutliers}
-                    />
-                  </Box>
-                </Box>
+                <VisualizationSettings
+                  columns={columns}
+                  rows={rows}
+                  labelColumn={labelColumn}
+                  setLabelColumn={setLabelColumn}
+                  smilesColumn={smilesColumn}
+                  setSmilesColumn={setSmilesColumn}
+                  labelType={labelType}
+                  setLabelType={setLabelType}
+                  fingerPrintType={fingerPrintType}
+                  setFingerPrintType={setFingerPrintType}
+                  dimRedMethod={dimRedMethod}
+                  setDimRedMethod={setDimRedMethod}
+                  numberNeighborsUmap={numberNeighborsUmap}
+                  setNumberNeighborsUmap={setNumberNeighborsUmap}
+                  removeOutliers={removeOutliers}
+                  setremoveOutliers={setremoveOutliers}
+                />
                 <UploadFile
                   parsedFile={parsedFile}
                   smilesColumn={smilesColumn}

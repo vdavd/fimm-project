@@ -4,13 +4,11 @@ import {
   useGridApiRef,
 } from "@mui/x-data-grid";
 import type { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
-import { Box, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
-import type { LabelType, RowObject } from "../types";
+import type { RowObject } from "../types";
 import SearchToolbar from "./CustomToolbar";
-import SmilesColumnSelect from "./SmilesColumnSelect";
-import LabelColumnSelect from "./LabelColumnSelect";
 
 interface DisplayDataProps {
   file: File | null;
@@ -18,12 +16,8 @@ interface DisplayDataProps {
   columns: string[];
   setRows: (rows: RowObject[]) => void;
   setColumns: (columns: string[]) => void;
-  smilesColumn: string;
-  labelColumn: string;
   setParsedFile: (parsedFile: string) => void;
   setSmilesColumn: (smilesColumn: string) => void;
-  setLabelColumn: (labelcolumn: string) => void;
-  setLabelType: (labelType: LabelType) => void;
   setHighlightedSmiles: (highLightedSmiles: string[]) => void;
   analyzedData: string;
 }
@@ -34,12 +28,8 @@ const DisplayData = ({
   columns,
   setRows,
   setColumns,
-  smilesColumn,
-  labelColumn,
   setParsedFile,
   setSmilesColumn,
-  setLabelColumn,
-  setLabelType,
   setHighlightedSmiles,
   analyzedData,
 }: DisplayDataProps) => {
@@ -166,20 +156,6 @@ const DisplayData = ({
           missingRowIds.includes(params.row.molSimToolId) ? "disabled-row" : ""
         }
       />
-      <Box sx={{ minWidth: 120, display: "flex", gap: 2 }}>
-        <SmilesColumnSelect
-          columns={columns}
-          smilesColumn={smilesColumn}
-          setSmilesColumn={setSmilesColumn}
-        />
-        <LabelColumnSelect
-          columns={columns}
-          rows={rows}
-          labelColumn={labelColumn}
-          setLabelColumn={setLabelColumn}
-          setLabelType={setLabelType}
-        />
-      </Box>
     </>
   );
 };
