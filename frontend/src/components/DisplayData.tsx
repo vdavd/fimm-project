@@ -4,22 +4,20 @@ import {
   useGridApiRef,
 } from "@mui/x-data-grid";
 import type { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
-import {
-  Box,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  Typography,
-} from "@mui/material";
-import type { SelectChangeEvent } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
-import type { LabelType } from "../types";
+import type { LabelType, RowObject } from "../types";
 import SearchToolbar from "./CustomToolbar";
+import SmilesColumnSelect from "./SmilesColumnSelect";
+import LabelColumnSelect from "./LabelColumnSelect";
 
-interface ColumnSelectProps {
+interface DisplayDataProps {
   file: File | null;
+  rows: RowObject[];
+  columns: string[];
+  setRows: (rows: RowObject[]) => void;
+  setColumns: (columns: string[]) => void;
   smilesColumn: string;
   labelColumn: string;
   setParsedFile: (parsedFile: string) => void;
@@ -30,10 +28,12 @@ interface ColumnSelectProps {
   analyzedData: string;
 }
 
-type RowObject = Record<string, any> & { molSimToolId: number };
-
-const ColumnSelect = ({
+const DisplayData = ({
   file,
+  rows,
+  columns,
+  setRows,
+  setColumns,
   smilesColumn,
   labelColumn,
   setParsedFile,
@@ -42,9 +42,7 @@ const ColumnSelect = ({
   setLabelType,
   setHighlightedSmiles,
   analyzedData,
-}: ColumnSelectProps) => {
-  const [rows, setRows] = useState<RowObject[]>([]);
-  const [columns, setColumns] = useState<string[]>([]);
+}: DisplayDataProps) => {
   const [missingRowIds, setMissingRowIds] = useState<number[]>([]);
 
   const gridApiRef = useGridApiRef();
@@ -102,30 +100,6 @@ const ColumnSelect = ({
       });
     }
   }, [rows, gridApiRef]);
-
-  const handleSmilesColumnChange = (event: SelectChangeEvent) => {
-    const selectedColumn = event.target.value;
-    setSmilesColumn(selectedColumn);
-  };
-
-  const handleLabelColumnChange = (event: SelectChangeEvent) => {
-    const selectedColumn = event.target.value;
-    setLabelColumn(event.target.value);
-
-    // use number of unique values to guess whether the label is continuous or categorical
-    const columnValues = rows.map(
-      (row) => row[selectedColumn as keyof typeof row]
-    );
-    const uniqueValues = [...new Set(columnValues)];
-    if (
-      uniqueValues.length / columnValues.length < 0.1 &&
-      uniqueValues.length <= 20
-    ) {
-      setLabelType("categorical");
-    } else {
-      setLabelType("continuous");
-    }
-  };
 
   const handleHighlightSelectionChange = (selection: GridRowSelectionModel) => {
     const selectedIds = [...selection.ids.keys()].map((id) => String(id));
@@ -193,47 +167,21 @@ const ColumnSelect = ({
         }
       />
       <Box sx={{ minWidth: 120, display: "flex", gap: 2 }}>
-        <FormControl fullWidth>
-          <InputLabel id="smiles-select" sx={{ my: 2 }}>
-            SMILES
-          </InputLabel>
-          <Select
-            sx={{ my: 2 }}
-            labelId="smiles-select"
-            id="smiles-select"
-            value={smilesColumn}
-            label="SMILES"
-            onChange={handleSmilesColumnChange}
-          >
-            {columns
-              .filter((column) => column !== "id")
-              .map((column) => (
-                <MenuItem value={column}>{column}</MenuItem>
-              ))}
-          </Select>
-        </FormControl>
-        <FormControl fullWidth>
-          <InputLabel id="label-select" sx={{ my: 2 }}>
-            Labels
-          </InputLabel>
-          <Select
-            sx={{ my: 2 }}
-            labelId="label-select"
-            id="label-select"
-            value={labelColumn}
-            label="Labels"
-            onChange={handleLabelColumnChange}
-          >
-            {columns
-              .filter((column) => column !== "id")
-              .map((column) => (
-                <MenuItem value={column}>{column}</MenuItem>
-              ))}
-          </Select>
-        </FormControl>
+        <SmilesColumnSelect
+          columns={columns}
+          smilesColumn={smilesColumn}
+          setSmilesColumn={setSmilesColumn}
+        />
+        <LabelColumnSelect
+          columns={columns}
+          rows={rows}
+          labelColumn={labelColumn}
+          setLabelColumn={setLabelColumn}
+          setLabelType={setLabelType}
+        />
       </Box>
     </>
   );
 };
 
-export default ColumnSelect;
+export default DisplayData;

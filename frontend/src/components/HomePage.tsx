@@ -10,13 +10,14 @@ import {
 } from "@mui/material";
 import UploadFile from "./FileUpload";
 import InteractivePlot from "./InteractivePlot";
-import ColumnSelect from "./ColumnSelect";
+import DisplayData from "./DisplayData";
 import SelectFile from "./SelectFile";
 import LabelTypeSelect from "./LabelTypeSelect";
 import type {
   FingerPrintTypeType,
   DimRedMethodType,
   LabelType,
+  RowObject,
 } from "../types";
 import DimRedMethodSelect from "./DimRedMethodSelect";
 import FingerPrintTypeSelect from "./FingerPrintTypeSelect";
@@ -31,6 +32,8 @@ const HomePage = () => {
   const [file, setFile] = useState<File | null>(null);
   const [parsedFile, setParsedFile] = useState("");
   const [analyzedData, setAnalyzedData] = useState("");
+  const [rows, setRows] = useState<RowObject[]>([]);
+  const [columns, setColumns] = useState<string[]>([]);
   const [smilesColumn, setSmilesColumn] = useState("");
   const [labelColumn, setLabelColumn] = useState("");
   const [labelType, setLabelType] = useState<LabelType>("");
@@ -130,8 +133,12 @@ const HomePage = () => {
                     {fileSelectError}
                   </Alert>
                 )}
-                <ColumnSelect
+                <DisplayData
                   file={file}
+                  rows={rows}
+                  columns={columns}
+                  setRows={setRows}
+                  setColumns={setColumns}
                   smilesColumn={smilesColumn}
                   labelColumn={labelColumn}
                   setParsedFile={setParsedFile}

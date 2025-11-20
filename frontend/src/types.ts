@@ -2,6 +2,8 @@ export type LabelType = "categorical" | "continuous" | "";
 export type DimRedMethodType = "PCA" | "UMAP";
 export type FingerPrintTypeType = "Morgan" | "Topological" | "MACCS";
 
+export type RowObject = Record<string, any> & { molSimToolId: number };
+
 export interface PlotDataUploadParams {
   smilesColumn: string;
   dimRedMethod: string;
