@@ -44,7 +44,6 @@ const SimilaritySearchResult = ({
   return (
     <DataGrid
       getRowId={getRowId}
-      //apiRef={gridApiRef}
       sx={{
         my: 2,
       }}

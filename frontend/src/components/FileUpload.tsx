@@ -43,7 +43,7 @@ const FileUpload = ({
       const params: PlotDataUploadParams = {
         smilesColumn: smilesColumn,
         dimRedMethod: dimRedMethod,
-        fingerprintType: fingerPrintType,
+        fingerPrintType: fingerPrintType,
         removeOutliers: removeOutliers.toString(),
         numberNeighborsUmap: checkNumberNeighbors(numberNeighborsUmap),
       };

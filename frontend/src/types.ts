@@ -1,13 +1,14 @@
 export type LabelType = "categorical" | "continuous" | "";
 export type DimRedMethodType = "PCA" | "UMAP";
 export type FingerPrintTypeType = "Morgan" | "Topological" | "MACCS";
+export type AnalysisMode = "Visualization" | "Similarity";
 
 export type RowObject = Record<string, any> & { molSimToolId: number };
 
 export interface PlotDataUploadParams {
   smilesColumn: string;
   dimRedMethod: string;
-  fingerprintType: FingerPrintTypeType;
+  fingerPrintType: FingerPrintTypeType;
   removeOutliers: string;
   numberNeighborsUmap: number;
 }
@@ -15,7 +16,7 @@ export interface PlotDataUploadParams {
 export interface SimilarityDataUploadParams {
   smilesColumn: string;
   targetSmiles: string[];
-  fingerprintType: string;
+  fingerPrintType: string;
 }
 
 export interface PlotDataObject {

@@ -23,8 +23,10 @@ const theme = createTheme({
       },
     },
     MuiButton: {
-      defaultProps: {
-        style: { borderRadius: 40 },
+      styleOverrides: {
+        contained: {
+          borderRadius: 40,
+        },
       },
     },
     MuiPaper: {

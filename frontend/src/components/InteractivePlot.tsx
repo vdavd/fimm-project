@@ -75,9 +75,7 @@ const InteractivePlot = ({
     };
 
     const parseData = (data: string) => {
-      console.log("before");
       const objectData = JSON.parse(data);
-      console.log("after");
 
       const id = Object.values(objectData.molSimToolId).map((id) => String(id));
       const smiles = Object.values(objectData[smilesColumn]);

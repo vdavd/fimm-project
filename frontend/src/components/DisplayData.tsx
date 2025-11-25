@@ -4,7 +4,7 @@ import {
   useGridApiRef,
 } from "@mui/x-data-grid";
 import type { GridColDef, GridRowSelectionModel } from "@mui/x-data-grid";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import Papa from "papaparse";
 import type { RowObject } from "../types";
@@ -124,7 +124,7 @@ const DisplayData = ({
   };
 
   return (
-    <>
+    <Box sx={{ pb: 2, borderBottom: "2px solid #ccc" }}>
       <Typography variant="h6">{file?.name}</Typography>
       <DataGrid
         getRowId={getRowId}
@@ -156,7 +156,7 @@ const DisplayData = ({
           missingRowIds.includes(params.row.molSimToolId) ? "disabled-row" : ""
         }
       />
-    </>
+    </Box>
   );
 };
 

@@ -26,7 +26,7 @@ def root():
 async def process_plot_data(    request: Request,
     smiles_column: str = Query(..., alias="smilesColumn"),
     dim_red_method: str = Query(..., alias="dimRedMethod"),
-    fingerprint_type: str = Query(..., alias="fingerprintType"),
+    fingerprint_type: str = Query(..., alias="fingerPrintType"),
     remove_outliers: bool = Query(..., alias="removeOutliers"),
     number_neighbors_umap: int = Query(..., alias="numberNeighborsUmap")
 ):
@@ -50,7 +50,7 @@ async def process_plot_data(    request: Request,
 async def process_similarity_data(    request: Request,
     smiles_column: str = Query(..., alias="smilesColumn"),
     target_smiles: List[str] = Query(..., alias="targetSmiles"),
-    fingerprint_type: str = Query(..., alias="fingerprintType")
+    fingerprint_type: str = Query(..., alias="fingerPrintType")
     ):
 
     print(target_smiles)

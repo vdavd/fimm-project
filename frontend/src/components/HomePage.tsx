@@ -12,11 +12,12 @@ import UploadFile from "./FileUpload";
 import InteractivePlot from "./InteractivePlot";
 import DisplayData from "./DisplayData";
 import SelectFile from "./SelectFile";
-import type {
-  FingerPrintTypeType,
-  DimRedMethodType,
-  LabelType,
-  RowObject,
+import {
+  type FingerPrintTypeType,
+  type DimRedMethodType,
+  type LabelType,
+  type RowObject,
+  type AnalysisMode,
 } from "../types";
 import PlotSkeleton from "./PlotSkeleton";
 import NavBar from "./NavBar";
@@ -24,6 +25,7 @@ import SelectExampleData from "./SelectExampleData";
 import HeaderBar from "./HeaderBar";
 import VisualizationSettings from "./VisualizationSettings";
 import SimilaritySearchSettings from "./SimilaritySearchSettings";
+import AnalysisModeSelect from "./AnalysisModeSelect";
 
 const HomePage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -46,6 +48,8 @@ const HomePage = () => {
   const [fileReady, setFileReady] = useState(false);
   const [fileSelectError, setFileSelectError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
+  const [analysisMode, setAnalysisMode] =
+    useState<AnalysisMode>("Visualization");
 
   const scrollTargetRef = useRef<HTMLDivElement>(null);
 
@@ -91,10 +95,6 @@ const HomePage = () => {
                 <HeaderBar />
               </Box>
             </Fade>
-            <SimilaritySearchSettings
-              parsedFile={parsedFile}
-              columns={columns}
-            />
             <Slide in={fileReady} timeout={800} direction="up">
               <Paper
                 elevation={10}
@@ -140,37 +140,59 @@ const HomePage = () => {
                   setHighlightedSmiles={setHighlightedSmiles}
                   analyzedData={analyzedData}
                 />
-                <VisualizationSettings
-                  columns={columns}
-                  rows={rows}
-                  labelColumn={labelColumn}
-                  setLabelColumn={setLabelColumn}
-                  smilesColumn={smilesColumn}
-                  setSmilesColumn={setSmilesColumn}
-                  labelType={labelType}
-                  setLabelType={setLabelType}
-                  fingerPrintType={fingerPrintType}
-                  setFingerPrintType={setFingerPrintType}
-                  dimRedMethod={dimRedMethod}
-                  setDimRedMethod={setDimRedMethod}
-                  numberNeighborsUmap={numberNeighborsUmap}
-                  setNumberNeighborsUmap={setNumberNeighborsUmap}
-                  removeOutliers={removeOutliers}
-                  setremoveOutliers={setremoveOutliers}
+                <AnalysisModeSelect
+                  analysisMode={analysisMode}
+                  setAnalysisMode={setAnalysisMode}
                 />
-                <UploadFile
-                  parsedFile={parsedFile}
-                  smilesColumn={smilesColumn}
-                  setAnalyzedData={setAnalyzedData}
-                  dimRedMethod={dimRedMethod}
-                  fingerPrintType={fingerPrintType}
-                  removeOutliers={removeOutliers}
-                  numberNeighborsUmap={numberNeighborsUmap}
-                  setAnalysisInProcess={setAnalysisInProcess}
-                  buttonDisabled={
-                    !(parsedFile && smilesColumn && labelColumn && labelType)
-                  }
-                />
+                {analysisMode === "Visualization" && (
+                  <>
+                    <VisualizationSettings
+                      columns={columns}
+                      rows={rows}
+                      labelColumn={labelColumn}
+                      setLabelColumn={setLabelColumn}
+                      smilesColumn={smilesColumn}
+                      setSmilesColumn={setSmilesColumn}
+                      labelType={labelType}
+                      setLabelType={setLabelType}
+                      fingerPrintType={fingerPrintType}
+                      setFingerPrintType={setFingerPrintType}
+                      dimRedMethod={dimRedMethod}
+                      setDimRedMethod={setDimRedMethod}
+                      numberNeighborsUmap={numberNeighborsUmap}
+                      setNumberNeighborsUmap={setNumberNeighborsUmap}
+                      removeOutliers={removeOutliers}
+                      setremoveOutliers={setremoveOutliers}
+                    />
+                    <UploadFile
+                      parsedFile={parsedFile}
+                      smilesColumn={smilesColumn}
+                      setAnalyzedData={setAnalyzedData}
+                      dimRedMethod={dimRedMethod}
+                      fingerPrintType={fingerPrintType}
+                      removeOutliers={removeOutliers}
+                      numberNeighborsUmap={numberNeighborsUmap}
+                      setAnalysisInProcess={setAnalysisInProcess}
+                      buttonDisabled={
+                        !(
+                          parsedFile &&
+                          smilesColumn &&
+                          labelColumn &&
+                          labelType
+                        )
+                      }
+                    />
+                  </>
+                )}
+                {analysisMode === "Similarity" && (
+                  <SimilaritySearchSettings
+                    parsedFile={parsedFile}
+                    columns={columns}
+                    highlightedSmiles={highlightedSmiles}
+                    smilesColumn={smilesColumn}
+                    setSmilesColumn={setSmilesColumn}
+                  />
+                )}
               </Paper>
             </Slide>
           </>
