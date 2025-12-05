@@ -5,14 +5,15 @@ import SmilesColumnSelect from "./SmilesColumnSelect";
 import FingerPrintTypeSelect from "./FingerPrintTypeSelect";
 import { Alert, Box, Button } from "@mui/material";
 import { uploadSimilarityData } from "../services/data";
-import SimilaritySearchResult from "./SimilaritySearchResult";
 
 interface SimilaritySearchSettingsProps {
   parsedFile: string;
   columns: string[];
-  highlightedSmiles: string[];
   smilesColumn: string;
   setSmilesColumn: (smilesColumn: string) => void;
+  targetSmiles: string[];
+  setTargetSmiles: (targetSmiles: string[]) => void;
+  setSimilarityData: (similarityData: string) => void;
 }
 
 const SimilaritySearchSettings = ({
@@ -20,9 +21,10 @@ const SimilaritySearchSettings = ({
   columns,
   smilesColumn,
   setSmilesColumn,
+  targetSmiles,
+  setTargetSmiles,
+  setSimilarityData,
 }: SimilaritySearchSettingsProps) => {
-  const [targetSmiles, setTargetSmiles] = useState<string[]>([]);
-  const [similarityData, setSimilarityData] = useState("");
   const [similarityDataError, setSimilarityDataError] = useState("");
   const [fingerPrintType, setFingerPrintType] =
     useState<FingerPrintTypeType>("Morgan");
@@ -70,22 +72,29 @@ const SimilaritySearchSettings = ({
           />
         </Box>
       </Box>
-      <Button
-        variant="contained"
-        onClick={handleUpload}
-        disabled={targetSmiles.length > 5 || targetSmiles.length < 1}
-        sx={{ width: "6em", mt: 2 }}
-      >
-        Upload
-      </Button>
-      {similarityDataError && (
-        <Alert sx={{}} severity="error">
-          {similarityDataError}
-        </Alert>
-      )}
-      {similarityData && (
-        <SimilaritySearchResult similarityData={similarityData} />
-      )}
+      <Box sx={{ display: "flex", mt: 2 }}>
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Button
+            variant="contained"
+            onClick={handleUpload}
+            disabled={targetSmiles.length > 5 || targetSmiles.length < 1}
+            sx={{ width: "6em" }}
+          >
+            Upload
+          </Button>
+        </Box>
+        {similarityDataError && (
+          <Box
+            sx={{
+              mx: 2,
+            }}
+          >
+            <Alert sx={{}} severity="error">
+              {similarityDataError}
+            </Alert>
+          </Box>
+        )}
+      </Box>
     </>
   );
 };

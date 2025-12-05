@@ -15,7 +15,11 @@ def validate_target_smiles(target_smiles: list):
     for smiles in target_smiles:
         mol = MolFromSmiles(str(smiles))
         if mol is None:
-            invalid_smiles.append(smiles)
+            if len(smiles) > 30:
+                trimmed_smiles = smiles[:30] + "..."
+                invalid_smiles.append(trimmed_smiles)
+            else:
+                invalid_smiles.append(smiles)
 
     if len(invalid_smiles) > 0:
         invalid_smiles_str = ", ".join(invalid_smiles).strip()

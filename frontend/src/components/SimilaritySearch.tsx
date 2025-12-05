@@ -1,4 +1,5 @@
-import { Box, Button, Chip, Stack, TextField } from "@mui/material";
+import { Box, Button, Chip, IconButton, Stack, TextField } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
 import { useState } from "react";
 
 interface SimilaritySearchProps {
@@ -39,6 +40,19 @@ const SimilaritySearch = ({
           value={manualInputSmiles}
           onChange={(e) => setManualInputSmiles(e.target.value)}
           sx={{ width: "34em" }}
+          slotProps={{
+            input: {
+              endAdornment: manualInputSmiles && (
+                <IconButton
+                  onClick={() => setManualInputSmiles("")}
+                  edge="end"
+                  aria-label="clear input"
+                >
+                  <ClearIcon />
+                </IconButton>
+              ),
+            },
+          }}
         />
         <Button
           variant="contained"

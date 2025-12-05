@@ -14,24 +14,32 @@ interface DisplayDataProps {
   file: File | null;
   rows: RowObject[];
   columns: string[];
+  smilesColumn: string;
   setRows: (rows: RowObject[]) => void;
   setColumns: (columns: string[]) => void;
   setParsedFile: (parsedFile: string) => void;
+  highlightedSmiles: string[];
   setSmilesColumn: (smilesColumn: string) => void;
   setHighlightedSmiles: (highLightedSmiles: string[]) => void;
   analyzedData: string;
+  targetSmiles: string[];
+  setTargetSmiles: (targetSmiles: string[]) => void;
 }
 
 const DisplayData = ({
   file,
   rows,
   columns,
+  smilesColumn,
   setRows,
   setColumns,
   setParsedFile,
+  highlightedSmiles,
   setSmilesColumn,
   setHighlightedSmiles,
   analyzedData,
+  targetSmiles,
+  setTargetSmiles,
 }: DisplayDataProps) => {
   const [missingRowIds, setMissingRowIds] = useState<number[]>([]);
 
@@ -48,6 +56,7 @@ const DisplayData = ({
             molSimToolId: index,
             ...item,
           }));
+          console.log(dataWithIds);
           setRows(dataWithIds);
           const colsWithID = ["molSimToolId", ...columns];
           setColumns(colsWithID);
@@ -92,8 +101,39 @@ const DisplayData = ({
   }, [rows, gridApiRef]);
 
   const handleHighlightSelectionChange = (selection: GridRowSelectionModel) => {
+    console.log("ids selection: " + [...selection.ids.keys()]);
+    const isSelectAll = [...selection.ids.keys()].length === rows.length; // previously not all selected
+
+    if (isSelectAll) {
+      console.log("selectall");
+      // Block the select-all behavior
+      return; // Do nothing
+    }
     const selectedIds = [...selection.ids.keys()].map((id) => String(id));
+
+    const idsToAdd = selectedIds.filter(
+      (id) => !highlightedSmiles.includes(id)
+    );
+    const idsToRemove = highlightedSmiles.filter(
+      (id) => !selectedIds.includes(id)
+    );
+    console.log("idsToAdd: " + idsToAdd);
+    console.log("idsToRemove: " + idsToRemove);
     setHighlightedSmiles(selectedIds);
+
+    if (smilesColumn) {
+      const smilesToAdd = rows
+        .filter((row) => idsToAdd.includes(row.molSimToolId.toString()))
+        .map((row) => row[smilesColumn]);
+      const smilesToRemove = rows
+        .filter((row) => idsToRemove.includes(row.molSimToolId.toString()))
+        .map((row) => row[smilesColumn]);
+
+      const newTargetSmiles = targetSmiles
+        .concat(smilesToAdd)
+        .filter((smiles) => !smilesToRemove.includes(smiles));
+      setTargetSmiles(newTargetSmiles);
+    }
   };
 
   const visibleColumns = columns.filter((column) => column !== "molSimToolId");
@@ -150,7 +190,9 @@ const DisplayData = ({
         onRowSelectionModelChange={handleHighlightSelectionChange}
         localeText={{ checkboxSelectionHeaderName: "Highlight" }}
         isRowSelectable={(params) =>
-          !missingRowIds.includes(params.row.molSimToolId)
+          !missingRowIds.includes(params.row.molSimToolId) &&
+          (targetSmiles.length < 5 ||
+            highlightedSmiles.includes(params.row.molSimToolId.toString()))
         }
         getRowClassName={(params) =>
           missingRowIds.includes(params.row.molSimToolId) ? "disabled-row" : ""

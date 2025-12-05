@@ -26,6 +26,7 @@ import HeaderBar from "./HeaderBar";
 import VisualizationSettings from "./VisualizationSettings";
 import SimilaritySearchSettings from "./SimilaritySearchSettings";
 import AnalysisModeSelect from "./AnalysisModeSelect";
+import SimilaritySearchResult from "./SimilaritySearchResult";
 
 const HomePage = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -50,6 +51,8 @@ const HomePage = () => {
   const [loaded, setLoaded] = useState(false);
   const [analysisMode, setAnalysisMode] =
     useState<AnalysisMode>("Visualization");
+  const [targetSmiles, setTargetSmiles] = useState<string[]>([]);
+  const [similarityData, setSimilarityData] = useState("");
 
   const scrollTargetRef = useRef<HTMLDivElement>(null);
 
@@ -133,12 +136,16 @@ const HomePage = () => {
                   file={file}
                   rows={rows}
                   columns={columns}
+                  smilesColumn={smilesColumn}
                   setRows={setRows}
                   setColumns={setColumns}
                   setParsedFile={setParsedFile}
                   setSmilesColumn={setSmilesColumn}
+                  highlightedSmiles={highlightedSmiles}
                   setHighlightedSmiles={setHighlightedSmiles}
                   analyzedData={analyzedData}
+                  targetSmiles={targetSmiles}
+                  setTargetSmiles={setTargetSmiles}
                 />
                 <AnalysisModeSelect
                   analysisMode={analysisMode}
@@ -188,9 +195,11 @@ const HomePage = () => {
                   <SimilaritySearchSettings
                     parsedFile={parsedFile}
                     columns={columns}
-                    highlightedSmiles={highlightedSmiles}
                     smilesColumn={smilesColumn}
                     setSmilesColumn={setSmilesColumn}
+                    targetSmiles={targetSmiles}
+                    setTargetSmiles={setTargetSmiles}
+                    setSimilarityData={setSimilarityData}
                   />
                 )}
               </Paper>
@@ -287,6 +296,24 @@ const HomePage = () => {
               </Box>
             </Fade>
           </Box>
+        )}
+
+        {similarityData && (
+          <Paper
+            elevation={10}
+            sx={{
+              position: "relative",
+              display: "flex",
+              flexDirection: "column",
+              px: 4,
+              py: 3,
+              my: 2,
+              borderRadius: 3,
+            }}
+          >
+            <Typography variant="h6">Similarity search results</Typography>
+            <SimilaritySearchResult similarityData={similarityData} />
+          </Paper>
         )}
 
         <div ref={scrollTargetRef}>
