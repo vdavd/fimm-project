@@ -45,7 +45,10 @@ const HomePage = () => {
   const [numberNeighborsUmap, setNumberNeighborsUmap] = useState<number | null>(
     25
   );
-  const [analysisInProcess, setAnalysisInProcess] = useState(false);
+  const [visualizationAnalysisInProcess, setVisualizationAnalysisInProcess] =
+    useState(false);
+  const [similarityAnalysisInProcess, setSimilarityAnalysisInProcess] =
+    useState(false);
   const [fileReady, setFileReady] = useState(false);
   const [fileSelectError, setFileSelectError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
@@ -54,17 +57,31 @@ const HomePage = () => {
   const [targetSmiles, setTargetSmiles] = useState<string[]>([]);
   const [similarityData, setSimilarityData] = useState("");
 
-  const scrollTargetRef = useRef<HTMLDivElement>(null);
+  const visualizationScrollTargetRef = useRef<HTMLDivElement>(null);
+  const similarityScrollTargetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setLoaded(true);
   }, []);
 
   useEffect(() => {
-    if (analysisInProcess && scrollTargetRef.current) {
-      scrollTargetRef.current.scrollIntoView({ behavior: "smooth" });
+    if (
+      visualizationAnalysisInProcess &&
+      visualizationScrollTargetRef.current
+    ) {
+      visualizationScrollTargetRef.current.scrollIntoView({
+        behavior: "smooth",
+      });
     }
-  }, [analysisInProcess]);
+  }, [visualizationAnalysisInProcess]);
+
+  useEffect(() => {
+    if (similarityAnalysisInProcess && similarityScrollTargetRef.current) {
+      similarityScrollTargetRef.current.scrollIntoView({
+        behavior: "smooth",
+      });
+    }
+  }, [similarityAnalysisInProcess]);
 
   return (
     <Container
@@ -179,7 +196,9 @@ const HomePage = () => {
                       fingerPrintType={fingerPrintType}
                       removeOutliers={removeOutliers}
                       numberNeighborsUmap={numberNeighborsUmap}
-                      setAnalysisInProcess={setAnalysisInProcess}
+                      setVisualizationAnalysisInProcess={
+                        setVisualizationAnalysisInProcess
+                      }
                       buttonDisabled={
                         !(
                           parsedFile &&
@@ -200,6 +219,9 @@ const HomePage = () => {
                     targetSmiles={targetSmiles}
                     setTargetSmiles={setTargetSmiles}
                     setSimilarityData={setSimilarityData}
+                    setSimilarityAnalysisInProcess={
+                      setSimilarityAnalysisInProcess
+                    }
                   />
                 )}
               </Paper>
@@ -298,27 +320,9 @@ const HomePage = () => {
           </Box>
         )}
 
-        {similarityData && (
-          <Paper
-            elevation={10}
-            sx={{
-              position: "relative",
-              display: "flex",
-              flexDirection: "column",
-              px: 4,
-              py: 3,
-              my: 2,
-              borderRadius: 3,
-            }}
-          >
-            <Typography variant="h6">Similarity search results</Typography>
-            <SimilaritySearchResult similarityData={similarityData} />
-          </Paper>
-        )}
-
-        <div ref={scrollTargetRef}>
-          {analysisInProcess ? (
-            <PlotSkeleton />
+        <div ref={visualizationScrollTargetRef}>
+          {visualizationAnalysisInProcess ? (
+            <PlotSkeleton size={"large"} />
           ) : (
             analyzedData &&
             labelColumn && (
@@ -331,6 +335,16 @@ const HomePage = () => {
                 dimRedMethod={dimRedMethod}
                 removeOutliers={removeOutliers}
               />
+            )
+          )}
+        </div>
+
+        <div ref={similarityScrollTargetRef}>
+          {similarityAnalysisInProcess ? (
+            <PlotSkeleton size={"small"} />
+          ) : (
+            similarityData && (
+              <SimilaritySearchResult similarityData={similarityData} />
             )
           )}
         </div>

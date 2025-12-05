@@ -15,7 +15,9 @@ interface FileUploadProps {
   fingerPrintType: FingerPrintTypeType;
   removeOutliers: boolean;
   numberNeighborsUmap: number | null;
-  setAnalysisInProcess: (analysisInProcess: boolean) => void;
+  setVisualizationAnalysisInProcess: (
+    visualizationAnalysisInProcess: boolean
+  ) => void;
   buttonDisabled: boolean;
 }
 const FileUpload = ({
@@ -26,7 +28,7 @@ const FileUpload = ({
   fingerPrintType,
   removeOutliers,
   numberNeighborsUmap,
-  setAnalysisInProcess,
+  setVisualizationAnalysisInProcess,
   buttonDisabled,
 }: FileUploadProps) => {
   const [plotDataError, setPlotDataError] = useState("");
@@ -50,12 +52,12 @@ const FileUpload = ({
 
       setPlotDataError("");
       try {
-        setAnalysisInProcess(true);
+        setVisualizationAnalysisInProcess(true);
         const data = await uploadPlotData(parsedFile, params);
         setAnalyzedData(data);
-        setAnalysisInProcess(false);
+        setVisualizationAnalysisInProcess(false);
       } catch (err: any) {
-        setAnalysisInProcess(false);
+        setVisualizationAnalysisInProcess(false);
         setPlotDataError(err.message);
       }
     }

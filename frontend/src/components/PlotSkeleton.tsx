@@ -2,7 +2,11 @@ import { Box, Paper, Skeleton, Typography } from "@mui/material";
 import { Helix } from "ldrs/react";
 import "ldrs/react/Helix.css";
 
-const PlotSkeleton = () => {
+interface PlotSkeletonProps {
+  size: "small" | "large";
+}
+
+const PlotSkeleton = ({ size }: PlotSkeletonProps) => {
   return (
     <>
       <Box
@@ -10,14 +14,14 @@ const PlotSkeleton = () => {
           position: "relative",
           width: "100%",
           display: "flex",
-          minHeight: "90vh",
+          minHeight: size === "large" ? "90vh" : "55vh",
         }}
       >
         <Paper
           elevation={10}
           sx={{
             width: "100%",
-            height: "90vh",
+            height: size === "large" ? "90vh" : "55vh",
             px: 4,
             py: 3,
             my: 2,

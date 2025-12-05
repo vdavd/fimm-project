@@ -14,6 +14,9 @@ interface SimilaritySearchSettingsProps {
   targetSmiles: string[];
   setTargetSmiles: (targetSmiles: string[]) => void;
   setSimilarityData: (similarityData: string) => void;
+  setSimilarityAnalysisInProcess: (
+    SimilarityAnalysisInProcess: boolean
+  ) => void;
 }
 
 const SimilaritySearchSettings = ({
@@ -24,6 +27,7 @@ const SimilaritySearchSettings = ({
   targetSmiles,
   setTargetSmiles,
   setSimilarityData,
+  setSimilarityAnalysisInProcess,
 }: SimilaritySearchSettingsProps) => {
   const [similarityDataError, setSimilarityDataError] = useState("");
   const [fingerPrintType, setFingerPrintType] =
@@ -44,9 +48,12 @@ const SimilaritySearchSettings = ({
         fingerPrintType: fingerPrintType,
       };
       try {
+        setSimilarityAnalysisInProcess(true);
         const data: string = await uploadSimilarityData(parsedFile, params);
         setSimilarityData(data);
+        setSimilarityAnalysisInProcess(false);
       } catch (err: any) {
+        setSimilarityAnalysisInProcess(false);
         setSimilarityDataError(err.message);
       }
     }

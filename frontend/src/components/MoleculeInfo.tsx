@@ -6,7 +6,6 @@ import {
   ListItemText,
   Paper,
   Skeleton,
-  Slide,
   Stack,
   Typography,
   Zoom,
@@ -95,7 +94,7 @@ const MoleculeInfo = ({
               flexDirection: "column",
             }}
           >
-            <Slide in={moleculeSelected} timeout={500} direction="down">
+            <Zoom in={moleculeSelected} timeout={500}>
               <Paper
                 elevation={10}
                 sx={{
@@ -114,7 +113,7 @@ const MoleculeInfo = ({
                   {selectedMolecule.label.toString()}
                 </Typography>
               </Paper>
-            </Slide>
+            </Zoom>
             <Box
               sx={{
                 display: "flex",
@@ -122,7 +121,7 @@ const MoleculeInfo = ({
                 height: "100%",
               }}
             >
-              <Slide in={moleculeSelected} timeout={500} direction="up">
+              <Zoom in={moleculeSelected} timeout={500}>
                 <Paper
                   elevation={10}
                   sx={{
@@ -212,7 +211,7 @@ const MoleculeInfo = ({
                     </Stack>
                   )}
                 </Paper>
-              </Slide>
+              </Zoom>
             </Box>
           </Box>
         </Box>
