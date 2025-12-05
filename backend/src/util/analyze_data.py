@@ -197,9 +197,55 @@ def analyze_similarity_data(df: pd.DataFrame, smiles_column: str, target_smiles:
         fingerprint_list = generate_fingerprints(df_with_mols, fingerprint_type, "similarity")
 
         similarities = DataStructs.BulkTanimotoSimilarity(target_fingerprint, fingerprint_list)
-        similarities_df = pd.DataFrame({"similarity": similarities})
+        similarities_df = pd.DataFrame({f"similarity_{target}": similarities})
 
         final_df = pd.concat([df_with_mols, similarities_df], axis=1)
 
+        final_df.drop(columns=["mol"], axis=1, inplace=True)
+
         return final_df
+    
+    else:
+        target_mols = [MolFromSmiles(target, sanitize=True) for target in target_smiles]
+
+        if fingerprint_type == "Morgan":
+            fingerprint_generator = AllChem.GetMorganGenerator(radius=2)
+            target_fingerprints = [fingerprint_generator.GetFingerprint(target_mol) for target_mol in target_mols]
+        elif fingerprint_type == "Topological":
+            fingerprint_generator = AllChem.GetRDKitFPGenerator()
+            target_fingerprints = [fingerprint_generator.GetFingerprint(target_mol) for target_mol in target_mols]
+        elif fingerprint_type == "MACCS":
+            target_fingerprints = [MACCSkeys.GenMACCSKeys(target_mol) for target_mol in target_mols]
+
+
+        # Remove missing values from SMILES column
+        df_without_na = remove_missing_smiles(df, smiles_column)
+
+        # Generate mols from SMILES
+        df_with_mols = generate_mols(df_without_na, smiles_column)
+
+        # Generate Morgan fingerprints
+        fingerprint_list = generate_fingerprints(df_with_mols, fingerprint_type, "similarity")
+
+        similarities_df = pd.DataFrame({})
+
+        for target_fingerprint, target in zip(target_fingerprints, target_smiles):
+                similarities = DataStructs.BulkTanimotoSimilarity(target_fingerprint, fingerprint_list)
+                similarities_df[f"similarity_{target}"] = similarities
+
+        max_similarities = [max(row) for row in similarities_df.itertuples(index=False)]
+
+        similarities_df.insert(loc=0, column="max_similarity", value=max_similarities)
+
+        final_df = pd.concat([df_with_mols, similarities_df], axis=1)
+
+        final_df.drop(columns=["mol"], axis=1, inplace=True)
+
+        return final_df
+
+
+
+
+
+        
 

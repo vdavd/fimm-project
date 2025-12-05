@@ -1,7 +1,7 @@
 import { DataGrid, type GridColDef, useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import SearchToolbar from "./CustomToolbar";
-import { Paper, Typography, Zoom } from "@mui/material";
+import { Box, Paper, Typography, Zoom } from "@mui/material";
 
 interface SimilaritySearchresultProps {
   similarityData: string;
@@ -74,7 +74,7 @@ const SimilaritySearchResult = ({
           }}
           rows={rows}
           columns={gridColumns}
-          initialState={{ pagination: { paginationModel: { pageSize: 5 } } }}
+          initialState={{ pagination: { paginationModel: { pageSize: 10 } } }}
           slots={{
             toolbar: SearchToolbar,
           }}

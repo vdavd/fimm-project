@@ -14,14 +14,14 @@ const PlotSkeleton = ({ size }: PlotSkeletonProps) => {
           position: "relative",
           width: "100%",
           display: "flex",
-          minHeight: size === "large" ? "90vh" : "55vh",
+          minHeight: size === "large" ? "90vh" : "80vh",
         }}
       >
         <Paper
           elevation={10}
           sx={{
             width: "100%",
-            height: size === "large" ? "90vh" : "55vh",
+            height: size === "large" ? "90vh" : "80vh",
             px: 4,
             py: 3,
             my: 2,
