@@ -1,7 +1,7 @@
 import { DataGrid, type GridColDef, useGridApiRef } from "@mui/x-data-grid";
 import { useEffect, useState } from "react";
 import SearchToolbar from "./CustomToolbar";
-import { Box, Paper, Typography, Zoom } from "@mui/material";
+import { Paper, Typography, Zoom } from "@mui/material";
 
 interface SimilaritySearchresultProps {
   similarityData: string;

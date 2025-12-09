@@ -102,7 +102,7 @@ const DisplayData = ({
 
   const handleHighlightSelectionChange = (selection: GridRowSelectionModel) => {
     console.log("ids selection: " + [...selection.ids.keys()]);
-    const isSelectAll = [...selection.ids.keys()].length === rows.length; // previously not all selected
+    const isSelectAll = [...selection.ids.keys()].length > 5;
 
     if (isSelectAll) {
       console.log("selectall");
