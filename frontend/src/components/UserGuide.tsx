@@ -251,7 +251,7 @@ const UserGuide = () => {
                   information from the <strong>PubChem API</strong>. Click the{" "}
                   {
                     <img
-                      src="images/PubChem_logo.svg"
+                      src="/images/PubChem_logo.svg"
                       alt="PubChem"
                       style={{
                         height: "4vh",
