@@ -41,6 +41,11 @@ const DisplayData = ({
   targetSmiles,
   setTargetSmiles,
 }: DisplayDataProps) => {
+  const [rowSelectionModel, setRowSelectionModel] =
+    useState<GridRowSelectionModel>({
+      type: "include",
+      ids: new Set(),
+    });
   const [missingRowIds, setMissingRowIds] = useState<number[]>([]);
 
   const gridApiRef = useGridApiRef();
@@ -102,12 +107,22 @@ const DisplayData = ({
 
   const handleHighlightSelectionChange = (selection: GridRowSelectionModel) => {
     console.log("ids selection: " + [...selection.ids.keys()]);
-    const isSelectAll = [...selection.ids.keys()].length > 5;
+    const previousSelection = [...rowSelectionModel.ids.keys()];
+    const newSelection = [...selection.ids.keys()];
+    const isCheckboxSelectionHeaderClick =
+      newSelection.length - previousSelection.length >= 2 ||
+      newSelection.length === previousSelection.length; // check if checkbox column header was clicked
 
-    if (isSelectAll) {
+    if (isCheckboxSelectionHeaderClick) {
+      // if clicked, deselect all rows
       console.log("selectall");
-      // Block the select-all behavior
-      return; // Do nothing
+      setRowSelectionModel({
+        type: "include",
+        ids: new Set(),
+      });
+      setHighlightedSmiles([]);
+      setTargetSmiles([]);
+      return;
     }
     const selectedIds = [...selection.ids.keys()].map((id) => String(id));
 
@@ -134,6 +149,10 @@ const DisplayData = ({
         .filter((smiles) => !smilesToRemove.includes(smiles));
       setTargetSmiles(newTargetSmiles);
     }
+    setRowSelectionModel({
+      type: "include",
+      ids: selection.ids,
+    });
   };
 
   const visibleColumns = columns.filter((column) => column !== "molSimToolId");
@@ -174,7 +193,7 @@ const DisplayData = ({
           "& .disabled-row": {
             backgroundColor: "#f5f5f5",
             color: "#9e9e9e",
-            pointerEvents: "none", // optional: block hover/click
+            pointerEvents: "none",
           },
         }}
         rows={rows}
@@ -187,6 +206,7 @@ const DisplayData = ({
         checkboxSelection
         keepNonExistentRowsSelected
         disableRowSelectionOnClick
+        rowSelectionModel={rowSelectionModel}
         onRowSelectionModelChange={handleHighlightSelectionChange}
         localeText={{ checkboxSelectionHeaderName: "Highlight" }}
         isRowSelectable={(params) =>
