@@ -6,7 +6,6 @@ import {
   ListItemText,
   Paper,
   Skeleton,
-  Stack,
   Typography,
   Zoom,
 } from "@mui/material";
@@ -28,6 +27,7 @@ const MoleculeInfo = ({
   const [moleculeProperties, setMoleculeProperties] =
     useState<MoleculeProperties | null>(null);
   const [moleculeSelected, setMoleculeSelected] = useState(false);
+  const [hoverPubChemLink, setHoverPubChemLink] = useState(false);
 
   useEffect(() => {
     const getMoleculeProperties = async (selectedMolecule: PlotDataObject) => {
@@ -82,138 +82,153 @@ const MoleculeInfo = ({
           sx={{
             display: "flex",
             flexDirection: "column",
-            height: "100%",
-            alignItems: "stretch",
+            height: "100vh",
+            minHeight: 700,
+            alignItems: "space-between",
             width: "20%",
           }}
         >
-          <Box
-            sx={{
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Zoom in={moleculeSelected} timeout={500}>
-              <Paper
-                elevation={10}
-                sx={{
-                  px: 4,
-                  py: 3,
-                  mt: 2,
-                  ml: 1.5,
-                  borderRadius: 3,
-                }}
-              >
-                <img src={selectedMolecule.svg} />
-                <Typography variant="body2" fontWeight="bold">
-                  {labelColumn}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {selectedMolecule.label.toString()}
-                </Typography>
-              </Paper>
-            </Zoom>
-            <Box
+          <Zoom in={moleculeSelected} timeout={500}>
+            <Paper
+              elevation={10}
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                height: "100%",
+                px: 4,
+                py: 2,
+                mt: 2,
+                ml: 1.5,
+                borderRadius: 3,
               }}
             >
-              <Zoom in={moleculeSelected} timeout={500}>
-                <Paper
-                  elevation={10}
-                  sx={{
-                    px: 4,
-                    py: 3,
-                    mt: 2,
-                    mb: 4,
-                    ml: 1.5,
-                    borderRadius: 3,
-                    height: "90%",
-                    overflow: "auto",
-                  }}
-                >
-                  {moleculeProperties ? (
-                    <List dense>
-                      {Object.entries(moleculeProperties)
-                        .filter(([key, _value]) => key !== "cid")
-                        .map(([key, { value, label }]) => (
-                          <ListItem key={key} disableGutters>
-                            <Paper
-                              elevation={0}
+              <img src={selectedMolecule.svg} style={{ width: 170 }} />
+              <Typography variant="body2" fontWeight="bold" overflow="auto">
+                {labelColumn}
+              </Typography>
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                overflow="auto"
+              >
+                {selectedMolecule.label.toString()}
+              </Typography>
+            </Paper>
+          </Zoom>
+
+          <Zoom in={moleculeSelected} timeout={500}>
+            <Paper
+              elevation={10}
+              sx={{
+                px: 4,
+                py: 1,
+                my: 2,
+                ml: 1.5,
+                borderRadius: 3,
+                overflow: "auto",
+                flexGrow: 1,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "space-between",
+              }}
+            >
+              {moleculeProperties ? (
+                <List>
+                  {Object.entries(moleculeProperties)
+                    .filter(([key, _value]) => key !== "cid")
+                    .map(([key, { value, label }]) => (
+                      <ListItem key={key} disableGutters>
+                        <ListItemText
+                          primary={
+                            <Typography
+                              variant="body2"
+                              fontWeight="bold"
                               sx={{
-                                width: "100%",
-                                p: 0.5,
-                                backgroundColor: "#ececec",
-                                borderRadius: 3,
+                                whiteSpace: "nowrap",
+                                overflowX: "auto",
                               }}
                             >
-                              <ListItemText
-                                primary={
-                                  <Typography variant="body2" fontWeight="bold">
-                                    {label}
-                                  </Typography>
-                                }
-                                secondary={
-                                  <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                  >
-                                    {value}
-                                  </Typography>
-                                }
-                              />
-                            </Paper>
-                          </ListItem>
-                        ))}
-                      <ListItem>
-                        <Link
-                          href={`https://pubchem.ncbi.nlm.nih.gov/compound/${moleculeProperties.cid}`}
-                          underline="none"
-                          target="_blank"
-                          rel="noreferrer"
-                          sx={{ py: 1, fontSize: 16, lineHeight: 0 }}
-                        >
-                          <img
-                            src="/images/PubChem_logo.svg"
-                            alt="PubChem link"
-                            style={{
-                              width: "10em",
-                              height: "auto",
-                              display: "inline-block",
-                              verticalAlign: "middle",
-                            }}
-                          />
-                        </Link>
-                      </ListItem>
-                    </List>
-                  ) : (
-                    <Stack spacing={1.5} sx={{ pt: 2, alignItems: "center" }}>
-                      {Array.from({ length: 7 }).map((_, i) => (
-                        <Skeleton
-                          sx={{ borderRadius: 3 }}
-                          variant="rectangular"
-                          width="100%"
-                          height={55}
-                          animation="wave"
-                          key={i}
+                              {label}
+                            </Typography>
+                          }
+                          secondary={
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              sx={{
+                                whiteSpace: "nowrap",
+                                overflowX: "auto",
+                              }}
+                            >
+                              {value}
+                            </Typography>
+                          }
                         />
-                      ))}
-                      <Skeleton
-                        sx={{ borderRadius: 1 }}
-                        variant="rectangular"
-                        width="85%"
-                        height={60}
-                        animation="wave"
+                      </ListItem>
+                    ))}
+                  <ListItem sx={{ pl: 0 }}>
+                    <Link
+                      href={`https://pubchem.ncbi.nlm.nih.gov/compound/${moleculeProperties.cid}`}
+                      underline="none"
+                      target="_blank"
+                      rel="noreferrer"
+                      sx={{ py: 1, fontSize: 16, lineHeight: 0 }}
+                    >
+                      <img
+                        src="/images/PubChem_logo.svg"
+                        alt="PubChem link"
+                        style={{
+                          width: "10em",
+                          cursor: "pointer",
+                          transition: "0.2s",
+                          opacity: hoverPubChemLink ? 0.75 : 1,
+                          transform: hoverPubChemLink
+                            ? "scale(1.02)"
+                            : "scale(1)",
+                        }}
+                        onMouseEnter={() => setHoverPubChemLink(true)}
+                        onMouseLeave={() => setHoverPubChemLink(false)}
                       />
-                    </Stack>
-                  )}
-                </Paper>
-              </Zoom>
-            </Box>
-          </Box>
+                    </Link>
+                  </ListItem>
+                </List>
+              ) : (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-evenly",
+                    pt: 2,
+                  }}
+                >
+                  {Array.from({ length: 7 }).map((_, i) => (
+                    <>
+                      <Skeleton
+                        sx={{ mt: 3, mb: 1 }}
+                        variant="rectangular"
+                        width="90%"
+                        height="1.2rem"
+                        animation="wave"
+                        key={i}
+                      />
+                      <Skeleton
+                        sx={{}}
+                        variant="rectangular"
+                        width="30%"
+                        height="1rem"
+                        animation="wave"
+                        key={i}
+                      />
+                    </>
+                  ))}
+                  <Skeleton
+                    sx={{ borderRadius: 1, my: 2 }}
+                    variant="rectangular"
+                    width="85%"
+                    height="3rem"
+                    animation="wave"
+                  />
+                </Box>
+              )}
+            </Paper>
+          </Zoom>
         </Box>
       </>
     );
@@ -232,7 +247,7 @@ const MoleculeInfo = ({
             <Paper
               elevation={10}
               sx={{
-                height: "90%",
+                flexGrow: 1,
                 px: 4,
                 py: 3,
                 my: 2,

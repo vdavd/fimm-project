@@ -7,6 +7,7 @@ interface SelectExampleDataProps {
   setFileReady: (fileReady: boolean) => void;
   setLabelColumn: (labelColumn: string) => void;
   setLabelType: (labelType: LabelType) => void;
+  setFileSelectError: (fileSelectError: string | null) => void;
 }
 const LABEL_COLUMN = "passes_blood_brain_barrier";
 const LABEL_TYPE: LabelType = "categorical";
@@ -16,6 +17,7 @@ const SelectExampleData = ({
   setFileReady,
   setLabelColumn,
   setLabelType,
+  setFileSelectError,
 }: SelectExampleDataProps) => {
   const loadFile = async () => {
     // Fetch the file as a blob
@@ -28,6 +30,7 @@ const SelectExampleData = ({
     setFileReady(true);
     setLabelColumn(LABEL_COLUMN);
     setLabelType(LABEL_TYPE);
+    setFileSelectError(null);
   };
   return (
     <Button

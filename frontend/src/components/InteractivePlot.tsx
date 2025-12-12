@@ -452,15 +452,17 @@ const InteractivePlot = ({
               display: "flex",
               flexDirection: "row",
               justifyContent: "space-between",
-              height: "105vh",
+              height: "100vh",
+              minHeight: 700,
             }}
           >
             <Zoom in={plotReady} timeout={500}>
               <Paper
                 elevation={10}
                 sx={{
+                  display: "flex",
+                  flexDirection: "column",
                   width: "75%",
-                  height: "90%",
                   px: 4,
                   py: 3,
                   my: 2,
@@ -489,7 +491,7 @@ const InteractivePlot = ({
                   onUnhover={handleUnhover}
                   onClick={handleClick}
                   useResizeHandler
-                  style={{ width: "100%", height: "85%" }}
+                  style={{ width: "100%", flexGrow: 1, paddingBottom: 30 }}
                   config={{
                     responsive: true,
                     modeBarButtonsToRemove: [

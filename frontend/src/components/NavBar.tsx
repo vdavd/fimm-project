@@ -7,10 +7,7 @@ const NavBar = () => {
     <Box
       sx={{
         display: "flex",
-        justifyContent: "center",
         gap: 10,
-        width: "100%",
-        backgroundColor: "transparent",
         mt: 2,
       }}
     >

@@ -30,6 +30,7 @@ const UserGuide = () => {
     <Container
       maxWidth="xl"
       sx={{
+        minWidth: 1280,
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",

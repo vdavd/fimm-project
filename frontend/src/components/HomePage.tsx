@@ -87,9 +87,10 @@ const HomePage = () => {
     <Container
       maxWidth="xl"
       sx={{
+        minWidth: 1280,
+        minHeight: 800,
         display: "flex",
         flexDirection: "column",
-        justifyContent: "center",
         alignItems: "center",
       }}
     >
@@ -101,9 +102,8 @@ const HomePage = () => {
 
       <Box
         sx={{
-          width: "100%",
-          maxWidth: "90%",
-          minHeight: analyzedData ? "210vh" : "90vh",
+          width: "90%",
+          minHeight: analyzedData ? "210vh" : "100vh",
           px: 4,
           py: 3,
         }}
@@ -231,6 +231,30 @@ const HomePage = () => {
                 )}
               </Paper>
             </Slide>
+            <div ref={visualizationScrollTargetRef}>
+              {visualizationAnalysisInProcess ? (
+                <PlotSkeleton size={"large"} />
+              ) : (
+                analyzedData &&
+                labelColumn && (
+                  <InteractivePlot
+                    analyzedData={analyzedData}
+                    labelColumn={labelColumn}
+                    smilesColumn={smilesColumn}
+                    labelType={labelType}
+                    highlightedSmiles={highlightedSmiles}
+                    dimRedMethod={dimRedMethod}
+                    removeOutliers={removeOutliers}
+                  />
+                )
+              )}
+            </div>
+
+            <div ref={similarityScrollTargetRef}>
+              {similarityData && (
+                <SimilaritySearchResult similarityData={similarityData} />
+              )}
+            </div>
           </>
         ) : (
           <Box
@@ -292,6 +316,7 @@ const HomePage = () => {
                   setFileReady={setFileReady}
                   setLabelColumn={setLabelColumn}
                   setLabelType={setLabelType}
+                  setFileSelectError={setFileSelectError}
                 />
               </Box>
             </Fade>
@@ -325,31 +350,6 @@ const HomePage = () => {
             </Fade>
           </Box>
         )}
-
-        <div ref={visualizationScrollTargetRef}>
-          {visualizationAnalysisInProcess ? (
-            <PlotSkeleton size={"large"} />
-          ) : (
-            analyzedData &&
-            labelColumn && (
-              <InteractivePlot
-                analyzedData={analyzedData}
-                labelColumn={labelColumn}
-                smilesColumn={smilesColumn}
-                labelType={labelType}
-                highlightedSmiles={highlightedSmiles}
-                dimRedMethod={dimRedMethod}
-                removeOutliers={removeOutliers}
-              />
-            )
-          )}
-        </div>
-
-        <div ref={similarityScrollTargetRef}>
-          {similarityData && (
-            <SimilaritySearchResult similarityData={similarityData} />
-          )}
-        </div>
       </Box>
     </Container>
   );
