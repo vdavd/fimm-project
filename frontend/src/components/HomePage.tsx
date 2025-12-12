@@ -76,12 +76,12 @@ const HomePage = () => {
   }, [visualizationAnalysisInProcess]);
 
   useEffect(() => {
-    if (similarityAnalysisInProcess && similarityScrollTargetRef.current) {
+    if (similarityData && similarityScrollTargetRef.current) {
       similarityScrollTargetRef.current.scrollIntoView({
         behavior: "smooth",
       });
     }
-  }, [similarityAnalysisInProcess]);
+  }, [similarityData]);
 
   return (
     <Container
@@ -196,6 +196,9 @@ const HomePage = () => {
                       fingerPrintType={fingerPrintType}
                       removeOutliers={removeOutliers}
                       numberNeighborsUmap={numberNeighborsUmap}
+                      visualizationAnalysisInProcess={
+                        visualizationAnalysisInProcess
+                      }
                       setVisualizationAnalysisInProcess={
                         setVisualizationAnalysisInProcess
                       }
@@ -219,6 +222,7 @@ const HomePage = () => {
                     targetSmiles={targetSmiles}
                     setTargetSmiles={setTargetSmiles}
                     setSimilarityData={setSimilarityData}
+                    similarityAnalysisInProcess={similarityAnalysisInProcess}
                     setSimilarityAnalysisInProcess={
                       setSimilarityAnalysisInProcess
                     }
@@ -340,12 +344,8 @@ const HomePage = () => {
         </div>
 
         <div ref={similarityScrollTargetRef}>
-          {similarityAnalysisInProcess ? (
-            <PlotSkeleton size={"small"} />
-          ) : (
-            similarityData && (
-              <SimilaritySearchResult similarityData={similarityData} />
-            )
+          {similarityData && (
+            <SimilaritySearchResult similarityData={similarityData} />
           )}
         </div>
       </Box>

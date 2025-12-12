@@ -5,6 +5,7 @@ import SmilesColumnSelect from "./SmilesColumnSelect";
 import FingerPrintTypeSelect from "./FingerPrintTypeSelect";
 import { Alert, Box, Button } from "@mui/material";
 import { uploadSimilarityData } from "../services/data";
+import { Helix } from "ldrs/react";
 
 interface SimilaritySearchSettingsProps {
   parsedFile: string;
@@ -14,8 +15,9 @@ interface SimilaritySearchSettingsProps {
   targetSmiles: string[];
   setTargetSmiles: (targetSmiles: string[]) => void;
   setSimilarityData: (similarityData: string) => void;
+  similarityAnalysisInProcess: boolean;
   setSimilarityAnalysisInProcess: (
-    SimilarityAnalysisInProcess: boolean
+    similarityAnalysisInProcess: boolean
   ) => void;
 }
 
@@ -27,6 +29,7 @@ const SimilaritySearchSettings = ({
   targetSmiles,
   setTargetSmiles,
   setSimilarityData,
+  similarityAnalysisInProcess,
   setSimilarityAnalysisInProcess,
 }: SimilaritySearchSettingsProps) => {
   const [similarityDataError, setSimilarityDataError] = useState("");
@@ -84,7 +87,11 @@ const SimilaritySearchSettings = ({
           <Button
             variant="contained"
             onClick={handleUpload}
-            disabled={targetSmiles.length > 5 || targetSmiles.length < 1}
+            disabled={
+              targetSmiles.length > 5 ||
+              targetSmiles.length < 1 ||
+              similarityAnalysisInProcess
+            }
             sx={{ width: "6em" }}
           >
             Upload
@@ -98,6 +105,30 @@ const SimilaritySearchSettings = ({
           >
             <Alert sx={{}} severity="error">
               {similarityDataError}
+            </Alert>
+          </Box>
+        )}
+        {similarityAnalysisInProcess && (
+          <Box
+            sx={{
+              mx: 2,
+            }}
+          >
+            <Alert
+              sx={{
+                "& .MuiAlert-message": {
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1, // spacing between text and spinner
+                },
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+              }}
+              severity="info"
+            >
+              Analyzing data...
+              <Helix size="30" color="#1f77b4" />
             </Alert>
           </Box>
         )}

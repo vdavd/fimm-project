@@ -8,7 +8,7 @@ from util.analyze_data import analyze_plot_data
 from util.analyze_data import analyze_similarity_data
 app = FastAPI()
 
-origins = ["*"]
+origins = ["http://localhost:5173"]
 
 app.add_middleware(
     CORSMiddleware,

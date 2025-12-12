@@ -15,6 +15,7 @@ interface FileUploadProps {
   fingerPrintType: FingerPrintTypeType;
   removeOutliers: boolean;
   numberNeighborsUmap: number | null;
+  visualizationAnalysisInProcess: boolean;
   setVisualizationAnalysisInProcess: (
     visualizationAnalysisInProcess: boolean
   ) => void;
@@ -28,6 +29,7 @@ const FileUpload = ({
   fingerPrintType,
   removeOutliers,
   numberNeighborsUmap,
+  visualizationAnalysisInProcess,
   setVisualizationAnalysisInProcess,
   buttonDisabled,
 }: FileUploadProps) => {
@@ -71,7 +73,7 @@ const FileUpload = ({
             onClick={handleUpload}
             className="submit"
             variant="contained"
-            disabled={buttonDisabled}
+            disabled={buttonDisabled || visualizationAnalysisInProcess}
             sx={{ my: 2 }}
           >
             Upload
