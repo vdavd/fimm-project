@@ -8,6 +8,7 @@ interface FileSelectProps {
   setAnalyzedData: (analyzedData: string) => void;
   setFileReady: (fileReady: boolean) => void;
   setFileSelectError: (fileSelectError: string | null) => void;
+  setTargetSmiles: (targetSmiles: string[]) => void;
 }
 
 const FileSelect = ({
@@ -18,6 +19,7 @@ const FileSelect = ({
   setAnalyzedData,
   setFileReady,
   setFileSelectError,
+  setTargetSmiles,
 }: FileSelectProps) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -40,6 +42,7 @@ const FileSelect = ({
     setSmilesColumn("");
     setLabelColumn("");
     setFileReady(true);
+    setTargetSmiles([]);
   };
 
   return (

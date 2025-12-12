@@ -136,6 +136,7 @@ const HomePage = () => {
                   setAnalyzedData={setAnalyzedData}
                   setFileReady={setFileReady}
                   setFileSelectError={setFileSelectError}
+                  setTargetSmiles={setTargetSmiles}
                 />
                 {fileSelectError && (
                   <Alert
@@ -271,6 +272,7 @@ const HomePage = () => {
                   setAnalyzedData={setAnalyzedData}
                   setFileReady={setFileReady}
                   setFileSelectError={setFileSelectError}
+                  setTargetSmiles={setTargetSmiles}
                 />
 
                 <Typography

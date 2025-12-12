@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FingerPrintTypeType, SimilarityDataUploadParams } from "../types";
 import SimilaritySearch from "./SimilaritySearch";
 import SmilesColumnSelect from "./SmilesColumnSelect";
@@ -35,6 +35,10 @@ const SimilaritySearchSettings = ({
   const [similarityDataError, setSimilarityDataError] = useState("");
   const [fingerPrintType, setFingerPrintType] =
     useState<FingerPrintTypeType>("Morgan");
+
+  useEffect(() => {
+    setSimilarityDataError("");
+  }, [parsedFile]);
 
   const handleUpload = async () => {
     if (
